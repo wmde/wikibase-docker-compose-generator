@@ -1,2 +1,34 @@
-# wikibase-docker-yml-gui
-Web form to allow Wikibase docker users to setup a docker file by answering simple questions
+# yes
+
+> A yml builder for wikibase-docker
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install axios
+npm install vue
+npm install vue-form-wizard
+npm install vue-form-generator
+npm install vue-i18n
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+
+# run unit tests
+npm run unit
+
+# run e2e tests
+npm run e2e
+
+# run all tests
+npm test
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
