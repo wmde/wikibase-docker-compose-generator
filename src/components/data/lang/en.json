@@ -1,0 +1,22 @@
+{
+
+    "blub_nextButton": "Next",
+    "blub_backButton": "Back",
+    "blub_finishButton": "Finish",
+
+    "blub_installLanguage": "Which language setting you want to apply during the setup progress?",
+    "blub_settingLanguage": "Which language setting you want to apply to the docker images?",
+    "blub_downloadDefault": "Do you only want to use the default settings?",
+    "blub_expertMode": "Do you want to use the expert mode?",
+    "blub_useModules": "Which docker-images you want to use?",
+
+    "blub_step1": "General Settings",
+
+    "blub_languageOption_english": "English",
+    "blub_languageOption_german": "Deutsch",
+    "blub_choise_yes": "yes",
+    "blub_choise_no": "no",
+
+    "blub_step1_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>"
+
+}
