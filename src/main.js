@@ -1,14 +1,13 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
+import Blubber from './App'
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-let t = new Vue({
+let Application = new Vue({
   el: '#blubber',
-  components: {App},
-  template: '<App/>'
+  components: {Blubber},
+  template:'<Blubber/>'
 })
-

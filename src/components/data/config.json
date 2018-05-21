@@ -6,30 +6,31 @@
         "backButtonText": "blub_backButton",
         "finishButtonText" : "blub_finishButton",
         "stepSize": "md",
-        "style": {
-            "shape": "circle",
-            "color": "#000000",
-            "errorColor": "#f81717",
-            "transition": "fade",
-            "startIndex": 0
-        }
+        "shape": "circle",
+        "color": "#000000",
+        "errorColor": "#f81717",
+        "transition": "fade",
+        "startIndex": 0
     },
     "steps":[{
+        "name":"blub_step0",
+        "description": "blub_step0_description",
+        "icon": "settings",
+        "fields":[{
+              "name": "blub_installLanguage",
+              "type": "select",
+              "default": "en",
+              "required": true,
+              "options": [
+                  {"value": "en", "label":"blub_languageOption_english" },
+                  {"value": "de", "label":"blub_languageOption_german" }
+              ]
+        }]
+      },{
         "name":"blub_step1",
         "description": "blub_step1_description",
         "icon": "settings",
-        "fields":[
-            {
-                "name": "blub_installLanguage",
-                "type": "select",
-                "default": "en",
-                "required": true,
-                "options": [
-                    {"value": "en", "label":"blub_languageOption_english" },
-                    {"value": "de", "label":"blub_languageOption_german" }
-                ]
-            },
-            {
+        "fields":[{
                 "name": "blub_settingLanguage",
                 "type": "select",
                 "default": "en",
