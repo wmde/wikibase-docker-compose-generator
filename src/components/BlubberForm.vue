@@ -1,108 +1,58 @@
 <script>
 import Vue from 'vue'
+import VueFormGenerator from "vue-form-generator";
+import VueFormWizard from 'vue-form-wizard'
+import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 
-Object.size = function(Self)
+Vue.use(VueFormGenerator)
+Vue.use(VueFormWizard)
+class BaseException
 {
-  let Size = 0, Key;
-  for (Key in Self)
+  constructor(Name, Message)
   {
-    if (Self.hasOwnProperty(Key))
-    {
-      Size++;
-    }
-  }
-  return Size;
-}
-
-class InvalidStepException
-{
-  constructor(Message)
-  {
-    this.Name = "InvalidStepException"
+    this.Name = Name
     this.Message = Message
+    console.trace()
   }
 }
 
-class InvalidFieldException
+class InvalidStepException extends BaseException
 {
   constructor(Message)
   {
-    this.Name = "InvalidStepException"
-    this.Message = Message
+    super("InvalidStepException", Message)
+  }
+}
+
+class InvalidFieldException extends BaseException
+{
+  constructor(Message)
+  {
+    super("InvalidStepException", Message)
   }
 }
 
 Vue.mixin({
-    render: function (createElement)
-    {
-      if ( false === ('steps' in this.$data) || 0 === Object.size(this.$data.steps))
-      {
-        return createElement('App', {}, '')
-      }
-
-      for ( Step in this.$data.steps)
-      {
-        /*if(false == ('fields' in this.$data.steps[Step]))
-        {
-          throw  new InvalidStepException('The structure of the given steps is invalid at step ' + Step + '. Fields is missing.')
-        }
-        Generator = createElement('vue-form-generator', {props:{
-            'model':this.$data.model,
-            'schema':Schema,
-            'options':Options,
-            'ref':this.$data.steps[Step]['id']}})
-
-        StepStrings = getStringsOfStep(Step)
-        Description = createElement('p', {domProps: { innerHTML: StepStrings[1]}}, '')
-
-
-        Childes.push(createElement('tab-content', {props:{'title':StepStrings[0], 'icon':this.$data.steps[Step]['icon']}}, [Description, Generator]))
-        */
-      }
-
-
-      /*let Form = createElement('form-wizard', {on:{complete:'onComplete()'}, props:{'subtitle':'','title':'test'}}, Childes)
-
-      return createElement('App', {attr: {'id': 'blubberForm'}}, '')*/
-      return createElement('App', {}, '')
-
-    },
-    mounted: function()
-    {
-      if( 0 === Object.size(this.$data.steps))
-      {
-        this.getConfiguration()
-      }
-    },
     methods:
     {
-      getConfiguration: function()
+      buildBlubberForm: function(createElement, FormAttributes, FormProperties, Steps)
       {
-        this.get('./data/config.json', this.evaluateConfiguration)
-      },
-      evaluateConfiguration: function(Configuration)
-      {
-        this.$data.formProperties = Configuration.form
-        this.$data.steps = Configuration.steps
-        this.updateTemplate()
-      },
-      updateTemplate: function()
-      {
-        this.$forceUpdate()
+        var Return, Step
+        for (Step in Steps)
+        {
+
+        }
+        Return = createElement('form-wizard', {
+          attrs:FormAttributes,
+          props:FormProperties
+        }, '')
+        return Return
       }
-    },
-    data: function()
-    {
-      let Return = {}
-      Return['steps'] = {}
-      Return['formProperties'] = {}
-      Return['output'] = []
-      return Return
     }
 })
 
 export default {
-  name: 'BlubberFormBuilder'
+  name: 'BlubberFormFactory'
 }
 </script>
 

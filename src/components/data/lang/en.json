@@ -1,5 +1,5 @@
 {
-
+    "key": "en",
     "blub_nextButton": "Next",
     "blub_backButton": "Back",
     "blub_finishButton": "Finish",
@@ -10,13 +10,15 @@
     "blub_expertMode": "Do you want to use the expert mode?",
     "blub_useModules": "Which docker-images you want to use?",
 
-    "blub_step1": "General Settings",
+    "blub_step0": "Language settings",
+    "blub_step1": "General settings",
 
     "blub_languageOption_english": "English",
     "blub_languageOption_german": "Deutsch",
     "blub_choise_yes": "yes",
     "blub_choise_no": "no",
 
+    "blub_step0_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>",
     "blub_step1_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>"
 
 }
