@@ -6,11 +6,7 @@
 
 ``` bash
 # install dependencies
-npm install axios
-npm install vue
-npm install vue-form-wizard
-npm install vue-form-generator
-npm install vue-i18n
+npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
