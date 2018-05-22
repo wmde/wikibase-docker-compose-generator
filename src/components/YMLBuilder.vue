@@ -5,6 +5,6 @@ Vue.mixin({})
 
 export default
 {
-  name: "BlubberYMLBuilder"
+    name: 'BlubberYMLBuilder'
 }
 </script>
