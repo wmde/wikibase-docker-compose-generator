@@ -62,9 +62,7 @@
             },
             {
                 "name": "blub_useModules",
-                "type": "check",
-                "bind": "getSteps",
-                "evaluate": "checkUseModules"
+                "bind": "getSteps"
             }],
         "advance":"",
         "template": ""
