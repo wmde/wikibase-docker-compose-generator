@@ -7,12 +7,13 @@ import Language from './components/Language'
 export default
 {
     name: 'Blubber',
-    component: {BlubberFormFactory},
-    render: function(createElement)
+    render: function( createElement )
     {
-        return this.buildApplication(createElement)
+        return this.buildApplication( createElement )
     },
+    components: { BlubberFormFactory },
     template: '<div><BlubberFormFactory/></div>',
+    //template: '<div></div>',
     data: function()
     {
         var Return = {}
@@ -40,19 +41,19 @@ export default
             this.$data.buildForm = true
             this.updateTemplate()
         },
-        updateTemplate: function ()        
+        updateTemplate: function ()
         {
             this.$forceUpdate()
         },
-        getI18nStrings: function(Key, LanguageCode)
+        getI18nStrings: function ( Key, LanguageCode )
         {
             return this.$data.i18n.tc(Key, LanguageCode)
         },
-        buildApplication: function(createElement)
+        buildApplication: function ( createElement )
         {
-            if (false === this.$data.buildForm)     
+            if (false === this.$data.buildForm)
             {
-                return createElement('div', {attrs:{id:'application'}}, createElement(BlubberFormFactory, {}, ''))
+                return createElement('div', { attrs:{ id:'application' } },  createElement(BlubberFormFactory, {}, '' ) )
             }
             else
             {
@@ -63,13 +64,12 @@ export default
                 }
                 let Element = this.buildBlubberForm(
                     createElement,
-                    {id:'blubberForm'},
-                    this.$data.blubberGeneratorFormProperties,
-                    this.$data.blubberGeneratorSteps,
-                    I18n,
-                    this.$data.currentLanguage
+                    { id:'blubberForm' },
+                    Object.copy(this.$data.blubberGeneratorFormProperties),
+                    Object.copy(this.$data.blubberGeneratorSteps),
+                    I18n
                 )
-                return createElement('div', {attrs:{id:'application'}}, [Element, createElement(BlubberFormFactory, {}, '')])
+                return createElement('div', { attrs:{ id:'application' } }, [ Element, createElement(BlubberFormFactory, {}, '') ] )
             }
         }
     }

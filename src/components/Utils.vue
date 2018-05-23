@@ -4,7 +4,7 @@ import Axios from 'axios'
 
 class BaseException
 {
-    constructor(Name, Message)
+    constructor( Name, Message )
     {
         this.Name = Name
         this.Message = Message
@@ -14,7 +14,7 @@ class BaseException
 
 class RuntimeErrorException extends BaseException
 {
-    constructor(Message)
+    constructor( Message )
     {
         super("RuntimeErrorException", Message)
     }
@@ -22,18 +22,18 @@ class RuntimeErrorException extends BaseException
 
 class AssertErrorException extends BaseException
 {
-    constructor(Message)
+    constructor( Message )
     {
         super("AssertErrorException", Message)
     }
 }
 
-Object.size = function(Self)
+Object.size = function( Self )
 {
     let Size = 0, Key;
-    for (Key in Self)
+    for ( Key in Self )
     {
-        if (Self.hasOwnProperty(Key))
+        if ( true === Self.hasOwnProperty(Key) )
         {
             Size++;
         }
@@ -41,24 +41,73 @@ Object.size = function(Self)
     return Size;
 }
 
-Object.isEmpty = function(self)
+Object.isEmpty = function( Self )
 {
-    return 0 === Object.size(self)
+    return 0 === Object.size(Self)
 }
 
-String.isEmpty = function(self)
+Object.copy = function( Self,  Depth = -1 )
 {
-    return 0 === self.length
+    var Dolly = Object.assign({}, Self)
+    var Key
+    if(0 === Depth )
+    {
+        return Dolly
+    }
+
+    for( Key in Dolly )
+    {
+        if( 'object' === typeof Dolly[Key] )
+        {
+            Dolly[Key] = Object.copy(Dolly[Key], Depth-1)
+        }
+    }
+
+    return Dolly
 }
 
-Array.isEmpty = function(self)
+Object.merge = function( Object1, Object2, KeepOrign = true )
 {
-    return 0 === self.length
+    var Key
+    if( true === KeepOrign )
+    {
+        var Return = {}
+        Return = Object.assign({}, Object1, Object2)
+        for( Key in Return )
+        {
+            if( 'object' === typeof Return[Key])
+            {
+                Return[Key] = Object.copy(Return[Key])
+            }
+        }
+    }
+    else
+    {
+        Object1 = Object.assign({}, Object1, Object2)
+        for( Key in Object2 )
+        {
+            if( 'object' === typeof Object1[Key])
+            {
+                Object1[Key] = Object.copy(Object1[Key])
+            }
+        }
+    }
 }
 
-function assert(Condition)
+
+String.isEmpty = function( Self )
 {
-    if (false === Condition)
+    return 0 === Self.length
+}
+
+Array.isEmpty = function( Self )
+{
+    return 0 === Self.length
+}
+
+function assert( Condition )
+{
+    if ( false === Condition )
     {
         throw new AssertErrorException('Failed condition')
     }
@@ -67,28 +116,28 @@ function assert(Condition)
 Vue.mixin({
     methods:
     {
-        evaluateRequest: async function(Response, Error, Hook)
+        evaluateRequest: async function( Response, Error, Hook )
         {
-            while(true === this.isEmpty(Response))
+            while( true === this.isEmpty(Response) )
             {
                 await this.sleep(10)
             }
-            
-            if (false === this.isEmpty(Error))
+
+            if ( false === this.isEmpty(Error) )
             {
                 throw new RuntimeErrorException(Error)
             }
 
             Hook(Response)
         },
-        getExtern: async function(File, Hook)
+        getExtern: async function( File, Hook )
         {
             var Error
             var Response
             Axios.get(File).then(response => (Response = response)).catch(error => (Error = Error))
             this.evaluateRequest(Response, Error, Hook)
         },
-        getIntern: async function (File, Hook)
+        getIntern: async function ( File, Hook )
         {
             var Response
             var Error
@@ -96,7 +145,7 @@ Vue.mixin({
 
             this.evaluateRequest(Response, Error, Hook)
         },
-        get: function(File, Hook)
+        get: function( File, Hook )
         {
             if(true === File.startsWith('http://'))
             {
@@ -107,23 +156,23 @@ Vue.mixin({
                 this.getIntern(File, Hook)
             }
         },
-        isEmpty: function(Str)
+        isEmpty: function( Str )
         {
-            if ('undefined' === typeof Str || null === Str)
+            if ( 'undefined' === typeof Str || null === Str )
             {
                 return true
             }
             else
             {
-                if ('string' === typeof Str)
+                if ( 'string' === typeof Str )
                 {
                     return String.isEmpty(Str)
                 }
-                else if(true === Array.isArray(Str))
+                else if( true === Array.isArray(Str) )
                 {
                     return Array.isEmpty(Str)
                 }
-                else if('object' === typeof Str)
+                else if( 'object' === typeof Str )
                 {
                     return Object.isEmpty(Str)
                 }
@@ -133,7 +182,7 @@ Vue.mixin({
                 }
             }
         },
-        sleep: function(Milliseconds)
+        sleep: function( Milliseconds )
         {
             return new Promise(resolve => setTimeout(resolve, Milliseconds))
         }
