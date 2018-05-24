@@ -21,7 +21,7 @@
               "type": "select",
               "default": "en",
               "required": true,
-              "options": [
+              "values": [
                   {"value": "en", "label":"blub_languageOption_english" },
                   {"value": "de", "label":"blub_languageOption_german" }
               ]
@@ -35,7 +35,7 @@
                 "type": "select",
                 "default": "en",
                 "required": true,
-                "options": [
+                "values": [
                     {"value": "en", "label":"blub_languageOption_english" },
                     {"value": "de", "label":"blub_languageOption_german" }
                 ]
@@ -44,7 +44,7 @@
                 "name": "blub_downloadDefault",
                 "type": "check",
                 "default": false,
-                "options": [
+                "values": [
                     {"value": true, "label":"blub_choise_yes"},
                     {"value": false, "label":"blub_choise_no"}
                 ],
@@ -54,7 +54,7 @@
                 "name": "blub_expertMode",
                 "type": "check",
                 "default": false,
-                "options": [
+                "values": [
                     {"value": true, "label":"blub_choise_yes"},
                     {"value": false, "label":"blub_choise_no"}
                 ],
