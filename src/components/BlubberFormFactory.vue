@@ -32,7 +32,7 @@ class InvalidFieldException extends BaseException
     }
 }
 
-class InvalidFieldValueException extends BaseException 
+class InvalidFieldValueException extends BaseException
 {
     constructor ( Message )
     {
@@ -66,7 +66,7 @@ Vue.mixin({
                         return this[Value]
                     }
                 }
-                
+
                 if ( Type === typeof Value )
                 {
                     return Value
@@ -232,7 +232,7 @@ Vue.mixin({
                     }
                     catch ( Exception )
                     {
-                        GeneratedField['placeholder'] = Field['briefDescription']
+                        GeneratedField['placeholder'] = Mutable
                     }
                 }
 
@@ -398,7 +398,7 @@ Vue.mixin({
             var GeneratedField, Mutable
             function addValuesProperty ( Field, LabelKey, LabelGenerator )
             {
-                var Mutable, Mutable2, GeneratedValues, Value
+                var Mutable, Mutable2, GeneratedValues, ValueIndex
                 if ( 'values' in Field )
                 {
                     Mutable = this.isFunctionOrArray( Field['values'], Field['name'] )
@@ -410,32 +410,32 @@ Vue.mixin({
                 }
 
                 if ( false === Array.isArray( Mutable ) )
-                {                    
+                {
                     return Mutable
                 }
 
                 GeneratedValues = []
-                for ( Value in Mutable )
+                for ( ValueIndex in Mutable )
                 {
-                    if ( 'string' === typeof Mutable[Value] )
+                    if ( 'string' === typeof Mutable[ValueIndex] )
                     {
-                        GeneratedValues.push( Mutable[Value] )
+                        GeneratedValues.push( Mutable[ValueIndex] )
                     }
-                    else if ( 'object' === typeof Mutable[Value] )
+                    else if ( 'object' === typeof Mutable[ValueIndex] )
                     {
-                        if ( LabelKey in Mutable[Value] )
+                        if ( LabelKey in Mutable[ValueIndex] )
                         {
-                            Mutable2 = Mutable[Value][LabelKey]
+                            Mutable2 = Mutable[ValueIndex][LabelKey]
                             try
                             {
-                                Mutable[Value][LabelKey] = this.getStringLabelOrEmpty( LabelGenerator, Mutable[Value], LabelKey )
+                                Mutable[ValueIndex][LabelKey] = this.getStringLabelOrEmpty( LabelGenerator, Mutable[ValueIndex], LabelKey )
                             }
                             catch ( Exception )
                             {
-                                Mutable[Value][LabelKey] = Mutable2
+                                Mutable[ValueIndex][LabelKey] = Mutable2
                             }
 
-                            GeneratedValues.push( Mutable[Value] )
+                            GeneratedValues.push( Mutable[ValueIndex] )
                         }
                         else
                         {
@@ -482,19 +482,11 @@ Vue.mixin({
                 return GeneratedProperty
             }
 
-            //common additional properties
-            if ( 'additionalAttributes' in Field && 'object' === typeof Field )
-            {
-                //if we want to add a class attribute
-                if ( 'class' in Field['additionalAttributes'] )
-                {
-                    Field['additionalAttributes']['styleClasses'] = Field['additionalAttributes']['class']
-                }
-                //just to make sure we do not open a backdoor to our field properties
-                GeneratedField = Object.copy( Field['additionalAttributes'] )
-                delete Field['additionalAttributes']
-                Field = Object.merge( GeneratedField, Field, false )
-            }
+           if ( 'class' in Field )
+           {
+              Field['styleClasses'] = Field['class']
+              delete Field['class']
+           }
 
             //specific  properties
             Field['type'] = Field['type'].toLowerCase()
@@ -563,25 +555,58 @@ Vue.mixin({
             else if ( 'textBlock' === Field['type'] )
             {
                 GeneratedField['type'] = 'textarea'
+                if ( 'autocomplete' in Field && false === Field['autocomplete'] )
+                {
+                    GeneratedField['autocomplete'] = 'off'
+                }
+                else
+                {
+                    GeneratedField['autocomplete'] = 'on'
+                }
+
+                if ( 'readonly' in Field )
+                {
+                    Mutable = this.isFunctionOrBool( Field['readonly'], Field['name'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'readonly', Field )
+                }
+                if ( 'briefDescription' in Field )
+                {
+                    Mutable = Field['briefDescription']
+                    try
+                    {
+                        GeneratedField['placeholder'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'briefDescription' )
+                    }
+                    catch ( Exception )
+                    {
+                        GeneratedField['placeholder'] = Mutable
+                    }
+                }
+
+                if ( 'maximum' in Field )
+                {
+                    Mutable = this.isFunctionOrNumber( Field['maximum'], Field['name'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'max', Field )
+                }
+
+                if ( 'minimum' in Field )
+                {
+                    Mutable = this.isFunctionOrNumber( Field['minimum'], Field['name'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'min', Field )
+                }
+
+                if ( true === ('rows' in Field ) )
+                {
+                    Mutable = this.isFunctionOrNumber( Field['stepSize'], Field['id'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'stepSize', Field )
+                }
             }
             else if ( 'label' === Field['type'] )
             {
-                if ( 'formatter' in Field )
-                {
-                    Mutable = this.isFunctionOrString( Field['formatter'], Field['name'] )
-                    if ( 'function' !== typeof Mutable )
-                    {
-                        throw new InvalidFieldException( 'The given formatter of ' + Field['name'] + ' must be a function.' )
-                        return null
-                    }
-                    else
-                    {
-                        GeneratedField['get'] = Mutable
-                    }
-                }
+                /* Do nothing cause there no special attributes */
             }
             else if ( 'submit'  === Field['type'] )
             {
+                GeneratedField['id'] = Field['name']
                 if ( 'onSubmit' in Field )
                 {
                     Mutable = this.isFunctionOrString( Field['onSubmit'], Field['name'] )
@@ -595,12 +620,50 @@ Vue.mixin({
                         GeneratedField['onSubmit'] = Mutable
                     }
                 }
-                //TODO GoOn here
+
                 if ( 'validateBeforeSubmit' in Field )
                 {
-
+                    Mutable = this.isFunctionOrBool( Field['validateBeforeSubmit'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'validateBeforeSubmit', Field )
                 }
 
+                if ( 'label' in Field )
+                {
+                    Field['label'] = this.isFunctionOrString( Field['label'] )
+                    try
+                    {
+                        GeneratedField['buttonText'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'label' )
+                    }
+                    catch ( Exception )
+                    {
+                        GeneratedField['buttonText'] = Field['label']
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        GeneratedField['buttonText'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'name' )
+                    }
+                    catch ( Exception )
+                    {
+                        GeneratedField['buttonText'] = Field['name']
+                    }
+                }
+
+                if ( 'isVisible' in Field )
+                {
+                    Mutable = this.isFunctionOrBool( Field['isVisible'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'visible', Field)
+                }
+
+                if ( 'isDisabled' in Field )
+                {
+                    Mutable = this.isFunctionOrBool( Field['isDisabled'] )
+                    this.assignValueOrFunction( GeneratedField, Mutable, 'disabled', Field)
+                }
+
+                return GeneratedField
             }
             //futher types should be placed here
             else
@@ -608,7 +671,7 @@ Vue.mixin({
                 GeneratedField = this.buildInputField( Field['type'], Field, StringSelector, Language )
             }
             //common settings
-            GeneratedField['name'] = Field['name']
+            GeneratedField['id'] = Field['name']
 
             //common optional Settings
             if ( 'default' in Field )
@@ -626,6 +689,20 @@ Vue.mixin({
                 GeneratedField['hint'] = this.getStringLabelOrEmpty( LabelGenerator, 'hint', Field )
             }
 
+            if ( 'formatter' in Field )
+            {
+                Mutable = this.isFunctionOrString( Field['formatter'], Field['name'] )
+                if ( 'function' !== typeof Mutable )
+                {
+                    throw new InvalidFieldException( 'The given formatter of ' + Field['name'] + ' must be a function.' )
+                    return null
+                }
+                else
+                {
+                    GeneratedField['get'] = Mutable
+                }
+            }
+
             Mutable = this.isFunctionOrString(Field['buttons'], Descriptor)
             if ( 'buttons' in Field && Field['buttons'] in this  && 'function' === typeof this.Field['buttons'] )
             {
@@ -638,23 +715,23 @@ Vue.mixin({
         {
             var GeneratedFields = []
             var Model = {}
-            var Field
+            var FieldIndex
 
-            for ( Field in Fields )
+            for ( FieldIndex in Fields )
             {
                 if ( 'bind' in Fields[Field] )
                 {
-                    GeneratedFields.push( this.buildDynamicField( Fields[Field], Model, LabelGenerator ) )
+                    GeneratedFields.push( this.buildDynamicField( Fields[FieldIndex], Model, LabelGenerator ) )
                     continue
                 }
 
-                if ( 'group' === Fields[Field] )
+                if ( 'group' === Fields[FieldIndex] )
                 {
-                    GeneratedFields.push( this.buildGroup( Fields[Field], LabelGenerator ) )
+                    GeneratedFields.push( this.buildGroup( Fields[FieldIndex], LabelGenerator ) )
                     continue
                 }
 
-                GeneratedFields.push( this.buildField( Fields[Field], LabelGenerator ) )
+                GeneratedFields.push( this.buildField( Fields[FieldIndex], LabelGenerator ) )
             }
 
             return [ Model, GeneratedFields ]
@@ -662,21 +739,21 @@ Vue.mixin({
         },
         buildBlubberForm: function ( createElement, FormAttributes, FormProperties, Steps, LabelGenerator )
         {
-            var Return, Step;
+            var Return, StepIndex;
             //set formproperties and add label  strings
             var FormPropertiesLabels = ['subtitle', 'nextButtonText', 'backButtonText', 'finishButtonText' ];
-            var LabelString, Label;
-            for ( Label in FormPropertiesLabels )
+            var LabelString, LabelIndex;
+            for ( LabelIndex in FormPropertiesLabels )
             {
-                LabelString = this.getStringLabels( LabelGenerator, FormPropertiesLabels[Label], FormProperties )
+                LabelString = this.getStringLabels( LabelGenerator, FormPropertiesLabels[LabelIndex], FormProperties )
                 if ( null === LabelString )
                 {
                     continue
                 }
-                FormProperties[FormPropertiesLabels[Label]] = LabelString
+                FormProperties[FormPropertiesLabels[LabelIndex]] = LabelString
             }
 
-            for ( Step in Steps )
+            for ( StepIndex in Steps )
             {
 
             }
