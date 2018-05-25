@@ -51,50 +51,10 @@ class InvalidLabelException extends BaseException
 Vue.mixin({
     methods:
     {
-        __genericIsFuncionOrSomething: function ( Value, Type, Descriptor )
+        __genericIsFuncionOrSomething: function ( Value, Type, FieldName, ReturnPureFunction = false )
         {
-            if( 'function' === typeof Value)
-            {
-                return Value
-            }
-            else
-            {
-                if( 'string' === typeof Value )
-                {
-                    if ('function' === typeof this[Value])
-                    {
-                        return this[Value]
-                    }
-                }
-
-                if ( Type === typeof Value )
-                {
-                    return Value
-                }
-            }
-
-            throw new InvalidFieldException( 'Unsupported field value type ' + typeof Value + ' in field ' + Descriptor  + '. Exspected ' + Type + ' or function.')
-            return null
-        },
-        isFunctionOrString: function ( Value, Descriptor )
-        {
-            return this.__genericIsFuncionOrSomething( Value, 'string', Descriptor )
-        },
-        isFunctionOrNumber: function( Value, Descriptor )
-        {
-            return this.__genericIsFuncionOrSomething( Value, 'number', Descriptor )
-        },
-        isFunctionOrBool: function( Value, Descriptor )
-        {
-            return this.__genericIsFuncionOrSomething( Value, 'boolean', Descriptor )
-        },
-        isFunctionOrObject: function( Value, Descriptor )
-        {
-            return this.__genericIsFuncionOrSomething( Value, 'object', Descriptor )
-        },
-        isFunctionOrArray: function ( Value, Descriptor )
-        {
-            if( 'function' === typeof Value )
+            var Chunks, Self, Index
+            if ( 'function' === typeof Value)
             {
                 return Value
             }
@@ -102,10 +62,112 @@ Vue.mixin({
             {
                 if ( 'string' === typeof Value )
                 {
-                    if( 'function' === typeof this[Value] )
+                    Self = this
+                    if ( true === Value.hasSubstring( '.' ) )
                     {
-                        return this[Value]
+                        Chunks = Value.split( '.' )
+                        for ( Index in Chunks )
+                        {
+                            if ( Chunks[Index] in Self )
+                            {
+                                Self = Self[Chunks[Index]]
+                            }
+                            else
+                            {
+                                throw new InvalidFieldException( 'Unknown method ' + Value + ' in field ' + FieldName  + '.')
+                                return null
+                            }                                
+                        }
+
+                        if ( 'function' !== typeof Self )
+                        {
+                            throw new InvalidFieldException( 'Unsupported field value type ' + typeof Value + ' in field ' + FieldName  + '. Expected ' + Type + ' or function.')
+                            return null
+                        }
                     }
+                    else if ( Value in Self && 'function' === typeof Self[Value] )
+                    {
+                        Self = this[Value]
+                    }
+
+                    if ( true === ReturnPureFunction )
+                    {
+                        return Self
+                    }
+
+                    Value = Self(FieldName)
+                }               
+
+                if ( Type === typeof Value || 'any' === Type )
+                {
+                    return Value
+                }
+            }
+
+            throw new InvalidFieldException( 'Unsupported field value type ' + typeof Value + ' in field ' + FieldName  + '. Expected ' + Type + ' or function.')
+            return null
+        },
+        executeFunctionOrGetString: function ( Value, FieldName, ReturnPureFunction = false )
+        {
+            return this.__genericIsFuncionOrSomething( Value, 'string', FieldName, ReturnPureFunction )
+        },
+        executeFunctionOrGetNumber: function( Value, FieldName, ReturnPureFunction = false )
+        {
+            return this.__genericIsFuncionOrSomething( Value, 'number', FieldName, ReturnPureFunction )
+        },
+        executeFunctionOrGetBool: function( Value, FieldName, ReturnPureFunction = false )
+        {
+            return this.__genericIsFuncionOrSomething( Value, 'boolean', FieldName, ReturnPureFunction )
+        },
+        executeFunctionOrGetObject: function( Value, FieldName, ReturnPureFunction = false )
+        {
+            return this.__genericIsFuncionOrSomething( Value, 'object', FieldName, ReturnPureFunction )
+        },
+        executeFunctionOrGetArray: function ( Value, FieldName, ReturnPureFunction = false )
+        {
+            var Chunks, Self, Index
+            if ( 'function' === typeof Value)
+            {
+                return Value
+            }
+            else
+            {
+                if ( 'string' === typeof Value )
+                {
+                    Self = this
+                    if ( true === Value.hasSubstring( '.' ) )
+                    {
+                        Chunks = Value.split( '.' )
+                        for ( Index in Chunks )
+                        {
+                            if ( Chunks in Self )
+                            {
+                                Self = Self[Chunks]
+                            }
+                            else
+                            {
+                                throw new InvalidFieldException( 'Unknown method ' + Value + ' in field ' + FieldName  + '.')
+                                return null
+                            }
+                        }
+                        
+                        if ( 'function' !== typeof Self )
+                        {
+                            throw new InvalidFieldException( 'Unsupported field value type ' + typeof Value + ' in field ' + FieldName  + '. Expected ' + Type + ' or function.')
+                            return null
+                        }
+                    }
+                    else if ( Value in Self && 'function' === typeof Self[Value] )
+                    {
+                        Self = this[Value]
+                    }
+                    
+                    if ( true === ReturnPureFunction )
+                    {
+                        return Self
+                    }
+
+                    Value = Self(FieldName)
                 }
 
                 if ( true === Array.isArray( Value ) )
@@ -114,19 +176,8 @@ Vue.mixin({
                 }
             }
 
-            throw new InvalidFieldException( 'Unsupported field value type ' + typeof Value + ' in field ' + Descriptor + '. Exspected array or function.' )
+            throw new InvalidFieldException( 'Unsupported field value type ' + typeof Value + ' in field ' + FieldName + '. Expected array or function.' )
             return null
-        },
-        assignValueOrFunction: function ( GeneratedField, Mutable, Key, Field )
-        {
-            if ( 'function' === typeof Mutable )
-            {
-                GeneratedField[Key] = Mutable( Object.copy( Field ) )
-            }
-            else
-            {
-                GeneratedField[Key] = Mutable
-            }
         },
         getStringLabels: function ( LabelGenerator, Key, Field )
         {
@@ -148,47 +199,12 @@ Vue.mixin({
         },
         getStringLabelOrEmpty: function ( LabelGenerator, Key, Field )
         {
-            var Label = this.getStringLabels( LabelGenerator, Key, Field )
+            let Label = this.getStringLabels( LabelGenerator, Key, Field )
             if ( null === Label )
             {
                 Label = ''
             }
             return Label
-        },
-        checkField: function ( Field )
-        {
-
-        },
-        buildDynamicField: function ( Field, LabelGenerator )
-        {
-            var GeneratedFields
-            var Dynamic = this.isFunctionOrString( Field['bind'], Field['name'] )
-            if ( 'function' !== typeof Dynamic )
-            {
-                throw new InvalidFieldException( 'Unexspected field binding method ' + typeof Value + ' in field ' + Field['name'] )
-                return null
-            }
-
-            GeneratedFields = Field['bind']()
-            if ( true === Array.isArray( GeneratedFields ) )
-            {
-                return this.buildFields( GeneratedFields, LabelGenerator )
-            }
-            else
-            {
-                if ( 'group' in GeneratedFields )
-                {
-                    return this.buildGroup( GeneratedFields, LabelGenerator )
-                }
-                else
-                {
-                    return this.buildField( GeneratedFields, LabelGenerator )
-                }
-            }
-        },
-        buildGroup: function ( Group, LabelGenerator )
-        {
-
         },
         buildInputField: function ( Type, Field, LabelGenerator )
         {
@@ -198,8 +214,7 @@ Vue.mixin({
 
                 if ( 'readonly' in Field )
                 {
-                    Mutable = this.isFunctionOrBool( Field['readonly'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'readonly', Field )
+                    GeneratedField['readonly'] = this.executeFunctionOrGetBool( Field['readonly'], Field['name'] )
                 }
 
                 if ( 'autocomplete' in Field  && false === Field['autocomplete'] )
@@ -213,14 +228,12 @@ Vue.mixin({
 
                 if ( 'maximum' in Field  && false === Field['maximum'] )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['maximum'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'maxlength', Field )
+                    GeneratedField['maxlength'] = this.executeFunctionOrGetNumber( Field['maximum'], Field['name'] )
                 }
 
                 if ( 'pattern' in Field && 'string' === typeof Field['pattern'] )
                 {
-                    Mutable = this.isFunctionOrString( Field['pattern'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'pattern', Field )
+                    GeneratedField['pattern'] = this.executeFunctionOrGetString( Field['pattern'], Field['name'] )
                 }
 
                 if ( 'briefDescription' in Field )
@@ -238,8 +251,7 @@ Vue.mixin({
 
                 if ( 'size' in Field  && false === Field['size'] )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['size'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'size', Field )
+                    GeneratedField['size'] = this.executeFunctionOrGetNumber( Field['size'], Field['name'] )
                 }
 
                 return GeneratedField
@@ -260,26 +272,22 @@ Vue.mixin({
 
                 if ( 'getValuesFromList' in Field )
                 {
-                    Mutable = this.isFunctionOrString( Field['getValuesFromList'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'list', Field )
+                    GeneratedField['list'] = this.executeFunctionOrGetString( Field['getValuesFromList'], Field['name'] )
                 }
 
                 if ( 'maximum' in Field )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['maximum'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'max', Field )
+                    GeneratedField['max'] = this.executeFunctionOrGetNumber( Field['maximum'], Field['name'] )
                 }
 
                 if ( 'minimum' in Field )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['minimum'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'min', Field )
+                    GeneratedField['min'] = this.executeFunctionOrGetNumber( Field['minimum'], Field['name'] )
                 }
 
-                if ( true === ('stepSize' in Field ) )
+                if ( 'stepSize' in Field )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['stepSize'], Field['id'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'stepSize', Field )
+                    GeneratedField['stepSize'] = this.executeFunctionOrGetNumber( Field['stepSize'], Field['name'] )
                 }
 
                 return GeneratedField
@@ -295,20 +303,18 @@ Vue.mixin({
 
                 if ( 'dir' in Field && ( 'text' === Type || 'search' === Type ) )
                 {
-                    Value = this.isFunctionOrString( Field['dir'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'dir', Field )
+                    GeneratedField['dir'] = this.executeFunctionOrGetString( Field['dir'], Field['name'] )
                 }
 
                 if ( 'getValuesFromList' in Field )
                 {
-                    Mutable = this.isFunctionOrString( Field['getValuesFromList'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'list' )
+                    GeneratedField['list'] = this.executeFunctionOrGetString( Field['getValuesFromList'], Field['name'] )
                 }
 
                 if ( 'email' === Type && 'multipleItems' in Field && 'boolean' === typeof Field['multibleItems'] )
                 {
-                    Mutable = this.isFunctionOrBool( Field['multipleItems'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'multiple', Field )
+                    GeneratedField['multiple'] = this.executeFunctionOrGetBool( Field['multipleItems'], Field['name'] )
+                    GeneratedField['multi'] = this.executeFunctionOrGetBool( Field['multipleItems'], Field['name'] )
                 }
             }
             else if ( 'password' === Type )
@@ -319,14 +325,13 @@ Vue.mixin({
             {
                 if ( 'accept' in Field && 'accept' === typeof Field['accept'] )
                 {
-                    Mutable = this.isFunctionOrString( Field['accept'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'accept', Field )
+                    GeneratedField['accept'] = this.executeFunctionOrGetString( Field['accept'], Field['name'] )
                 }
 
                 if ( 'multipleInput' in Field && 'boolean' === typeof Field['multibleInput'] )
                 {
-                    Mutable = this.isFunctionOrBool( Field['multipleItems'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'multiple', Field )
+                    GeneratedField['mulitple'] = this.executeFunctionOrGetBool( Field['multipleItems'], Field['name'] )
+                    GeneratedField['multi'] = this.executeFunctionOrGetBool( Field['multipleItems'], Field['name'] )
                 }
             }
             else if (
@@ -338,8 +343,7 @@ Vue.mixin({
                 GeneratedField = addNumericBasedAttributes(Field, GeneratedField, Filed['id'])
                 if ( 'readonly' in Field && 'range' !== Type )
                 {
-                    Mutable = this.isFunctionOrBool(Field['readonly'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'readonly', Field )
+                    GeneratedField['readonly'] = this.executeFunctionOrGetBool( Field['readonly'], Field['name'] )
                 }
             }
             else if ( 'number' === Type )
@@ -347,8 +351,7 @@ Vue.mixin({
                 GeneratedField = addNumericBasedAttributes( Field, GeneratedField, Field['name'] )
                 if ( 'readonly' in Field )
                 {
-                    Mutable = this.isFunctionOrBool( Field['readonly'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'readonly', Field )
+                    GeneratedField['readonly'] = this.executeFunctionOrGetBool( Field['readonly'], Field['name'] )
                 }
                 if ( 'briefDescription' in Field )
                 {
@@ -376,8 +379,7 @@ Vue.mixin({
 
                 if ( 'getValuesFromList' in Field )
                 {
-                    Mutable = this.isFunctionOrString( Field['getValuesFromList'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'list', Field )
+                    GeneratedField['list'] = this.executeFunctionOrGetString( Field['getValuesFromList'], Field['name'] )
                 }
             }
             else if( 'reset' === Type || 'hidden' === Type )
@@ -401,7 +403,7 @@ Vue.mixin({
                 var Mutable, Mutable2, GeneratedValues, ValueIndex
                 if ( 'values' in Field )
                 {
-                    Mutable = this.isFunctionOrArray( Field['values'], Field['name'] )
+                    Mutable = this.executeFunctionOrGetArray( Field['values'], Field['name'], true )
                 }
                 else
                 {
@@ -455,18 +457,10 @@ Vue.mixin({
 
             function addOptionProperty( Field )
             {
-                var GeneratedProperty = {}
+                let GeneratedProperty = {}
                 if ( 'options' in Field )
                 {
-                    Mutable = this.isFunctionOrObject( Field['options'], Field['name'] )
-                    if ( 'function' === typeof Mutable )
-                    {
-                        GeneratedProperty = Mutable( Object.copy( Field ) )
-                    }
-                    else
-                    {
-                        GeneratedProperty = Mutable
-                    }
+                    GeneratedProperty = this.executeFunctionOrGetObject( Field['options'], Field['name'] )
                 }
 
                 if ( false === ( 'value' in GeneratedProperty ) )
@@ -481,13 +475,140 @@ Vue.mixin({
 
                 return GeneratedProperty
             }
+            
+            function addInsideButtons( Buttons, FieldName, LabelGenerator )
+            {
+                var Index
+                let Return = []
+                let GeneratedButton = {}
+                
+                Buttons = this.__genericIsFuncionOrSomething( Buttons, 'any', FieldName )
+                
+                if ( 'object' === typeof Buttons )
+                {   
+                    if ( 'class' in Buttons )
+                    {
+                        GeneratedButton['classes'] = this.executeFunctionOrGetString( Buttons['class'], FieldName )
+                    }
 
-           if ( 'class' in Field )
-           {
-              Field['styleClasses'] = Field['class']
-              delete Field['class']
-           }
+                    if ( 'label' in Buttons )
+                    {
+                        Buttons['label'] = this.executeFunctionOrGetString( Buttons['label'], FieldName )
+                        try
+                        {
+                            GeneratedButton['label'] = this.getStringLabelOrEmpty( LabelGenerator, Buttons, 'label' )
+                        }
+                        catch ( Exception )
+                        {
+                            GeneratedButton['label'] = Buttons['label']
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidFieldException( 'The insideButtons property of ' + FieldName + ' must have a label.' )
+                        return null
+                    }
 
+                    if ( 'action' in Buttons )
+                    {
+                        Mutable = this.executeFunctionOrGetString( Buttons['action'], FieldName )
+                        if ( 'function' !== typeof Mutable )
+                        {
+                            throw new InvalidFieldException( 'The action property of insideButtons property of field ' + FieldName + ' at index ' + Index + ' must be a function but string was given.' )
+                            return null
+                        }
+                        GeneratedButton['onClick'] = Mutable
+                    }
+
+                    return [GeneratedButton]
+                }
+                else if ( true === Array.isArray( Buttons ) )
+                {
+                    for ( Index in Buttons )
+                    {
+                        GeneratedButton = {}
+                        if ( 'object' === typeof Buttons[Index] )
+                        {
+                            if ( 'class' in Buttons[Index] )
+                            {
+                                GeneratedButton['classes'] = this.executeFunctionOrGetString( Buttons[Index]['class'], FieldName )
+                            }
+                            
+                            if ( 'label' in Buttons[Index] )
+                            {
+                                Mutable = this.executeFunctionOrGetString( Buttons[Index]['label'], FieldName )
+                                
+                                try
+                                {
+                                    GeneratedButton['label'] = this.getStringLabelOrEmpty( LabelGenerator, Buttons[Index], 'label' )
+                                }
+                                catch ( Exception )
+                                {
+                                    GeneratedButton['label'] = Buttons[Index]['label']
+                                }
+                            }
+                            else
+                            {
+                                throw new InvalidFieldException( 'The insideButtons property of ' + FieldName + ' at index ' + Index + ' must have a label.' )
+                                return null
+                            }
+                            
+                            if ( 'action' in Buttons[Index] )
+                            {
+                                Mutable = this.executeFunctionOrGetString( Buttons[Index]['action'], FieldName )
+                                if ( 'function' !== typeof Mutable )
+                                {
+                                    throw new InvalidFieldException( 'The action property of insideButtons property of field ' + FieldName + ' at index ' + Index + ' must be a function but string was given.' )
+                                    return null
+                                }
+                                
+                                GeneratedButton['onClick'] = Mutable
+                            }                           
+                            
+                            Return.push( GeneratedButton )
+                        }
+                    }
+                }
+                else
+                {
+                    throw new InvalidFieldException( 'The insideButtons property of ' + FieldName + ' needs to be a object or a array of objects, but ' + typeof Buttons + ' was given.' )
+                    return null
+                }
+            }
+            
+            if ( 'class' in Field )
+            {
+                Field['styleClasses'] = Field['class']
+                delete Field['class']
+            }
+
+            //common required properties
+            if ( 'prefix' in Field )
+            {
+                if ( 'string' !== Field )
+                {
+                    throw new InvalidFieldException( 'The given prefix of ' + FieldName + ' must be a string, but ' + typeof Field['prefix'] + ' was given.' )
+                    return null
+                }
+            }
+
+            if ( 'name' in Field )
+            {
+                if ( 'prefix' in Field )
+                {
+                    GeneratedField['id'] = Field['prefix'] + '.' + Field['name']
+                }
+                else
+                {
+                    GeneratedField['id'] = Field['name']
+                }
+            }
+            else
+            {
+                throw new InvalidFieldException( 'A given field has no name property' )
+                return null
+            }
+            
             //specific  properties
             Field['type'] = Field['type'].toLowerCase()
             if (  'choise'  === Field['type'] )
@@ -528,8 +649,7 @@ Vue.mixin({
                     GeneratedField['type'] = "checklist"
                     if ( 'asList' in Field && true === Field['asList'] )
                     {
-                        Mutable = this.isFunctionOrBool( Field['asList'], Field['name'] )
-                        this.assignValueOrFunction( GeneratedField, Mutable, 'listBox', Field )
+                        GeneratedField['listBox'] = this.executeFunctionOrGetBool( Field['asList'], Field['name'] )
                     }
                     else
                     {
@@ -566,8 +686,7 @@ Vue.mixin({
 
                 if ( 'readonly' in Field )
                 {
-                    Mutable = this.isFunctionOrBool( Field['readonly'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'readonly', Field )
+                    GeneratedField['readonly'] = this.executeFunctionOrGetBool( Field['readonly'], Field['name'] )
                 }
                 if ( 'briefDescription' in Field )
                 {
@@ -584,20 +703,17 @@ Vue.mixin({
 
                 if ( 'maximum' in Field )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['maximum'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'max', Field )
+                    GeneratedField['max'] = this.executeFunctionOrGetNumber( Field['maximum'], Field['name'] )
                 }
 
                 if ( 'minimum' in Field )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['minimum'], Field['name'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'min', Field )
+                    GeneratedField['min'] = this.executeFunctionOrGetNumber( Field['minimum'], Field['name'] )
                 }
 
                 if ( true === ('rows' in Field ) )
                 {
-                    Mutable = this.isFunctionOrNumber( Field['stepSize'], Field['id'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'stepSize', Field )
+                    GeneratedField['rows'] = this.executeFunctionOrGetNumber( Field['rows'], Field['name'] )
                 }
             }
             else if ( 'label' === Field['type'] )
@@ -606,10 +722,9 @@ Vue.mixin({
             }
             else if ( 'submit'  === Field['type'] )
             {
-                GeneratedField['id'] = Field['name']
                 if ( 'onSubmit' in Field )
                 {
-                    Mutable = this.isFunctionOrString( Field['onSubmit'], Field['name'] )
+                    Mutable = this.executeFunctionOrGetString( Field['onSubmit'], Field['name'] )
                     if ( 'function' !== typeof Mutable )
                     {
                         throw new InvalidFieldException( 'The given submit function of ' + Field['name'] + ' is not a function.' )
@@ -623,13 +738,12 @@ Vue.mixin({
 
                 if ( 'validateBeforeSubmit' in Field )
                 {
-                    Mutable = this.isFunctionOrBool( Field['validateBeforeSubmit'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'validateBeforeSubmit', Field )
+                    GeneratedField['validateBeforeSubmit'] = this.executeFunctionOrGetBool( Field['validateBeforeSubmit'], Field['name'] )
                 }
 
                 if ( 'label' in Field )
                 {
-                    Field['label'] = this.isFunctionOrString( Field['label'] )
+                    Field['label'] = this.executeFunctionOrGetString( Field['label'] )
                     try
                     {
                         GeneratedField['buttonText'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'label' )
@@ -653,14 +767,12 @@ Vue.mixin({
 
                 if ( 'isVisible' in Field )
                 {
-                    Mutable = this.isFunctionOrBool( Field['isVisible'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'visible', Field)
+                    GeneratedField['visible'] = this.executeFunctionOrGetBool( Field['isVisible'], Field['name'], true )
                 }
 
                 if ( 'isDisabled' in Field )
                 {
-                    Mutable = this.isFunctionOrBool( Field['isDisabled'] )
-                    this.assignValueOrFunction( GeneratedField, Mutable, 'disabled', Field)
+                    GeneratedField['disabled'] = this.executeFunctionOrGetBool( Field['isDisabled'], Field['name'], true )
                 }
 
                 return GeneratedField
@@ -670,28 +782,124 @@ Vue.mixin({
             {
                 GeneratedField = this.buildInputField( Field['type'], Field, StringSelector, Language )
             }
-            //common settings
-            GeneratedField['id'] = Field['name']
 
-            //common optional Settings
-            if ( 'default' in Field )
+            //common required properties
+            if ( 'label' in Field )
             {
-                GeneratedField['default'] = Field['default']
+                Field['label'] = this.executeFunctionOrGetString( Field['label'], Field['name'] )
+                try
+                {
+                    GeneratedField['label'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'label' )
+                }
+                catch ( Exception )
+                {
+                    GeneratedField['label'] = Field['label']
+                }
+            }
+            else
+            {
+                try
+                {
+                    GeneratedField['label'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'name' )
+                }
+                catch ( Exception )
+                {
+                    GeneratedField['label'] = Field['name']
+                }
+            }
+
+            if ( 'storesIn' in Field )
+            {
+                if ( 'prefix' in Field )
+                {
+                    GeneratedField['model'] = Field['prefix'] + '.' + this.executeFunctionOrGetString( Field['storesIn'], Field['Name'] )
+                }
+                else
+                {
+                    GeneratedField['model'] = this.executeFunctionOrGetString( Field['storesIn'], Field['Name'] )
+                }
+            }
+            else
+            {
+                if ( 'prefix' in Field )
+                {
+                    GeneratedField['model'] = Field['prefix'] + '.' + GeneratedField['id']
+                }
+                else
+                {
+                    GeneratedField['model'] = GeneratedField['id']
+                }
+            }
+            
+            //common optional properties
+            if ( 'isVisible' in Field )
+            {
+                GeneratedField['visible'] = this.executeFunctionOrGetBool( Field['isVisible'], Field['name'], true )
+            }
+            
+            if ( 'isDisabled' in Field )
+            {
+                GeneratedField['disabled'] = this.executeFunctionOrGetBool( Field['isDisabled'], Field['name'], true )
+            } 
+
+            if ( 'isFeatured' in Field )
+            {
+                GeneratedField['featured'] = this.executeFunctionOrGetBool( Field['isDisabled'], Field['name'], true )
+            }
+
+            if ( 'isRequired'in Field )
+            {
+                GeneratedField['required'] = this.executeFunctionOrGetBool( Field['isRequired'], Field['name'] )
+            }               
+
+            if ( 'defaultValue' in Field )
+            {
+                GeneratedField['default'] = this.__genericIsFuncionOrSomething( Field['defaultValue'], 'any', Field['name'] )
+            }
+
+            if ( 'styleClasses' in Field )
+            {
+                if ( false === Array.isArray( Field['styleClasses'] ) || 'string' !== typeof Field['styleClasses'] )
+                {
+                    throw new InvalidFieldException( 'The given property class is supposed to be a string or Array of strings but ' + typeof Field['styleClasses'] )
+                    return null
+                }
             }
 
             if ( 'help' in Field )
             {
-                GeneratedField['help'] = this.getStringLabelOrEmpty( LabelGenerator, 'help', Field )
+                Field['help'] = this.executeFunctionOrGetString( Field['help'], Field['name'] )
+                try
+                {
+                    GeneratedField['help'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'help' )
+                }
+                catch ( Exception )
+                {
+                    GeneratedField['help'] = Field['help']
+                }
             }
 
             if ( 'hint' in Field )
             {
-                GeneratedField['hint'] = this.getStringLabelOrEmpty( LabelGenerator, 'hint', Field )
+                Field['hint'] = this.executeFunctionOrGetString( Field['hint'], Field['name'] )
+                try
+                {
+                    GeneratedField['hint'] = this.getStringLabelOrEmpty( LabelGenerator, Field, 'hint' )
+                }
+                catch ( Exception )
+                {
+                    GeneratedField['hint'] = Field['hint']
+                }
+            }
+
+            if ( 'insideButtons' in Field )
+            {
+                GeneratedField['buttons'] = addInsideButtons( Field['insideButtons'], Field['name'] )
             }
 
             if ( 'formatter' in Field )
             {
-                Mutable = this.isFunctionOrString( Field['formatter'], Field['name'] )
+                Mutable = this.executeFunctionOrGetString( Field['formatter'], Field['name'] )
                 if ( 'function' !== typeof Mutable )
                 {
                     throw new InvalidFieldException( 'The given formatter of ' + Field['name'] + ' must be a function.' )
@@ -703,45 +911,169 @@ Vue.mixin({
                 }
             }
 
-            Mutable = this.isFunctionOrString(Field['buttons'], Descriptor)
-            if ( 'buttons' in Field && Field['buttons'] in this  && 'function' === typeof this.Field['buttons'] )
+            if ( 'afterChanged' in Field )
             {
-                GeneratedField['buttons'] = this[Field['buttons']]()
+                Mutable = this.executeFunctionOrGetString( Field['afterChanged'], Field['name'], true )
+                if ( 'function' !== typeof Mutable )
+                {
+                    throw new InvalidFieldException( 'The given afterChanged property of ' + Field['name'] + ' must be a function.' )
+                    return null
+                }
+
+                GeneratedField['onChanged'] = Mutable
             }
 
+            if ( 'afterValidated' in Field )
+            {
+                Mutable = this.executeFunctionOrGetString( Field['afterValidated'], Field['name'], true )
+                if ( 'function' !== typeof Mutable )
+                {
+                    throw new InvalidFieldException( 'The given afterValidated property of ' + Field['name'] + ' must be a function.' )
+                    return null
+                }
+                
+                GeneratedField['afterValidated'] = Mutable
+            }
+        
             return GeneratedField
+        },
+        buildModel: function ( FieldModel )
+        {
+            var Chunks
+            let Self = this.$data.model
+            if ( true === FieldModel.hasSubstring('.') )
+            {
+                Chunks = Value.split( '.' )
+                for ( Index in Chunks )
+                {
+                    if ( Chunks[Index] in Self )
+                    {
+                        Self = Self[Chunks[Index]]
+                    }
+                    else
+                    {
+                        Self[Chunks[Index]] = {}
+                        Self = Self[Chunks[Index]]
+                    }
+                }
+
+                Self[Chunks[Chunks.length-1]] = ''
+            }
+            else
+            {
+                Self[FieldModel] = ''
+            }
         },
         buildFields: function ( Fields, LabelGenerator )
         {
-            var GeneratedFields = []
-            var Model = {}
-            var FieldIndex
+            let GeneratedFields = []
+            let GeneratedGroups = []
+            let Model = {}
+            var FieldIndex, Mutable
 
             for ( FieldIndex in Fields )
             {
-                if ( 'bind' in Fields[Field] )
+                if ( 'bind' in Fields[FieldIndex] )
                 {
                     GeneratedFields.push( this.buildDynamicField( Fields[FieldIndex], Model, LabelGenerator ) )
                     continue
                 }
 
-                if ( 'group' === Fields[FieldIndex] )
+                if ( 'group' in Fields[FieldIndex] )
                 {
-                    GeneratedFields.push( this.buildGroup( Fields[FieldIndex], LabelGenerator ) )
+                    GeneratedGroups.push( this.buildGroup( Fields[FieldIndex], LabelGenerator ) )
                     continue
                 }
 
-                GeneratedFields.push( this.buildField( Fields[FieldIndex], LabelGenerator ) )
+                Mutable = this.buildField( Fields[FieldIndex], LabelGenerator )
+                this.buildModel( Mutable['model'] )
+                GeneratedFields.push( Mutable )
             }
 
-            return [ Model, GeneratedFields ]
+            return GeneratedFields
+        },
+        buildGroup: function ( Group, LabelGenerator )
+        {
+            let GeneratedGroup = {}
+            let GeneratedFields = []
+            var Mutable
+            if ( 'label' in Group )
+            {
+                Mutable = this.executeFunctionOrGetString( Buttons['label'], FieldName )
+                try
+                {
+                    GeneratedGroup['legend'] = this.getStringLabelOrEmpty( LabelGenerator, Buttons, 'label' )
+                }
+                catch ( Exception )
+                {
+                    GeneratedGroup['legend'] = Mutable
+                }
+            }
+            else
+            {
+                throw new InvalidFieldException( 'Unexspected field binding method ' + typeof Value + ' in field ' + Field['name'] )
+                return null
+            }
+            
+            if ( 'fields' in Group )
+            {
+                GeneratedGroup['fields'] = []
+                for ( Index in Group['fields'] )
+                {
+                    if ( 'prefix' in Group && false === ( 'prefix' in Group['fields'][Index]) )
+                    {
+                        Group['fields'][Index]['prefix'] = Group['prefix']
+                    }
+                    
+                    GeneratedGroup['fields'].push( this.buildField( Group['fields'][Index], LabelGenerator ) )
+                }
+            }
+        },
+        buildDynamicField: function ( Field, LabelGenerator )
+        {
+            let GeneratedFields = []
+            let GeneratedGroups = []
+            let Dynamic = this.executeFunctionOrGetString( Field['bind'], Field['name'] )
+            if ( 'function' !== typeof Dynamic )
+            {
+                throw new InvalidFieldException( 'Unexspected field binding method ' + typeof Value + ' in field ' + Field['name'] )
+                return null
+            }
 
+            GeneratedFields = Field['bind']()
+            if ( true === Array.isArray( GeneratedFields ) )
+            {
+                if ( 'prefix' in Field )
+                {
+                    return [  this.buildFields( GeneratedFields, LabelGenerator, Field['prefix']  ), null, null ]
+                }
+                else
+                {
+                    return [ this.buildFields( GeneratedFields, LabelGenerator ), null, null ]
+                }
+            }
+            else
+            {
+                if ( 'prefix' in Field )
+                {
+                    GeneratedFields['prefix'] = Field['prefix']
+                }
+                
+                if ( 'group' in GeneratedFields )
+                {
+                    return [ null, this.buildGroup( GeneratedFields, LabelGenerator ), null ]
+                }
+                else
+                {
+                    return [ null, null, this.buildField( GeneratedFields, LabelGenerator ) ]
+                }
+            }
         },
         buildBlubberForm: function ( createElement, FormAttributes, FormProperties, Steps, LabelGenerator )
         {
             var Return, StepIndex;
             //set formproperties and add label  strings
-            var FormPropertiesLabels = ['subtitle', 'nextButtonText', 'backButtonText', 'finishButtonText' ];
+            let FormPropertiesLabels = ['subtitle', 'nextButtonText', 'backButtonText', 'finishButtonText' ];
             var LabelString, LabelIndex;
             for ( LabelIndex in FormPropertiesLabels )
             {
@@ -763,6 +1095,10 @@ Vue.mixin({
             }, '' )
             return Return
         }
+    },
+    data: function ()
+    {
+        return { model: {} }
     }
 })
 
