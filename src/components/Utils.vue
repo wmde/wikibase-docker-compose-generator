@@ -69,35 +69,70 @@ Object.copy = function( Self,  Depth = -1 )
 Object.merge = function( Object1, Object2, KeepOrign = true )
 {
     var Key
-    if( true === KeepOrign )
+    if ( true === KeepOrign )
     {
         var Return = {}
-        Return = Object.assign({}, Object1, Object2)
-        for( Key in Return )
+        Return = Object.assign( {}, Object1, Object2 )
+        for ( Key in Return )
         {
-            if( 'object' === typeof Return[Key])
+            if( 'object' === typeof Return[Key] )
             {
-                Return[Key] = Object.copy(Return[Key])
+                Return[Key] = Object.copy( Return[Key] )
             }
         }
     }
     else
     {
-        Object1 = Object.assign({}, Object1, Object2)
-        for( Key in Object2 )
+        Object1 = Object.assign( {}, Object1, Object2 )
+        for ( Key in Object2 )
         {
-            if( 'object' === typeof Object1[Key])
+            if ( 'object' === typeof Object1[Key] )
             {
-                Object1[Key] = Object.copy(Object1[Key])
+                Object1[Key] = Object.copy( Object1[Key] )
             }
         }
     }
 }
 
 
-String.isEmpty = function( Self )
+//we could replace that with sunday...but here it is so far not neccessary...so we use that slow method
+String.prototype.hasSubstring = function ( Substring )
 {
-    return 0 === Self.length
+    var Index
+    var SubstringIndex
+    if ( 'string' === typeof Substring && false === Substring.isEmpty() )
+    {
+        return false
+    }
+
+    if ( this.length < Substring.length )
+    {
+        return false
+    }
+
+    if ( this.length === Substring.length && this === Substring )
+    {
+        return true
+    }
+
+    for ( Index = 0; this.length > Index; Index++ )
+    {
+        for ( SubstringIndex = 0; Substring.length > SubstringIndex; SubstringIndex++ )
+        {
+            if ( Substring[SubstringIndex] !== this[Index+SubstringIndex] )
+            {
+                break;
+            }
+        }
+    }
+
+    return false
+
+}
+
+String.prototype.isEmpty = function ()
+{
+    return 0 === this.length
 }
 
 Array.isEmpty = function( Self )
@@ -166,7 +201,7 @@ Vue.mixin({
             {
                 if ( 'string' === typeof Str )
                 {
-                    return String.isEmpty(Str)
+                    return Str.isEmpty()
                 }
                 else if( true === Array.isArray(Str) )
                 {
