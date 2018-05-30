@@ -11,10 +11,12 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
+    "fix": "eslint --fix .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "eslint-config-wikimedia": "^0.5.0",
     "vue": "^2.5.2",
     "vue-form-generator": "^2.2.2",
     "vue-form-wizard": "^0.8.4",
