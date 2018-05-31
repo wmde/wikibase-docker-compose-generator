@@ -16,7 +16,15 @@ class RuntimeErrorException extends BaseException
 {
     constructor( Message )
     {
-        super("RuntimeErrorException", Message)
+        super( "RuntimeErrorException", Message )
+    }
+}
+
+class ValueErrorException extends BaseException
+{
+    constructor( Message )
+    {
+      super( "ValueErrorException", Message )
     }
 }
 
@@ -24,11 +32,11 @@ class AssertErrorException extends BaseException
 {
     constructor( Message )
     {
-        super("AssertErrorException", Message)
+        super( "AssertErrorException", Message )
     }
 }
 
-Object.size = function( Self )
+Object.size = function ( Self )
 {
     let Size = 0, Key;
     for ( Key in Self )
@@ -41,21 +49,30 @@ Object.size = function( Self )
     return Size;
 }
 
-Object.isEmpty = function( Self )
+Object.isEmpty = function ( Self )
 {
     return 0 === Object.size(Self)
 }
 
-Object.copy = function( Self,  Depth = -1 )
+Object.copy = function ( Self,  Depth = -1 )
 {
-    var Dolly = Object.assign({}, Self)
-    var Key
-    if(0 === Depth )
+    var Dolly, Key;
+
+    if ( true === Array.isArray( Self ) )
+    {
+        Dolly = Self.slice(0)
+    }
+    else
+    {
+        Dolly = Object.assign({}, Self)
+    }
+
+    if ( 0 === Depth )
     {
         return Dolly
     }
 
-    for( Key in Dolly )
+    for ( Key in Dolly )
     {
         if( 'object' === typeof Dolly[Key] )
         {
@@ -66,7 +83,7 @@ Object.copy = function( Self,  Depth = -1 )
     return Dolly
 }
 
-Object.merge = function( Object1, Object2, KeepOrign = true )
+Object.merge = function ( Object1, Object2, KeepOrign = true )
 {
     var Key
     if ( true === KeepOrign )
@@ -94,40 +111,81 @@ Object.merge = function( Object1, Object2, KeepOrign = true )
     }
 }
 
-
-//we could replace that with sunday...but here it is so far not neccessary...so we use that slow method
 String.prototype.hasSubstring = function ( Substring )
 {
-    var Index
-    var SubstringIndex
-    if ( 'string' === typeof Substring && false === Substring.isEmpty() )
-    {
-        return false
-    }
+   return String.includes( Substring )
+}
 
-    if ( this.length < Substring.length )
-    {
-        return false
-    }
-
-    if ( this.length === Substring.length && this === Substring )
-    {
-        return true
-    }
-
+//just a simple implementation...we do not need for this project more
+String.prototype.format = function ()
+{
+    var Index, LookAHead, UserDefinedIndex, LastStartPoint
+    let FoundFormatIndices = []
+    let Counter = 0
+    let Manual = false
+    let Return = ''
     for ( Index = 0; this.length > Index; Index++ )
     {
-        for ( SubstringIndex = 0; Substring.length > SubstringIndex; SubstringIndex++ )
+        if ( '{' === this.charAt( Index ) )
         {
-            if ( Substring[SubstringIndex] !== this[Index+SubstringIndex] )
+            LookAHead = 1+Index
+            UserDefinedIndex = ''
+            while ( 47 < this.charCodeAt( LookAHead ) && 58 > this.charCodeAt( LookAHead ) )
             {
-                break;
+                UserDefinedIndex += this.charAt( LookAHead )
+                LookAHead++
+            }
+
+            if ( '}' === this.charAt( LookAHead ) )
+            {
+                if ( false === UserDefinedIndex.isEmpty() )
+                {
+                    FoundFormatIndices.push( [ Index, LookAHead, parseInt( UserDefinedIndex ) ] )
+                    Manual = true
+                }
+                else
+                {
+                    FoundFormatIndices.push( [ Index, LookAHead, Counter ] )
+                    Counter++
+                }
+
+                Index = LookAHead
             }
         }
     }
 
-    return false
+    if ( 0 !== Counter && true === Manual )
+    {
+        throw new ValueErrorException( 'Cannot switch from automatic field numbering to manual field specification.' )
+        return null
+    }
+    else
+    {
+        if ( 0 === FoundFormatIndices.length )
+        {
+            return this
+        }
+        else
+        {
+            LastStartPoint = 0
+            for ( Index in FoundFormatIndices )
+            {
+                console.log( FoundFormatIndices[Index][2] )
+                if ( false === ( FoundFormatIndices[Index][2] in arguments ) )
+                {
+                    throw new ValueErrorException( "To few arguments." )
+                    return null
+                }
 
+                Return += this.substring( LastStartPoint, FoundFormatIndices[Index][0] ) + arguments[FoundFormatIndices[Index][2]]
+                LastStartPoint = FoundFormatIndices[Index][1]+1
+            }
+
+            Return += this.substring(LastStartPoint)
+        }
+    }
+
+    return Return
 }
 
 String.prototype.isEmpty = function ()
@@ -135,63 +193,67 @@ String.prototype.isEmpty = function ()
     return 0 === this.length
 }
 
-Array.isEmpty = function( Self )
+Array.isEmpty = function ( Self )
 {
     return 0 === Self.length
 }
 
-function assert( Condition )
+function assert ( Condition )
 {
     if ( false === Condition )
     {
-        throw new AssertErrorException('Failed condition')
+        throw new AssertErrorException( 'Failed condition' )
     }
+}
+
+const ErrorMessages = {
+
 }
 
 Vue.mixin({
     methods:
     {
-        evaluateRequest: async function( Response, Error, Hook )
+        evaluateRequest: async function ( Response, Error, Hook )
         {
-            while( true === this.isEmpty(Response) )
+            while ( true === this.isEmpty( Response ) )
             {
                 await this.sleep(10)
             }
 
-            if ( false === this.isEmpty(Error) )
+            if ( false === this.isEmpty( Error ) )
             {
-                throw new RuntimeErrorException(Error)
+                throw new RuntimeErrorException( Error )
             }
 
-            Hook(Response)
+            Hook( Response )
         },
-        getExtern: async function( File, Hook )
+        getExtern: async function ( File, Hook )
         {
             var Error
             var Response
-            Axios.get(File).then(response => (Response = response)).catch(error => (Error = Error))
-            this.evaluateRequest(Response, Error, Hook)
+            Axios.get( File ).then( response => ( Response = response ) ).catch( error => ( Error = error ) )
+            this.evaluateRequest( Response, Error, Hook )
         },
         getIntern: async function ( File, Hook )
         {
             var Response
             var Error
-            Response = await import('' + File).catch(error => (Error = error))
+            Response = await import( '' + File ).catch( error => ( Error = error ) )
 
-            this.evaluateRequest(Response, Error, Hook)
+            this.evaluateRequest( Response, Error, Hook )
         },
-        get: function( File, Hook )
+        get: function ( File, Hook )
         {
-            if(true === File.startsWith('http://'))
+            if ( true === File.startsWith( 'http://' ) )
             {
-                this.getExtern(File, Hook)
+                this.getExtern( File, Hook )
             }
             else
             {
-                this.getIntern(File, Hook)
+                this.getIntern( File, Hook )
             }
         },
-        isEmpty: function( Str )
+        isEmpty: function ( Str )
         {
             if ( 'undefined' === typeof Str || null === Str )
             {
@@ -203,13 +265,13 @@ Vue.mixin({
                 {
                     return Str.isEmpty()
                 }
-                else if( true === Array.isArray(Str) )
+                else if ( true === Array.isArray( Str ) )
                 {
-                    return Array.isEmpty(Str)
+                    return Array.isEmpty( Str )
                 }
-                else if( 'object' === typeof Str )
+                else if ( 'object' === typeof Str )
                 {
-                    return Object.isEmpty(Str)
+                    return Object.isEmpty( Str )
                 }
                 else
                 {
@@ -217,9 +279,14 @@ Vue.mixin({
                 }
             }
         },
-        sleep: function( Milliseconds )
+        sleep: function ( Milliseconds )
         {
-            return new Promise(resolve => setTimeout(resolve, Milliseconds))
+            return new Promise( Resolve => setTimeout( Resolve, Milliseconds ) )
+        },
+        debugObjectPrint: function ( Object, Id )
+        {
+            let Element = document.getElementById(Id)
+            Element.innerHTML = '<pre>' + JSON.stringify(Object, undefined, 4) + '</pre>'
         }
     }
 })

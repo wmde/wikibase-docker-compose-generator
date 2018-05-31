@@ -1,5 +1,6 @@
 {
     "key": "en",
+    "blub_subtitle": "A yml builder for wikidata-docker",
     "blub_nextButton": "Next",
     "blub_backButton": "Back",
     "blub_finishButton": "Finish",

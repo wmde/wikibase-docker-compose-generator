@@ -32,12 +32,13 @@ export default
     {
         getConfiguration: function ()
         {
-            this.get('./data/config.json', this.evaluateConfiguration)
+            this.get( './data/config.json', this.evaluateConfiguration )
         },
         evaluateConfiguration: function (Configuration)
         {
             this.$data.blubberGeneratorSteps = Configuration.steps
             this.$data.blubberGeneratorFormProperties  = Configuration.form
+            this.$data.blubberFormId = Configuration.name
             this.$data.buildForm = true
             this.updateTemplate()
         },
@@ -64,7 +65,8 @@ export default
                 }
                 let Element = this.buildBlubberForm(
                     createElement,
-                    { id:'blubberForm' },
+                    this.$data.blubberFormId,
+                    {},
                     Object.copy(this.$data.blubberGeneratorFormProperties),
                     Object.copy(this.$data.blubberGeneratorSteps),
                     I18n

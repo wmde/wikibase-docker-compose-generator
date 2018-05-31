@@ -1,7 +1,8 @@
 {
+    "name": "BlubberForm",
     "form": {
-        "title":"Mockup",
-        "subtitle": "",
+        "title":"Blubber",
+        "subtitle": "blub_subtitle",
         "nextButtonText": "blub_nextButton",
         "backButtonText": "blub_backButton",
         "finishButtonText" : "blub_finishButton",
@@ -16,6 +17,11 @@
         "name":"blub_step0",
         "description": "blub_step0_description",
         "icon": "settings",
+        "options": {
+            "validationErrorClass": "has-error",
+            "validationSuccessClass": "has-success",
+            "validateAfterChanged": true
+        },
         "fields":[{
               "name": "blub_installLanguage",
               "type": "select",
@@ -30,6 +36,11 @@
         "name":"blub_step1",
         "description": "blub_step1_description",
         "icon": "settings",
+        "options": {
+                "validationErrorClass": "has-error",
+                "validationSuccessClass": "has-success",
+                "validateAfterChanged": true
+        },
         "fields":[{
                 "name": "blub_settingLanguage",
                 "type": "select",
@@ -42,7 +53,7 @@
             },
             {
                 "name": "blub_downloadDefault",
-                "type": "check",
+                "type": "choise",
                 "default": false,
                 "values": [
                     {"value": true, "label":"blub_choise_yes"},
@@ -52,17 +63,13 @@
             },
             {
                 "name": "blub_expertMode",
-                "type": "check",
+                "type": "choise",
                 "default": false,
                 "values": [
                     {"value": true, "label":"blub_choise_yes"},
                     {"value": false, "label":"blub_choise_no"}
                 ],
                 "required": true
-            },
-            {
-                "name": "blub_useModules",
-                "bind": "getSteps"
             }],
         "advance":"",
         "template": ""
