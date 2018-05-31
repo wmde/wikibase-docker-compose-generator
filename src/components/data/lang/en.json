@@ -1,6 +1,9 @@
 {
     "key": "en",
+<<<<<<< HEAD
     "blub_subtitle": "A yml builder for wikidata-docker",
+=======
+>>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
     "blub_nextButton": "Next",
     "blub_backButton": "Back",
     "blub_finishButton": "Finish",
