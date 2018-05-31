@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable */
 import Vue from 'vue'
 import BlubberFormFactory from './components/BlubberFormFactory'
 import Utils from './components/Utils'
