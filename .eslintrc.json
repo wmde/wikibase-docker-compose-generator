@@ -1,11 +1,11 @@
 {
+	"parser": "babel-eslint",
 	"extends": [
 		"wikimedia",
 		"plugin:vue/essential"
 	],
 	"parserOptions": {
-		"sourceType": "module",
-		"ecmaVersion": "6"
+		"ecmaVersion": 2017
 	},
 	"env": {
 		"browser": true,
