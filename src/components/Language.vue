@@ -13,26 +13,43 @@ Vue.mixin({
         },
         getLanguage: function ( LanguageCode )
         {
-            if ( 'languages' in this.$data || LanguageCode in this.$data.languages )
+            if ( 'languages' in this.$data )
             {
-                this.get(`./data/lang/${LanguageCode}.json`, this.languageHook)
+                if ( LanguageCode in this.$data.currentLanguages )
+                {
+                    this.$data.i18n = new VueI18n(
+                        {
+                            locale: LanguageCode,
+                            fallbackLocale: this.$data.fallbackLanguage,
+                            messages: this.$data.languages
+                        })
+                    return
+                }
+                else
+                {
+                    this.get( `./data/lang/${LanguageCode}.json`, this.__languageHook )
+                }
             }
         },
-        languageHook: function( Response )
+        __languageHook: function( Response )
         {
-            var Key = Response.key
+            let Key = Response.key
             delete Response.key
             this.$data.languages[Key] = Response
-            this.$data.currentLanguage = Key
-            var Languages = this.$data.languages
-            this.$data.i18n = new VueI18n({ locale: Key, fallbackLocale: this.$data.fallbackLanguage, messages: Languages })
+            this.$data.currentLanguages.push( Key )
+            this.$data.i18n = new VueI18n(
+                {
+                    locale: Key,
+                    fallbackLocale: this.$data.fallbackLanguage,
+                    messages: this.$data.languages
+                })
         }
     },
     data: function()
     {
         var Return = {}
         Return['languages'] = {}
-        Return['currentLanguage'] = ''
+        Return['currentLanguages'] = []
         Return['fallbackLanguage'] = 'en'
         Return['i18n'] = null
         return Return
