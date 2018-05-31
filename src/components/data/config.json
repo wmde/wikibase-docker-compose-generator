@@ -1,14 +1,8 @@
 {
-<<<<<<< HEAD
     "name": "BlubberForm",
     "form": {
         "title":"Blubber",
         "subtitle": "blub_subtitle",
-=======
-    "form": {
-        "title":"Mockup",
-        "subtitle": "",
->>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
         "nextButtonText": "blub_nextButton",
         "backButtonText": "blub_backButton",
         "finishButtonText" : "blub_finishButton",
@@ -23,14 +17,11 @@
         "name":"blub_step0",
         "description": "blub_step0_description",
         "icon": "settings",
-<<<<<<< HEAD
         "options": {
             "validationErrorClass": "has-error",
             "validationSuccessClass": "has-success",
             "validateAfterChanged": true
         },
-=======
->>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
         "fields":[{
               "name": "blub_installLanguage",
               "type": "select",
@@ -45,14 +36,11 @@
         "name":"blub_step1",
         "description": "blub_step1_description",
         "icon": "settings",
-<<<<<<< HEAD
         "options": {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
                 "validateAfterChanged": true
         },
-=======
->>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
         "fields":[{
                 "name": "blub_settingLanguage",
                 "type": "select",
@@ -65,11 +53,7 @@
             },
             {
                 "name": "blub_downloadDefault",
-<<<<<<< HEAD
                 "type": "choise",
-=======
-                "type": "check",
->>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
                 "default": false,
                 "values": [
                     {"value": true, "label":"blub_choise_yes"},
@@ -79,24 +63,13 @@
             },
             {
                 "name": "blub_expertMode",
-<<<<<<< HEAD
                 "type": "choise",
-=======
-                "type": "check",
->>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
                 "default": false,
                 "values": [
                     {"value": true, "label":"blub_choise_yes"},
                     {"value": false, "label":"blub_choise_no"}
                 ],
                 "required": true
-<<<<<<< HEAD
-=======
-            },
-            {
-                "name": "blub_useModules",
-                "bind": "getSteps"
->>>>>>> 8adcfd1f6651b6fe5c52d4da21f242c4847829dd
             }],
         "advance":"",
         "template": ""
