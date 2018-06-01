@@ -155,7 +155,7 @@
                           "hint": ""
                       },{
                           "name": "blub_wikibaseMediawikiAdminName",
-                          "type": "number",
+                          "type": "text",
                           "default": "",
                           "required": true,
                           "help": "",

@@ -1,10 +1,9 @@
 <script>
 /* eslint-disable */
-import Vue from 'vue'
+import Vue from 'vue';
 import VueFormGenerator from "vue-form-generator";
-//import { VueFormWizard, FormWizard, TabContent } from 'vue-form-wizard'
-import VueFormWizard from 'vue-form-wizard'
-import 'vue-form-wizard/dist/vue-form-wizard.min.css'
+import VueFormWizard from 'vue-form-wizard';
+import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 Vue.use( VueFormWizard )
 Vue.use( VueFormGenerator )
@@ -323,14 +322,13 @@ Vue.mixin({
             var Mutable
             if ( FieldLabel in Field )
             {
-                alert(Field[FieldLabel])
                 Mutable = this.__executeFunctionOrGetString( Field[FieldLabel], Field['name'], true )
                 if ( 'function' !== typeof Mutable )
                 {
                     throw new InvalidFieldException( ErrorMessages.UNSUPPORTED_TYPE.format( typeof Mutable, Field['name'], '', 'function' ) )
                     return null
                 }
-                alert(Mutable)
+                
                 if ( false === AssignmentLabel.isEmpty() )
                 {
                     GeneratedField[AssignmentLabel] = Mutable
@@ -557,7 +555,7 @@ Vue.mixin({
 
             return GeneratedProperty
         },
-        __addInsideButtons: function ( Buttons, FieldName, LabelGenerator )
+        __addButtons: function ( Buttons, FieldName, LabelGenerator )
         {
             var Index, Mutable
             let Return = []
@@ -841,7 +839,7 @@ Vue.mixin({
 
             if ( 'buttons' in Field )
             {
-                GeneratedField['buttons'] = this.__addInsideButtons( Field['buttons'], Field['name'], LabelGenerator )
+                GeneratedField['buttons'] = this.__addButtons( Field['buttons'], Field['name'], LabelGenerator )
             }
 
             this.__assignOptionalFieldFunction(  Field, GeneratedField, 'setFormatter', 'set' )
@@ -887,11 +885,11 @@ Vue.mixin({
             {
                 if ( true === MultipleValues )
                 {
-                  Self[FieldModel] = []
+                      Self[FieldModel] = []
                 }
                 else
                 {
-                  Self[FieldModel] = ''
+                      Self[FieldModel] = ''
                 }
             }
         },
@@ -1180,7 +1178,6 @@ Vue.mixin({
                     FormProperties )
                 FormProperties[FormPropertiesLabels[LabelIndex]] = LabelString
             }
-            this.debugObjectPrint(this.$data._blubberModel[FormId], 'debug')
             this.$data._blubberFormSchema[FormId] = []
             this.$data._blubberModel[FormId] = {}
             this.$data.__currentFormId = FormId

@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable */
-import Vue from 'vue'
-import Axios from 'axios'
+import Vue from 'vue';
+import Axios from 'axios';
 
 class BaseException
 {

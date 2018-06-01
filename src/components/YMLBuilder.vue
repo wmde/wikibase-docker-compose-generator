@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable */
-import Vue from 'vue'
+import Vue from 'vue';
 
 Vue.mixin({})
 
