@@ -1,8 +1,9 @@
 <script>
 import Vue from 'vue'
 import BlubberFormFactory from './components/BlubberFormFactory'
-import Utils from './components/Utils'
+import Utils from './components/Utils.vue'
 import Language from './components/Language'
+import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 
 export default
 {
@@ -73,6 +74,10 @@ export default
                 )
                 return createElement('div', { attrs:{ id:'application' } }, [ Element, createElement(BlubberFormFactory, {}, '') ] )
             }
+        },
+        showPassword: function ()
+        {
+          
         }
     }
 }

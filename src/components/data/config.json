@@ -1,78 +1,206 @@
 {
     "name": "BlubberForm",
     "form": {
-        "title":"Blubber",
-        "subtitle": "blub_subtitle",
-        "nextButtonText": "blub_nextButton",
-        "backButtonText": "blub_backButton",
-        "finishButtonText" : "blub_finishButton",
-        "stepSize": "md",
-        "shape": "circle",
-        "color": "#000000",
-        "errorColor": "#f81717",
-        "transition": "fade",
-        "startIndex": 0
+          "title":"Blubber",
+          "subtitle": "blub_subtitle",
+          "nextButtonText": "blub_nextButton",
+          "backButtonText": "blub_backButton",
+          "finishButtonText" : "blub_finishButton",
+          "stepSize": "md",
+          "shape": "circle",
+          "color": "#000000",
+          "errorColor": "#f81717",
+          "transition": "fade",
+          "startIndex": 0
     },
     "steps":[{
-        "name":"blub_step0",
-        "description": "blub_step0_description",
-        "icon": "settings",
-        "options": {
-            "validationErrorClass": "has-error",
-            "validationSuccessClass": "has-success",
-            "validateAfterChanged": true
-        },
-        "fields":[{
-              "name": "blub_installLanguage",
-              "type": "select",
-              "default": "en",
-              "required": true,
-              "values": [
-                  {"value": "en", "label":"blub_languageOption_english" },
-                  {"value": "de", "label":"blub_languageOption_german" }
-              ]
-        }]
-      },{
-        "name":"blub_step1",
-        "description": "blub_step1_description",
-        "icon": "settings",
-        "options": {
+            "name":"blub_installLanguageSetting",
+            "description": "blub_installLanguageSetting_description",
+            "icon": "settings",
+            "options": {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
                 "validateAfterChanged": true
-        },
-        "fields":[{
-                "name": "blub_settingLanguage",
-                "type": "select",
-                "default": "en",
-                "required": true,
-                "values": [
-                    {"value": "en", "label":"blub_languageOption_english" },
-                    {"value": "de", "label":"blub_languageOption_german" }
-                ]
             },
-            {
-                "name": "blub_downloadDefault",
-                "type": "choise",
-                "default": false,
-                "values": [
-                    {"value": true, "label":"blub_choise_yes"},
-                    {"value": false, "label":"blub_choise_no"}
-                ],
-                "required" : true
+            "fields":[{
+                    "name": "blub_installLanguage",
+                    "type": "select",
+                    "default": "en",
+                    "required": true,
+                    "values": [
+                        {"value": "en", "label":"blub_languageOption_english" },
+                        {"value": "de", "label":"blub_languageOption_german" }
+                    ]
+                }
+            ]
+        },{
+            "name":"blub_generalSetting",
+            "description": "blub_generalSetting_description",
+            "icon": "settings",
+            "options": {
+                    "validationErrorClass": "has-error",
+                    "validationSuccessClass": "has-success",
+                    "validateAfterChanged": true
             },
-            {
-                "name": "blub_expertMode",
-                "type": "choise",
-                "default": false,
-                "values": [
-                    {"value": true, "label":"blub_choise_yes"},
-                    {"value": false, "label":"blub_choise_no"}
-                ],
-                "required": true
-            }],
-        "advance":"",
-        "template": ""
-    }],
-    "general":{}
+            "fields":[{
+                    "name": "blub_settingLanguage",
+                    "type": "select",
+                    "default": "en",
+                    "required": true,
+                    "values": [
+                        {"value": "en", "label":"blub_languageOption_english" },
+                        {"value": "de", "label":"blub_languageOption_german" }
+                    ]
+                },
+                {
+                    "name": "blub_downloadDefault",
+                    "type": "choise",
+                    "default": false,
+                    "values": [
+                        {"value": true, "label":"blub_choise_yes"},
+                        {"value": false, "label":"blub_choise_no"}
+                    ],
+                    "required" : true
+                },
+                {
+                    "name": "blub_expertMode",
+                    "type": "choise",
+                    "default": false,
+                    "values": [
+                        {"value": true, "label":"blub_choise_yes"},
+                        {"value": false, "label":"blub_choise_no"}
+                    ],
+                    "required": true
+                }],
+              "advance":"",
+              "template": ""
+        },{
+              "name":"blub_wikibase",
+              "description": "blub_wikibase_description",
+              "icon": "settings",
+              "options": {
+                  "validationErrorClass": "has-error",
+                  "validationSuccessClass": "has-success",
+                  "validateAfterChanged": true
+              },
+              "fields":[{
+                  "name": "blub_wikiBaseGeneral",
+                  "group": [{
+                          "name": "blub_wikibaseServiceAlias",
+                          "type": "text",
+                          "default": "",
+                          "required": false,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibasePort",
+                          "type": "number",
+                          "default": "",
+                          "help": "",
+                          "hint": "",
+                          "required": true
+                      }
+                  ]
+              },{
+                  "name": "blub_wikibaseDatabase",
+                  "group": [{
+                          "name": "blub_wikibaseDatabaseHost",
+                          "type": "text",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibaseDatabasePort",
+                          "type": "number",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibaseDatabaseName",
+                          "type": "text",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibaseDatabaseUser",
+                          "type": "text",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibaseDatabaseUserPassword",
+                          "type": "password",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": "",
+                          "buttons": {
+                              "label": "blub_showPassword",
+                              "action": "showPassword"
+                          }
+                      }
+                  ]
+              },{
+                  "name": "blub_wikibaseMediawiki",
+                  "group": [{
+                          "name": "blub_wikibaseMediawikiSiteName",
+                          "type": "text",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibaseMediawikiAdminName",
+                          "type": "number",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      },{
+                          "name": "blub_wikibaseMediawikiAdminPassword",
+                          "type": "password",
+                          "default": "",
+                          "required": true,
+                          "help": "",
+                          "hint": ""
+                      }
+                   ]
+                }
+            ],
+            "advance":"",
+            "template": ""
+        },{
+            "name": "blub_wikibaseBlazegraph",
+            "description": "blub_wikibaseBlazegraph_description",
+            "icon": "settings",
+            "options": {
+                "validationErrorClass": "has-error",
+                "validationSuccessClass": "has-success",
+                "validateAfterChanged": true
+            },
+            "fields":[{
+                    "name": "blub_wikibaseBlazegraphAlias ",
+                    "type": "text",
+                    "default": "",
+                    "required": false,
+                    "help": "",
+                    "hint": ""
+
+                },{
+                    "name": "blub_wikibaseBlazegraphPort ",
+                    "type": "number",
+                    "default": "",
+                    "required": true,
+                    "help": "",
+                    "hint": ""
+                }
+            ],
+            "advance":"",
+            "template": ""
+        }
+    ]
 }

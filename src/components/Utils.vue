@@ -97,6 +97,8 @@ Object.merge = function ( Object1, Object2, KeepOrign = true )
                 Return[Key] = Object.copy( Return[Key] )
             }
         }
+
+        return Return
     }
     else
     {
@@ -108,12 +110,9 @@ Object.merge = function ( Object1, Object2, KeepOrign = true )
                 Object1[Key] = Object.copy( Object1[Key] )
             }
         }
-    }
-}
 
-String.prototype.hasSubstring = function ( Substring )
-{
-   return String.includes( Substring )
+        return Object1
+    }
 }
 
 //just a simple implementation...we do not need for this project more

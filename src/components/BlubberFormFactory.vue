@@ -83,7 +83,7 @@ Vue.mixin({
                 Self = this
                 if ( 'string' === typeof IsTypeOrFunction )
                 {
-                    if ( true === IsTypeOrFunction.hasSubstring( '.' ) )
+                    if ( true === IsTypeOrFunction.includes( '.' ) )
                     {
                         Chunks = IsTypeOrFunction.split( '.' )
                         for ( Index in Chunks )
@@ -173,7 +173,7 @@ Vue.mixin({
                 Self = this
                 if ( 'string' === typeof IsTypeOrFunction )
                 {
-                    if ( true === IsTypeOrFunction.hasSubstring( '.' ) )
+                    if ( true === IsTypeOrFunction.includes( '.' ) )
                     {
                         Chunks = IsTypeOrFunction.split( '.' )
                         for ( Index in Chunks )
@@ -322,13 +322,14 @@ Vue.mixin({
             var Mutable
             if ( FieldLabel in Field )
             {
+                alert(Field[FieldLabel])
                 Mutable = this.__executeFunctionOrGetString( Field[FieldLabel], Field['name'], true )
                 if ( 'function' !== typeof Mutable )
                 {
                     throw new InvalidFieldException( ErrorMessages.UNSUPPORTED_TYPE.format( typeof Mutable, Field['name'], '', 'function' ) )
                     return null
                 }
-
+                alert(Mutable)
                 if ( false === AssignmentLabel.isEmpty() )
                 {
                     GeneratedField[AssignmentLabel] = Mutable
@@ -426,7 +427,7 @@ Vue.mixin({
             }
             else if ( 'password' === Type )
             {
-                GeneratedField = addTextBasedAttributes( Field, GeneratedField, Field['name'] )
+                GeneratedField = this.__addTextBasedAttributes( Field, GeneratedField, Field['name'] )
             }
             else if ( 'file' === Type )
             {
@@ -760,7 +761,7 @@ Vue.mixin({
             //futher types should be placed here
             else
             {
-                GeneratedField = this._buildInputField( Field['type'], Field, LabelGenerator )
+                GeneratedField = Object.merge( GeneratedField, this._buildInputField( Field['type'], Field, LabelGenerator ) )
             }
 
             //common required properties
@@ -789,11 +790,11 @@ Vue.mixin({
             {
                 if ( 'prefix' in Field )
                 {
-                    GeneratedField['model'] = Field['prefix'] + '.' + GeneratedField['id']
+                    GeneratedField['model'] = Field['prefix'] + '.' + Field['name']
                 }
                 else
                 {
-                    GeneratedField['model'] = GeneratedField['id']
+                    GeneratedField['model'] = Field['name']
                 }
             }
 
@@ -837,9 +838,9 @@ Vue.mixin({
             this.__assignOptionalPlaceholderOrLabelString( LabelGenerator, Field, GeneratedField, 'help' )
             this.__assignOptionalPlaceholderOrLabelString( LabelGenerator, Field, GeneratedField, 'hint' )
 
-            if ( 'insideButtons' in Field )
+            if ( 'buttons' in Field )
             {
-                GeneratedField['buttons'] = this.__addInsideButtons( Field['insideButtons'], Field['name'] )
+                GeneratedField['buttons'] = this.__addInsideButtons( Field['buttons'], Field['name'], LabelGenerator )
             }
 
             this.__assignOptionalFieldFunction(  Field, GeneratedField, 'setFormatter', 'set' )
@@ -856,7 +857,7 @@ Vue.mixin({
             let Self = this.$data._blubberModel[this.$data.__currentFormId]
             //let Self = this.$data.model
 
-            if ( true === FieldModel.hasSubstring('.') )
+            if ( true === FieldModel.includes('.') )
             {
                 Chunks = Value.split( '.' )
                 for ( Index in Chunks )
@@ -897,12 +898,10 @@ Vue.mixin({
         {
             var Index, Mutable
             let GeneratedGroup = {}
-            var Mutable
-
-
             if ( 'name' in Group )
             {
                 GeneratedGroup['legend'] = this.__getStringLabelOrPlaceholder( LabelGenerator, Group['name'] )
+                GeneratedGroup['id'] = Group['name']
             }
             else
             {
@@ -910,20 +909,17 @@ Vue.mixin({
                 return null
             }
 
-            if ( 'fields' in Group )
+            GeneratedGroup['fields'] = []
+            for ( Index in Group['group'] )
             {
-                GeneratedGroup['fields'] = []
-                for ( Index in Group['fields'] )
+                if ( 'prefix' in Group && false === ( 'prefix' in Group['group'][Index]) )
                 {
-                    if ( 'prefix' in Group && false === ( 'prefix' in Group['fields'][Index]) )
-                    {
-                        Group['fields'][Index]['prefix'] = Group['prefix']
-                    }
-
-                    Mutable = this._buildField( Group['fields'][Index], LabelGenerator )
-                    this._buildModel( Mutable['model'] )
-                    GeneratedGroup['fields'].push( Mutable )
+                    Group['fields'][Index]['prefix'] = Group['prefix']
                 }
+
+                Mutable = this._buildField( Group['group'][Index], LabelGenerator )
+                this._buildModel( Mutable['model'] )
+                GeneratedGroup['fields'].push( Mutable )
             }
 
             return GeneratedGroup
@@ -966,6 +962,7 @@ Vue.mixin({
             let GeneratedFields = []
             let GeneratedGroups = []
             let Model = {}
+            let Return = {}
             var FieldIndex, Mutable
 
             for ( FieldIndex in Fields )
@@ -1000,7 +997,7 @@ Vue.mixin({
 
                 if ( 'group' in Fields[FieldIndex] )
                 {
-                    GeneratedGroups.push( this.buildGroup( Fields[FieldIndex], LabelGenerator ) )
+                    GeneratedGroups.push( this._buildGroup( Fields[FieldIndex], LabelGenerator ) )
                     continue
                 }
 
@@ -1017,14 +1014,17 @@ Vue.mixin({
                 GeneratedFields.push( Mutable )
             }
 
-            if ( false === this.isEmpty( GeneratedGroups ) )
+            if ( false === Object.isEmpty( GeneratedFields ) )
             {
-                return { fields: GeneratedFields, groups: GeneratedGroups }
+                Return['fields'] = GeneratedFields
             }
-            else
+
+            if ( false === Object.isEmpty( GeneratedGroups ) )
             {
-                return { fields: GeneratedFields }
+                Return['groups'] = GeneratedGroups
             }
+
+            return Return
         },
         __addDescription: function ( createElement, Step, LabelGenerator )
         {
@@ -1053,7 +1053,8 @@ Vue.mixin({
         {
             var Options
             let Index = this.$data._blubberFormSchema[this.$data.__currentFormId].length
-            this.$data._blubberFormSchema[this.$data.__currentFormId].push( this._buildFields( Step['fields'], LabelGenerator ) )
+            let GeneratedStep = this._buildFields( Step['fields'], LabelGenerator )
+            this.$data._blubberFormSchema[this.$data.__currentFormId].push( GeneratedStep )
 
             if ( 'options' in Step )
             {
@@ -1178,7 +1179,7 @@ Vue.mixin({
                     FormProperties )
                 FormProperties[FormPropertiesLabels[LabelIndex]] = LabelString
             }
-
+            this.debugObjectPrint(this.$data._blubberModel[FormId], 'debug')
             this.$data._blubberFormSchema[FormId] = []
             this.$data._blubberModel[FormId] = {}
             this.$data.__currentFormId = FormId
