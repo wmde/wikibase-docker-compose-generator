@@ -4,9 +4,11 @@
 		"plugin:vue/essential"
 	],
 	"parserOptions": {
-		"sourceType": "module",
-		"ecmaVersion": "6"
+		"parser": "babel-eslint",
+		"ecmaVersion": 2017,
+		"sourceType": "module"
 	},
+	"plugins": [ "vue" ],
 	"env": {
 		"browser": true,
 		"commonjs": true

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable */
 import Vue from 'vue'
 
 Vue.mixin({})

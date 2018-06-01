@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable */
 import Vue from 'vue'
 import VueFormGenerator from "vue-form-generator";
 //import { VueFormWizard, FormWizard, TabContent } from 'vue-form-wizard'
