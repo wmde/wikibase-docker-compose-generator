@@ -222,7 +222,7 @@ Vue.mixin( {
 		},
 		__assignOptionalFieldString: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
 			if ( FieldLabel in Field ) {
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetString(
 						Field[ FieldLabel ],
 						Field.name
@@ -237,7 +237,7 @@ Vue.mixin( {
 		},
 		__assignOptionalFieldNumeric: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
 			if ( FieldLabel in Field ) {
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetNumber(
 						Field[ FieldLabel ],
 						Field.name
@@ -252,7 +252,7 @@ Vue.mixin( {
 		},
 		__assignOptionalFieldBoolean: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
 			if ( FieldLabel in Field ) {
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetBool(
 						Field[ FieldLabel ],
 						Field.name
@@ -267,7 +267,7 @@ Vue.mixin( {
 		},
 		__assignOptionalFieldObject: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
 			if ( FieldLabel in Field ) {
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetObject(
 						Field[ FieldLabel ],
 						Field.name
@@ -288,7 +288,7 @@ Vue.mixin( {
 					throw new InvalidFieldException( ErrorMessages.UNSUPPORTED_TYPE.format( typeof Mutable, Field.name, '', 'function' ) );
 				}
 
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = Mutable;
 				} else {
 					GeneratedField[ FieldLabel ] = Mutable;
@@ -297,7 +297,7 @@ Vue.mixin( {
 		},
 		__assignOptionalEmptyStringOrLabelString: function ( LabelGenerator, Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
 			if ( FieldLabel in Field ) {
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = this.__getStringLabelOrEmpty(
 						LabelGenerator,
 						Field[ FieldLabel ]
@@ -312,7 +312,7 @@ Vue.mixin( {
 		},
 		__assignOptionalPlaceholderOrLabelString: function ( LabelGenerator, Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
 			if ( FieldLabel in Field ) {
-				if ( AssignmentLabel.isEmpty() === false ) {
+				if ( AssignmentLabel.length > 0 ) {
 					GeneratedField[ AssignmentLabel ] = this.__getStringLabelOrPlaceholder(
 						LabelGenerator,
 						Field[ FieldLabel ]
@@ -826,7 +826,7 @@ Vue.mixin( {
 				LabelGenerator,
 				Step.description
 			);
-			if ( DescriptionText.isEmpty() === false ) {
+			if ( DescriptionText.length === 0 ) {
 				return createElement( 'p', {
 					attr: {
 						'class': 'blubberDescription',
@@ -929,7 +929,7 @@ Vue.mixin( {
 			// set formproperties and add labels
 			const FormPropertiesLabels = [ 'subtitle', 'nextButtonText', 'backButtonText', 'finishButtonText' ];
 
-			if ( typeof FormId !== 'string' || FormId.isEmpty() === true ) {
+			if ( typeof FormId !== 'string' || FormId.length === 0 ) {
 				throw new TypeErrorException( ErrorMessages.IVALID_TOP_ITEM.format( 'FormId', typeof FormId, 'non empty string' ) );
 			}
 

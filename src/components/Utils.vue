@@ -99,7 +99,7 @@ String.prototype.format = function () {
 			}
 
 			if ( this.charAt( LookAHead ) === '}' ) {
-				if ( UserDefinedIndex.isEmpty() === false ) {
+				if ( UserDefinedIndex.length > 0 ) {
 					FoundFormatIndices.push( [ Index, LookAHead, parseInt( UserDefinedIndex ) ] );
 					Manual = true;
 				} else {
@@ -184,7 +184,7 @@ Vue.mixin( {
 				return true;
 			} else {
 				if ( typeof Str === 'string' ) {
-					return Str.isEmpty();
+					return Str.length === 0;
 				} else if ( Array.isArray( Str ) === true ) {
 					return Array.isEmpty( Str );
 				} else if ( typeof Str === 'object' ) {
