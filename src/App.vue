@@ -1,18 +1,17 @@
 <script>
-import BlubberFormFactory from './components/BlubberFormFactory';
-import './components/Utils.vue';
-import './components/Language';
+import BlubberFormFactory from './components/BlubberFormFactory.js';
+import Utils from './components/Utils.js';
+import Language from './components/Language.js';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+import ObjectHelper from './components/ObjectHelper';
 
-export default
-{
+export default {
 	name: 'Blubber',
+	mixins: [ BlubberFormFactory, Language ],
 	render: function ( createElement ) {
 		return this.buildApplication( createElement );
 	},
-	components: { BlubberFormFactory },
 	template: '<div><BlubberFormFactory/></div>',
-	// template: '<div></div>',
 	data: function () {
 		const Return = {};
 		Return.buildForm = false;
@@ -23,12 +22,12 @@ export default
 	},
 	mounted: function () {
 		this.getDefaultLanguage();
+		Utils.waitUntil( this._languageIsLoaded );
 		this.getConfiguration();
 	},
-	methods:
-	{
+	methods: {
 		getConfiguration: function () {
-			this.get( './data/config.json', this.evaluateConfiguration );
+			Utils.get( './data/config.json', this.evaluateConfiguration );
 		},
 		evaluateConfiguration: function ( Configuration ) {
 			this.$data.blubberGeneratorSteps = Configuration.steps;
@@ -55,11 +54,11 @@ export default
 					createElement,
 					this.$data.blubberFormId,
 					{},
-					Object.copy( this.$data.blubberGeneratorFormProperties ),
-					Object.copy( this.$data.blubberGeneratorSteps ),
+					ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
+					ObjectHelper.copyObj( this.$data.blubberGeneratorSteps ),
 					I18n
 				);
-				return createElement( 'div', { attrs: { id: 'application' } }, [ Element, createElement( BlubberFormFactory, {}, '' ) ] );
+				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
 		showPassword: function () {
