@@ -8,10 +8,11 @@
 		"ecmaVersion": 2017,
 		"sourceType": "module"
 	},
-	"plugins": [ "vue" ],
+	"plugins": [ "vue", "jest" ],
 	"env": {
 		"browser": true,
-		"commonjs": true
+		"commonjs": true,
+		"jest/globals": true
 	},
 	"rules": {
 		"no-underscore-dangle": 0,
