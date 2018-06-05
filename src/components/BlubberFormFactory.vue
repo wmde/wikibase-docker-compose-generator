@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import VueFormWizard from 'vue-form-wizard';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 Vue.use( VueFormWizard );
 Vue.use( VueFormGenerator );
@@ -976,5 +975,6 @@ export default
 </script>
 
 <style>
+@import "vue-form-wizard/dist/vue-form-wizard.min.css";
 
 </style>
