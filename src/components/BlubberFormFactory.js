@@ -578,7 +578,7 @@ const BlubberFormFactory = {
 			const InsideButtons = this.__genericExecuteFuncionOrGetSomething( Buttons, 'any', FieldName );
 
 			if ( typeof InsideButtons === 'object' ) {
-				return [ this.__singelButton( InsideButtons, FieldName, LabelGenerator ) ];
+				return [ this._singleButton( InsideButtons, FieldName, LabelGenerator ) ];
 			} else if ( Array.isArray( InsideButtons ) === true ) {
 				for ( Index in InsideButtons ) {
 					GeneratedButton = {};
