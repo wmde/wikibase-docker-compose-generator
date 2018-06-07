@@ -2,7 +2,6 @@
 import BlubberFormFactory from './components/BlubberFormFactory';
 import './components/Utils.vue';
 import './components/Language';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 export default
 {
@@ -70,5 +69,6 @@ export default
 </script>
 
 <style>
+@import "vue-form-wizard/dist/vue-form-wizard.min.css";
 
 </style>
