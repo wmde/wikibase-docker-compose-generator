@@ -46,7 +46,7 @@ class StringHelper {
 		return [ LookAHead, UserDefinedIndex ];
 	}
 
-	static __readSimpelFormattedString( Str ) {
+	static __readSimpleFormattedString( Str ) {
 		let Index, LookAHead, UserDefinedIndex;
 		const FoundFormatIndices = [];
 		let Manual = false;
@@ -99,10 +99,10 @@ class StringHelper {
 		}
 
 		if ( Array.isArray( Arguments[ 0 ] ) === true ) {
-			FoundFormatIndices = StringHelper.__readSimpelFormattedString( Str );
+			FoundFormatIndices = StringHelper.__readSimpleFormattedString( Str );
 			Model = Arguments[ 0 ];
 		} else if	( typeof Arguments[ 0 ] !== 'object' ) {
-			FoundFormatIndices = StringHelper.__readSimpelFormattedString( Str );
+			FoundFormatIndices = StringHelper.__readSimpleFormattedString( Str );
 			Model = Arguments;
 		} else {
 			FoundFormatIndices = StringHelper.__readComplexFormattedString( Str );

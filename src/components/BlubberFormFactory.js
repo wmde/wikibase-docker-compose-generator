@@ -543,7 +543,7 @@ const BlubberFormFactory = {
 
 			return GeneratedProperty;
 		},
-		__singelButton: function ( InsideButton, FieldName, LabelGenerator ) {
+		_singleButton: function ( InsideButton, FieldName, LabelGenerator ) {
 			let Mutable;
 			const GeneratedButton = {};
 			InsideButton.name = FieldName;
@@ -583,7 +583,7 @@ const BlubberFormFactory = {
 				for ( Index in InsideButtons ) {
 					GeneratedButton = {};
 					if ( typeof InsideButtons[ Index ] === 'object' ) {
-						GeneratedButton = this.__singelButton(
+						GeneratedButton = this._singleButton(
 							InsideButtons,
 							FieldName,
 							LabelGenerator
@@ -615,7 +615,7 @@ const BlubberFormFactory = {
 
 			}
 		},
-		_buildChoise: function ( Field, GeneratedField, LabelGenerator ) {
+		_buildChoice: function ( Field, GeneratedField, LabelGenerator ) {
 			GeneratedField.type = 'radios';
 			GeneratedField.radiosOptions = this.__addOptionProperty( Field );
 			GeneratedField.values = this.__addValueProperty(
@@ -829,7 +829,7 @@ const BlubberFormFactory = {
 			// specific  properties
 			Field.type = Field.type.toLowerCase();
 			if ( Field.type === 'choise' ) {
-				this._buildChoise( Field, GeneratedField, LabelGenerator );
+				this._buildChoice( Field, GeneratedField, LabelGenerator );
 			} else if ( Field.type === 'select' ) {
 				this._buildSelect( Field, GeneratedField, LabelGenerator );
 			} else if ( Field.type === 'pick' ) {
