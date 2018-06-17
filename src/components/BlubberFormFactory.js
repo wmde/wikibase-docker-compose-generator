@@ -2,10 +2,10 @@ import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import VueFormWizard from 'vue-form-wizard';
 import { BaseException, TypeErrorException } from './BaseExceptions';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import StringHelper from './StringHelper';
 import ObjectHelper from './ObjectHelper';
 import Utils from './Utils';
+import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 Vue.use( VueFormWizard );
 Vue.use( VueFormGenerator );

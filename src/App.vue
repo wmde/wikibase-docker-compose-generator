@@ -69,5 +69,6 @@ export default {
 </script>
 
 <style>
+@import "vue-form-wizard/dist/vue-form-wizard.min.css";
 
 </style>
