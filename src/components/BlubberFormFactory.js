@@ -1,29 +1,37 @@
 import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import VueFormWizard from 'vue-form-wizard';
-import { BaseException, TypeErrorException } from './BaseExceptions';
-import StringHelper from './StringHelper';
-import ObjectHelper from './ObjectHelper';
-import Utils from './Utils';
+import { BaseException, TypeErrorException } from './lib/BaseExceptions';
+import StringHelper from './lib/StringHelper';
+import ObjectHelper from './lib/ObjectHelper';
+import Utils from '../Utils';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 Vue.use( VueFormWizard );
 Vue.use( VueFormGenerator );
 
-class InvalidFieldException extends BaseException {
-	constructor( Message ) {
+const FunctionReg = [];
+
+class InvalidFieldException extends BaseException
+{
+	constructor( Message )
+	{
 		super( 'InvalidFieldException', Message );
 	}
 }
 
-class InvalidFieldPropertyException extends BaseException {
-	constructor( Message ) {
+class InvalidFieldPropertyException extends BaseException
+{
+	constructor( Message )
+	{
 		super( 'InvalidFieldPropertyException', Message );
 	}
 }
 
-class InvalidFieldValueException extends BaseException {
-	constructor( Message ) {
+class InvalidFieldValueException extends BaseException
+{
+	constructor( Message )
+	{
 		super( 'InvalidFieldValueException', Message );
 	}
 }
@@ -43,13 +51,18 @@ const ErrorMessages = {
 const BlubberFormFactory = {
 //    components: { FormWizard, TabContent },
 	methods: {
-		__lookForPropertyAtVueObject: function ( IsTypeOrFunction, Self ) {
+		__lookForPropertyAtVueObject: function ( IsTypeOrFunction, Self )
+		{
 			let Index;
 			const Chunks = IsTypeOrFunction.split( '.' );
-			for ( Index in Chunks ) {
-				if ( Chunks[ Index ] in Self ) {
+			for ( Index in Chunks )
+			{
+				if ( Chunks[ Index ] in Self )
+				{
 					Self = Self[ Chunks[ Index ] ];
-				} else {
+				}
+				else
+				{
 					Self = null;
 					break;
 				}
@@ -61,35 +74,53 @@ const BlubberFormFactory = {
 			Type,
 			FieldName,
 			ReturnPureFunction = false
-		) {
+		)
+		{
 			let Self;
 
-			if ( typeof IsTypeOrFunction === 'function' ) {
-				if ( ReturnPureFunction === true ) {
+			if ( 'function' === typeof IsTypeOrFunction )
+			{
+				if ( true === ReturnPureFunction )
+				{
 					return IsTypeOrFunction;
 				}
 
 				IsTypeOrFunction = IsTypeOrFunction( FieldName );
-			} else {
+			}
+			else
+			{
 				Self = this;
-				if ( typeof IsTypeOrFunction === 'string' ) {
-					if ( IsTypeOrFunction.includes( '.' ) === true ) {
+				if ( 'string' === typeof IsTypeOrFunction )
+				{
+					if ( true === IsTypeOrFunction.includes( '.' ) )
+					{
 						Self = this.__lookForPropertyAtVueObject( IsTypeOrFunction, Self );
-					} else if ( IsTypeOrFunction in Self && typeof Self[ IsTypeOrFunction ] === 'function' ) {
+					}
+					else if ( IsTypeOrFunction in Self && 'function' === typeof Self[ IsTypeOrFunction ] )
+					{
 						Self = this[ IsTypeOrFunction ];
-					} else {
+					}
+					else
+					{
 						Self = null;
 					}
 
-					if ( Self !== null ) {
-						if ( typeof Self === 'function' ) {
-							if ( ReturnPureFunction === true ) {
-								return Self;
+					if ( null !== Self )
+					{
+						if ( 'function' === typeof Self )
+						{
+							if ( true === ReturnPureFunction )
+							{
+								FunctionReg.push( Self );
+								return FunctionReg[ FunctionReg.length - 1 ];
 							}
 							IsTypeOrFunction = Self( FieldName );
 						}
-					} else {
-						if ( ReturnPureFunction === true ) {
+					}
+					else
+					{
+						if ( true === ReturnPureFunction )
+						{
 							throw new InvalidFieldPropertyException(
 								StringHelper.format(
 									ErrorMessages.UNKNOWN_METHOD,
@@ -103,7 +134,8 @@ const BlubberFormFactory = {
 				}
 			}
 
-			if ( typeof IsTypeOrFunction === Type || Type === 'any' ) {
+			if ( typeof IsTypeOrFunction === Type || 'any' === Type )
+			{
 				return IsTypeOrFunction;
 			}
 			throw new InvalidFieldException(
@@ -120,7 +152,8 @@ const BlubberFormFactory = {
 			IsTypeOrFunction,
 			FieldName,
 			ReturnPureFunction = false
-		) {
+		)
+		{
 			return this.__genericExecuteFuncionOrGetSomething(
 				IsTypeOrFunction,
 				'string',
@@ -132,7 +165,8 @@ const BlubberFormFactory = {
 			IsTypeOrFunction,
 			FieldName,
 			ReturnPureFunction = false
-		) {
+		)
+		{
 			return this.__genericExecuteFuncionOrGetSomething(
 				IsTypeOrFunction,
 				'number',
@@ -144,7 +178,8 @@ const BlubberFormFactory = {
 			IsTypeOrFunction,
 			FieldName,
 			ReturnPureFunction = false
-		) {
+		)
+		{
 			return this.__genericExecuteFuncionOrGetSomething(
 				IsTypeOrFunction,
 				'boolean',
@@ -156,7 +191,8 @@ const BlubberFormFactory = {
 			IsTypeOrFunction,
 			FieldName,
 			ReturnPureFunction = false
-		) {
+		)
+		{
 			return this.__genericExecuteFuncionOrGetSomething(
 				IsTypeOrFunction,
 				'object',
@@ -168,32 +204,46 @@ const BlubberFormFactory = {
 			IsTypeOrFunction,
 			FieldName,
 			ReturnPureFunction = false
-		) {
+		)
+		{
 			let Self;
-			if ( typeof IsTypeOrFunction === 'function' ) {
-				if ( ReturnPureFunction === true ) {
+			if ( 'function' === typeof IsTypeOrFunction )
+			{
+				if ( true === ReturnPureFunction )
+				{
 					return IsTypeOrFunction;
 				}
 
 				IsTypeOrFunction = IsTypeOrFunction( FieldName );
-			} else {
+			}
+			else
+			{
 				Self = this;
-				if ( typeof IsTypeOrFunction === 'string' ) {
-					if ( IsTypeOrFunction.includes( '.' ) === true ) {
+				if ( 'string' === typeof IsTypeOrFunction )
+				{
+					if ( true === IsTypeOrFunction.includes( '.' ) )
+					{
 						Self = this.__lookForPropertyAtVueObject( IsTypeOrFunction, Self );
-					} else if ( IsTypeOrFunction in Self && typeof Self[ IsTypeOrFunction ] === 'function' ) {
+					}
+					else if ( IsTypeOrFunction in Self && 'function' === typeof Self[ IsTypeOrFunction ] )
+					{
 						Self = this[ IsTypeOrFunction ];
 					}
 
-					if ( Self !== null ) {
-						if ( typeof Self === 'function' ) {
-							if ( ReturnPureFunction === true ) {
+					if ( null !== Self )
+					{
+						if ( 'function' === typeof Self )
+						{
+							if ( true === ReturnPureFunction )
+							{
 								return Self;
 							}
 
 							IsTypeOrFunction = Self( FieldName );
 						}
-					} else {
+					}
+					else
+					{
 						throw new InvalidFieldException(
 							StringHelper.format(
 								ErrorMessages.UNKNOWN_METHOD_OR_PROPERTY,
@@ -206,7 +256,8 @@ const BlubberFormFactory = {
 				}
 			}
 
-			if ( Array.isArray( IsTypeOrFunction ) === true ) {
+			if ( true === Array.isArray( IsTypeOrFunction ) )
+			{
 				return IsTypeOrFunction;
 			}
 
@@ -221,41 +272,58 @@ const BlubberFormFactory = {
 			);
 
 		},
-		__getStringLabelOrEmpty: function ( LabelGenerator, Label ) {
+		__getStringLabelOrEmpty: function ( LabelGenerator, Label )
+		{
 			let LabelValue;
 
-			if ( Utils.isEmpty( Label ) === true ) {
+			if ( true === Utils.isEmpty( Label ) )
+			{
 				return '';
-			} else {
+			}
+			else
+			{
 				LabelValue = LabelGenerator( Label );
-				if ( Utils.isEmpty( LabelValue ) === true || Label === LabelValue ) {
+				if ( true === Utils.isEmpty( LabelValue ) || Label === LabelValue )
+				{
 					return '';
 				}
 				return Label;
 			}
 		},
-		__getStringLabelOrPlaceholder: function ( LabelGenerator, Label ) {
+		__getStringLabelOrPlaceholder: function ( LabelGenerator, Label )
+		{
 			let LabelValue;
 
-			if ( Utils.isEmpty( Label ) === true ) {
+			if ( true === Utils.isEmpty( Label ) )
+			{
 				return '';
-			} else {
+			}
+			else
+			{
 				LabelValue = LabelGenerator( Label );
-				if ( Utils.isEmpty( LabelValue ) === true ) {
+				if ( true === Utils.isEmpty( LabelValue ) )
+				{
 					return Label;
-				} else {
+				}
+				else
+				{
 					return LabelValue;
 				}
 			}
 		},
-		__assignOptionalFieldString: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
-			if ( FieldLabel in Field ) {
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+		__assignOptionalFieldString: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
+			if ( FieldLabel in Field )
+			{
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetString(
 						Field[ FieldLabel ],
 						Field.name
 					);
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = this.__executeFunctionOrGetString(
 						Field[ FieldLabel ],
 						Field.name
@@ -263,14 +331,19 @@ const BlubberFormFactory = {
 				}
 			}
 		},
-		__assignOptionalFieldNumeric: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
-			if ( FieldLabel in Field ) {
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+		__assignOptionalFieldNumeric: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
+			if ( FieldLabel in Field )
+			{
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetNumber(
 						Field[ FieldLabel ],
 						Field.name
 					);
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = this.__executeFunctionOrGetNumber(
 						Field[ FieldLabel ],
 						Field.name
@@ -278,14 +351,19 @@ const BlubberFormFactory = {
 				}
 			}
 		},
-		__assignOptionalFieldBoolean: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
-			if ( FieldLabel in Field ) {
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+		__assignOptionalFieldBoolean: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
+			if ( FieldLabel in Field )
+			{
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetBool(
 						Field[ FieldLabel ],
 						Field.name
 					);
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = this.__executeFunctionOrGetBool(
 						Field[ FieldLabel ],
 						Field.name
@@ -293,14 +371,19 @@ const BlubberFormFactory = {
 				}
 			}
 		},
-		__assignOptionalFieldObject: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
-			if ( FieldLabel in Field ) {
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+		__assignOptionalFieldObject: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
+			if ( FieldLabel in Field )
+			{
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = this.__executeFunctionOrGetObject(
 						Field[ FieldLabel ],
 						Field.name
 					);
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = this.__executeFunctionOrGetObject(
 						Field[ FieldLabel ],
 						Field.name
@@ -308,14 +391,17 @@ const BlubberFormFactory = {
 				}
 			}
 		},
-		__assignOptionalFieldFunction: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
+		__assignOptionalFieldFunction: function ( Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
 			let Mutable;
-			if ( FieldLabel in Field ) {
+			if ( FieldLabel in Field )
+			{
 				Mutable = this.__executeFunctionOrGetString(
 					Field[ FieldLabel ],
 					Field.name, true
 				);
-				if ( typeof Mutable !== 'function' ) {
+				if ( 'function' !== typeof Mutable )
+				{
 					throw new InvalidFieldException(
 						StringHelper.format(
 							ErrorMessages.UNSUPPORTED_TYPE,
@@ -327,21 +413,29 @@ const BlubberFormFactory = {
 					);
 				}
 
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = Mutable;
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = Mutable;
 				}
 			}
 		},
-		__assignOptionalEmptyStringOrLabelString: function ( LabelGenerator, Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
-			if ( FieldLabel in Field ) {
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+		__assignOptionalEmptyStringOrLabelString: function ( LabelGenerator, Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
+			if ( FieldLabel in Field )
+			{
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = this.__getStringLabelOrEmpty(
 						LabelGenerator,
 						Field[ FieldLabel ]
 					);
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = this.__getStringLabelOrEmpty(
 						LabelGenerator,
 						Field[ FieldLabel ]
@@ -349,14 +443,19 @@ const BlubberFormFactory = {
 				}
 			}
 		},
-		__assignOptionalPlaceholderOrLabelString: function ( LabelGenerator, Field, GeneratedField, FieldLabel, AssignmentLabel = '' ) {
-			if ( FieldLabel in Field ) {
-				if ( StringHelper.isEmpty( AssignmentLabel ) === false ) {
+		__assignOptionalPlaceholderOrLabelString: function ( LabelGenerator, Field, GeneratedField, FieldLabel, AssignmentLabel = '' )
+		{
+			if ( FieldLabel in Field )
+			{
+				if ( false === StringHelper.isEmpty( AssignmentLabel ) )
+				{
 					GeneratedField[ AssignmentLabel ] = this.__getStringLabelOrPlaceholder(
 						LabelGenerator,
 						Field[ FieldLabel ]
 					);
-				} else {
+				}
+				else
+				{
 					GeneratedField[ FieldLabel ] = this.__getStringLabelOrPlaceholder(
 						LabelGenerator,
 						Field[ FieldLabel ]
@@ -364,14 +463,19 @@ const BlubberFormFactory = {
 				}
 			}
 		},
-		__addAutocompleteProperty: function ( Field, GeneratedField ) {
-			if ( 'autocomplete' in Field && Field.autocomplete === false ) {
+		__addAutocompleteProperty: function ( Field, GeneratedField )
+		{
+			if ( 'autocomplete' in Field && false === Field.autocomplete )
+			{
 				GeneratedField.autocomplete = 'off';
-			} else {
+			}
+			else
+			{
 				GeneratedField.autocomplete = 'on';
 			}
 		},
-		__addTextBasedAttributes: function ( Field, GeneratedField, LabelGenerator ) {
+		__addTextBasedAttributes: function ( Field, GeneratedField, LabelGenerator )
+		{
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'readonly' );
 			this.__addAutocompleteProperty( Field, GeneratedField );
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'maximum', 'maxlength' );
@@ -385,67 +489,87 @@ const BlubberFormFactory = {
 			);
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'size' );
 		},
-		__addNumericBasedAttributes: function ( Field, GeneratedField ) {
+		__addNumericBasedAttributes: function ( Field, GeneratedField )
+		{
 			this.__addAutocompleteProperty( Field, GeneratedField );
 			this.__assignOptionalFieldString( Field, GeneratedField, 'getValuesFromList', 'list' );
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'maximum', 'max' );
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'minimum', 'min' );
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'stepSize' );
 		},
-		_buildInputField: function ( Field, GeneratedField, LabelGenerator ) {
+		_buildInputField: function ( Field, GeneratedField, LabelGenerator )
+		{
 			GeneratedField.type = 'input';
 			GeneratedField.inputType = Field.type;
 			if (
-				Field.type === 'text' ||
-                Field.type === 'search' ||
-                Field.type === 'url' ||
-                Field.type === 'tel' ||
-                Field.type === 'email'
-			) {
+				'text' === Field.type ||
+                'search' === Field.type ||
+                'url' === Field.type ||
+                'tel' === Field.type ||
+                'email' === Field.type
+			)
+			{
 				this.__addTextBasedAttributes( Field, GeneratedField );
 
-				if ( Field.type === 'text' || Field.type === 'search' ) {
+				if ( 'text' === Field.type || 'search' === Field.type )
+				{
 					this.__assignOptionalFieldString( Field, GeneratedField, 'dir' );
 				}
 
 				this.__assignOptionalFieldString( Field, GeneratedField, 'getValuesFromList', 'list' );
 
-				if ( Field.type === 'email' ) {
+				if ( 'email' === Field.type )
+				{
 					this.__assignOptionalFieldBoolean( Field, GeneratedField, 'multipleInput', 'multiple' );
-					if ( 'multiple' in GeneratedField ) {
+					if ( 'multiple' in GeneratedField )
+					{
 						GeneratedField.multi = GeneratedField.multiple;
 					}
 				}
-			} else if ( Field.type === 'password' ) {
+			}
+			else if ( 'password' === Field.type )
+			{
 				this.__addTextBasedAttributes( Field, GeneratedField, Field.name );
-			} else if ( Field.type === 'file' ) {
+			}
+			else if ( 'file' === Field.type )
+			{
 				this.__assignOptionalFieldString( Field, GeneratedField, 'accept' );
 				this.__assignOptionalFieldBoolean( Field, GeneratedField, 'multipleInput', 'multiple' );
-				if ( 'multiple' in GeneratedField ) {
+				if ( 'multiple' in GeneratedField )
+				{
 					GeneratedField.multi = GeneratedField.multiple;
 				}
-			} else if (
-				Field.type === 'range' ||
-                Field.type === 'month' ||
-                Field.type === 'time' ||
-                Field.type === 'week' ||
-                Field.type === 'date' ||
-                Field.type === 'datetime-local'
-			) {
+			}
+			else if (
+				'range' === Field.type ||
+                'month' === Field.type ||
+                'time' === Field.type ||
+                'week' === Field.type ||
+                'date' === Field.type ||
+                'datetime-local' === Field.type
+			)
+			{
 				GeneratedField =
                     this.__addNumericBasedAttributes( Field, GeneratedField, Field.name );
-				if ( Field.type !== 'range' ) {
+				if ( 'range' !== Field.type )
+				{
 					this.__assignOptionalFieldBoolean( Field, GeneratedField, 'readonly' );
 				}
 
-			} else if ( Field.type === 'number' ) {
+			}
+			else if ( 'number' === Field.type )
+			{
 				this.__addNumericBasedAttributes( Field, GeneratedField, Field.name );
 				this.__assignOptionalFieldBoolean( Field, GeneratedField, 'readonly' );
 				this.__assignOptionalEmptyStringOrLabelString( LabelGenerator, Field, GeneratedField, 'briefDescription', 'placeholder' );
-			} else if ( Field.type === 'color' ) {
+			}
+			else if ( 'color' === Field.type )
+			{
 				this.__addAutocompleteProperty( Field, GeneratedField );
 				this.__assignOptionalFieldString( Field, GeneratedField, 'getValuesFromList', 'list' );
-			} else if ( Field.type !== 'reset' && Field.type !== 'hidden' ) {
+			}
+			else if ( 'reset' !== Field.type && 'hidden' !== Field.type )
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						ErrorMessages.UNKNOWN_FIELDTYPE,
@@ -458,12 +582,16 @@ const BlubberFormFactory = {
 
 			return GeneratedField;
 		},
-		__addValueProperty: function ( Field, LabelKey, ValueKey, LabelGenerator ) {
+		__addValueProperty: function ( Field, LabelKey, ValueKey, LabelGenerator )
+		{
 			let Mutable, GeneratedValue, ValueIndex, ValueIsString;
 			const GeneratedValues = [];
-			if ( 'values' in Field ) {
+			if ( 'values' in Field )
+			{
 				Mutable = this.__executeFunctionOrGetArray( Field.values, Field.name );
-			} else {
+			}
+			else
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						ErrorMessages.NO_VALUES,
@@ -472,21 +600,30 @@ const BlubberFormFactory = {
 				);
 			}
 
-			if ( Array.isArray( Mutable ) === false ) {
+			if ( false === Array.isArray( Mutable ) )
+			{
 				return Mutable;
 			}
 
-			if ( typeof Mutable[ 0 ] === 'string' ) {
+			if ( 'string' === typeof Mutable[ 0 ] )
+			{
 				ValueIsString = true;
-			} else {
+			}
+			else
+			{
 				ValueIsString = false;
 			}
 
-			for ( ValueIndex in Mutable ) {
-				if ( typeof Mutable[ ValueIndex ] === 'string' ) {
-					if ( ValueIsString === true ) {
+			for ( ValueIndex in Mutable )
+			{
+				if ( 'string' === typeof Mutable[ ValueIndex ] )
+				{
+					if ( true === ValueIsString )
+					{
 						GeneratedValues.push( Mutable[ ValueIndex ] );
-					} else {
+					}
+					else
+					{
 						throw new InvalidFieldValueException(
 							StringHelper.format(
 								ErrorMessages.CANNOT_SWITCH_VALUES.format,
@@ -495,8 +632,11 @@ const BlubberFormFactory = {
 						);
 
 					}
-				} else if ( typeof Mutable[ ValueIndex ] === 'object' ) {
-					if ( ValueIsString !== false ) {
+				}
+				else if ( 'object' === typeof Mutable[ ValueIndex ] )
+				{
+					if ( false !== ValueIsString )
+					{
 						throw new InvalidFieldValueException(
 							StringHelper.format(
 								ErrorMessages.CANNOT_SWITCH_VALUES,
@@ -514,7 +654,9 @@ const BlubberFormFactory = {
 						LabelKey
 					);
 					GeneratedValues.push( GeneratedValue );
-				} else {
+				}
+				else
+				{
 					throw new InvalidFieldValueException(
 						StringHelper.format(
 							ErrorMessages.UNSUPPORTED_TYPE,
@@ -529,21 +671,25 @@ const BlubberFormFactory = {
 
 			return GeneratedValues;
 		},
-		__addOptionProperty: function ( Field ) {
+		__addOptionProperty: function ( Field )
+		{
 			const GeneratedProperty = {};
 			this.__assignOptionalFieldObject( Field, GeneratedProperty, 'options' );
 
-			if ( ( 'value' in GeneratedProperty ) === false ) {
+			if ( false === ( 'value' in GeneratedProperty ) )
+			{
 				GeneratedProperty.value = 'value';
 			}
 
-			if ( ( 'name' in GeneratedProperty ) === false ) {
+			if ( false === ( 'name' in GeneratedProperty ) )
+			{
 				GeneratedProperty.name = 'label';
 			}
 
 			return GeneratedProperty;
 		},
-		_singleButton: function ( InsideButton, FieldName, LabelGenerator ) {
+		_singleButton: function ( InsideButton, FieldName, LabelGenerator )
+		{
 			let Mutable;
 			const GeneratedButton = {};
 			InsideButton.name = FieldName;
@@ -555,13 +701,16 @@ const BlubberFormFactory = {
 				'classes'
 			);
 
-			if ( 'label' in InsideButton ) {
+			if ( 'label' in InsideButton )
+			{
 				Mutable = this.__executeFunctionOrGetString( InsideButton.label, FieldName );
 				GeneratedButton.label = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					Mutable
 				);
-			} else {
+			}
+			else
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						ErrorMessages.NO_LABEL_INSIDE_BUTTON,
@@ -569,27 +718,35 @@ const BlubberFormFactory = {
 					)
 				);
 			}
-			this.__assignOptionalFieldFunction( InsideButton, GeneratedButton, 'action', 'onClick' );
+			this.__assignOptionalFieldFunction( InsideButton, GeneratedButton, 'action', 'onclick' );
 			return GeneratedButton;
 		},
-		__addButtons: function ( Buttons, FieldName, LabelGenerator ) {
+		__addButtons: function ( Buttons, FieldName, LabelGenerator )
+		{
 			let Index, GeneratedButton;
 			const Return = [];
 			const InsideButtons = this.__genericExecuteFuncionOrGetSomething( Buttons, 'any', FieldName );
 
-			if ( typeof InsideButtons === 'object' ) {
+			if ( 'object' === typeof InsideButtons )
+			{
 				return [ this._singleButton( InsideButtons, FieldName, LabelGenerator ) ];
-			} else if ( Array.isArray( InsideButtons ) === true ) {
-				for ( Index in InsideButtons ) {
+			}
+			else if ( true === Array.isArray( InsideButtons ) )
+			{
+				for ( Index in InsideButtons )
+				{
 					GeneratedButton = {};
-					if ( typeof InsideButtons[ Index ] === 'object' ) {
+					if ( 'object' === typeof InsideButtons[ Index ] )
+					{
 						GeneratedButton = this._singleButton(
 							InsideButtons,
 							FieldName,
 							LabelGenerator
 						);
 						Return.push( GeneratedButton );
-					} else {
+					}
+					else
+					{
 						throw new InvalidFieldException(
 							StringHelper.format(
 								ErrorMessages.UNSUPPORTED_TYPE,
@@ -602,7 +759,9 @@ const BlubberFormFactory = {
 					}
 				}
 				return Return;
-			} else {
+			}
+			else
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						ErrorMessages.UNSUPPORTED_TYPE,
@@ -615,7 +774,8 @@ const BlubberFormFactory = {
 
 			}
 		},
-		_buildChoice: function ( Field, GeneratedField, LabelGenerator ) {
+		_buildChoice: function ( Field, GeneratedField, LabelGenerator )
+		{
 			GeneratedField.type = 'radios';
 			GeneratedField.radiosOptions = this.__addOptionProperty( Field );
 			GeneratedField.values = this.__addValueProperty(
@@ -625,21 +785,27 @@ const BlubberFormFactory = {
 				LabelGenerator
 			);
 		},
-		_buildSelect: function ( Field, GeneratedField, LabelGenerator ) {
+		_buildSelect: function ( Field, GeneratedField, LabelGenerator )
+		{
 			GeneratedField.type = 'select';
 			GeneratedField.selectOptions = this.__addOptionProperty( Field );
 
-			if ( 'noneSelectedText' in GeneratedField.selectOptions ) {
+			if ( 'noneSelectedText' in GeneratedField.selectOptions )
+			{
 				GeneratedField.selectOptions.noneSelectedText = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					GeneratedField.selectOptions.noneSelectedText
 				);
 
-				if ( ( 'hideNoneSelectedText' in GeneratedField.selectOptions ) === false ) {
+				if ( false === ( 'hideNoneSelectedText' in GeneratedField.selectOptions ) )
+				{
 					GeneratedField.selectOptions.hideNoneSelectedText = false;
 				}
-			} else {
-				if ( ( 'hideNoneSelectedText' in GeneratedField.selectOptions ) === false ) {
+			}
+			else
+			{
+				if ( false === ( 'hideNoneSelectedText' in GeneratedField.selectOptions ) )
+				{
 					GeneratedField.selectOptions.hideNoneSelectedText = true;
 				}
 			}
@@ -651,13 +817,18 @@ const BlubberFormFactory = {
 				LabelGenerator
 			);
 		},
-		_buildPick: function ( Field, GeneratedField, LabelGenerator ) {
-			if ( 'multipleItems' in Field && Field.multibleItems === true ) {
+		_buildPick: function ( Field, GeneratedField, LabelGenerator )
+		{
+			if ( 'multipleItems' in Field && true === Field.multibleItems )
+			{
 				GeneratedField.type = 'checklist';
-				if ( 'asList' in Field ) {
+				if ( 'asList' in Field )
+				{
 					GeneratedField.listBox =
                         this.__executeFunctionOrGetBool( Field.asList, Field.name );
-				} else {
+				}
+				else
+				{
 					GeneratedField.listBox = false;
 				}
 
@@ -668,12 +839,15 @@ const BlubberFormFactory = {
 					GeneratedField.checklistOptions.value,
 					LabelGenerator
 				);
-			} else {
+			}
+			else
+			{
 				GeneratedField.type = 'checkbox';
 				this.__addAutocompleteProperty( Field, GeneratedField );
 			}
 		},
-		_buildTextBlock: function ( Field, GeneratedField, LabelGenerator ) {
+		_buildTextBlock: function ( Field, GeneratedField, LabelGenerator )
+		{
 			GeneratedField.type = 'textarea';
 			this.__addAutocompleteProperty( Field, GeneratedField );
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'readonly' );
@@ -688,17 +862,21 @@ const BlubberFormFactory = {
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'minimum', 'min' );
 			this.__assignOptionalFieldNumeric( Field, GeneratedField, 'rows' );
 		},
-		_buildSubmit: function ( Field, GeneratedField, LabelGenerator ) {
+		_buildSubmit: function ( Field, GeneratedField, LabelGenerator )
+		{
 			let Mutable;
 			this.__assignOptionalFieldFunction( Field, GeneratedField, 'onSubmit' );
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'validateBeforeSubmit' );
-			if ( 'label' in Field ) {
+			if ( 'label' in Field )
+			{
 				Mutable = this.__executeFunctionOrGetString( Field.label, Field.name );
 				GeneratedField.buttonText = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					Mutable
 				);
-			} else {
+			}
+			else
+			{
 				GeneratedField.buttonText = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					Field.name
@@ -708,40 +886,54 @@ const BlubberFormFactory = {
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'isVisible', 'visible' );
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'isDisabled', 'disabled' );
 		},
-		__addCommonRequiredProperties: function ( Field, GeneratedField, LabelGenerator ) {
+		__addCommonRequiredProperties: function ( Field, GeneratedField, LabelGenerator )
+		{
 			let Mutable;
-			if ( 'label' in Field ) {
+			if ( 'label' in Field )
+			{
 				Mutable = this.__executeFunctionOrGetString( Field.label, Field.name );
 				GeneratedField.label = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					Mutable
 				);
-			} else {
+			}
+			else
+			{
 				GeneratedField.label = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					Field.name
 				);
 			}
 
-			if ( 'storesIn' in Field ) {
-				if ( 'prefix' in Field ) {
+			if ( 'storesIn' in Field )
+			{
+				if ( 'prefix' in Field )
+				{
 					GeneratedField.model = `${Field.prefix }.
 					                        ${ this.__executeFunctionOrGetString( Field.storesIn, Field.Name ) }`;
-				} else {
+				}
+				else
+				{
 					GeneratedField.model = this.__executeFunctionOrGetString(
 						Field.storesIn,
 						Field.Name
 					);
 				}
-			} else {
-				if ( 'prefix' in Field ) {
+			}
+			else
+			{
+				if ( 'prefix' in Field )
+				{
 					GeneratedField.model = `${Field.prefix }.${ Field.name}`;
-				} else {
+				}
+				else
+				{
 					GeneratedField.model = Field.name;
 				}
 			}
 		},
-		__addCommonOptionalProperties: function ( Field, GeneratedField, LabelGenerator ) {
+		__addCommonOptionalProperties: function ( Field, GeneratedField, LabelGenerator )
+		{
 			let Mutable;
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'isVisible', 'visible' );
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'isDisabled', 'disabled' );
@@ -749,8 +941,10 @@ const BlubberFormFactory = {
 			this.__assignOptionalFieldBoolean( Field, GeneratedField, 'isRequired', 'required' );
 			this.__assignOptionalFieldString( Field, GeneratedField, 'defaultValue', 'default' );
 
-			if ( 'styleClasses' in Field ) {
-				if ( Array.isArray( Field.styleClasses ) === false && typeof Field.styleClasses !== 'string' ) {
+			if ( 'styleClasses' in Field )
+			{
+				if ( false === Array.isArray( Field.styleClasses ) && 'string' !== typeof Field.styleClasses )
+				{
 					throw new InvalidFieldException(
 						StringHelper.format(
 							ErrorMessages.UNSUPPORTED_TYPE,
@@ -761,9 +955,13 @@ const BlubberFormFactory = {
 						)
 					);
 
-				} else if ( Array.isArray( Field.styleClasses ) === true ) {
-					for ( Mutable in Field.styleClasses ) {
-						if ( typeof Field.styleClasses[ Mutable ] !== 'string' ) {
+				}
+				else if ( true === Array.isArray( Field.styleClasses ) )
+				{
+					for ( Mutable in Field.styleClasses )
+					{
+						if ( 'string' !== typeof Field.styleClasses[ Mutable ] )
+						{
 							throw new InvalidFieldException(
 								StringHelper.format(
 									ErrorMessages.UNSUPPORTED_TYPE,
@@ -781,7 +979,8 @@ const BlubberFormFactory = {
 			this.__assignOptionalPlaceholderOrLabelString( LabelGenerator, Field, GeneratedField, 'help' );
 			this.__assignOptionalPlaceholderOrLabelString( LabelGenerator, Field, GeneratedField, 'hint' );
 
-			if ( 'buttons' in Field ) {
+			if ( 'buttons' in Field )
+			{
 				GeneratedField.buttons = this.__addButtons(
 					Field.buttons,
 					Field.name,
@@ -794,17 +993,21 @@ const BlubberFormFactory = {
 			this.__assignOptionalFieldFunction( Field, GeneratedField, 'afterChanged', 'onChanged' );
 			this.__assignOptionalFieldFunction( Field, GeneratedField, 'afterValidated' );
 		},
-		_buildField: function ( Field, LabelGenerator ) {
+		_buildField: function ( Field, LabelGenerator )
+		{
 			const GeneratedField = {};
 
-			if ( 'class' in Field ) {
+			if ( 'class' in Field )
+			{
 				Field.styleClasses = Field.class;
 				delete Field.class;
 			}
 
 			// common required properties
-			if ( 'prefix' in Field ) {
-				if ( Field.prefix !== 'string' ) {
+			if ( 'prefix' in Field )
+			{
+				if ( 'string' !== Field.prefix )
+				{
 					throw new InvalidFieldException(
 						StringHelper.format(
 							ErrorMessages.UNSUPPORTED_TYPE,
@@ -817,30 +1020,48 @@ const BlubberFormFactory = {
 				}
 			}
 
-			if ( 'name' in Field ) {
-				if ( 'prefix' in Field ) {
+			if ( 'name' in Field )
+			{
+				if ( 'prefix' in Field )
+				{
 					GeneratedField.id = `${Field.prefix }.${ Field.name}`;
-				} else {
+				}
+				else
+				{
 					GeneratedField.id = Field.name;
 				}
-			} else {
+			}
+			else
+			{
 				throw new InvalidFieldException( ErrorMessages.NO_NAME );
 			}
 			// specific  properties
 			Field.type = Field.type.toLowerCase();
-			if ( Field.type === 'choise' ) {
+			if ( 'choise' === Field.type )
+			{
 				this._buildChoice( Field, GeneratedField, LabelGenerator );
-			} else if ( Field.type === 'select' ) {
+			}
+			else if ( 'select' === Field.type )
+			{
 				this._buildSelect( Field, GeneratedField, LabelGenerator );
-			} else if ( Field.type === 'pick' ) {
+			}
+			else if ( 'pick' === Field.type )
+			{
 				this._buildPick( Field, GeneratedField, LabelGenerator );
-			} else if ( Field.type === 'textBlock' ) {
+			}
+			else if ( 'textBlock' === Field.type )
+			{
 				this._buildTextBlock( Field, GeneratedField, LabelGenerator );
-			} else if ( Field.type === 'submit' ) {
+			}
+			else if ( 'submit' === Field.type )
+			{
 				this._buildSubmit( Field, GeneratedField, LabelGenerator );
 				return GeneratedField;
-			} /* futher types should be placed here */ else {
-				if ( Field.type !== 'label' ) {
+			}
+			/* futher types should be placed here */ else
+			{
+				if ( 'label' !== Field.type )
+				{
 					this._buildInputField( Field, GeneratedField, LabelGenerator );
 				}
 			}
@@ -850,49 +1071,69 @@ const BlubberFormFactory = {
 
 			return GeneratedField;
 		},
-		_buildModel: function ( FieldModel, MultipleValues = false ) {
+		_buildModel: function ( FieldModel, MultipleValues = false )
+		{
 			let Chunks, Index;
 
 			let Self = this.$data.blubberModel[ this.$data.currentFormId ];
 
-			if ( FieldModel.includes( '.' ) === true ) {
+			if ( true === FieldModel.includes( '.' ) )
+			{
 				Chunks = FieldModel.split( '.' );
-				for ( Index in Chunks ) {
-					if ( Chunks[ Index ] in Self ) {
+				for ( Index in Chunks )
+				{
+					if ( Chunks[ Index ] in Self )
+					{
 						Self = Self[ Chunks[ Index ] ];
-					} else {
+					}
+					else
+					{
 						Self[ Chunks[ Index ] ] = {};
 						Self = Self[ Chunks[ Index ] ];
 					}
 				}
 
-				if ( MultipleValues === true ) {
+				if ( true === MultipleValues )
+				{
 					Self[ Chunks[ Chunks.length - 1 ] ] = [];
-				} else {
+				}
+				else
+				{
 					Self[ Chunks[ Chunks.length - 1 ] ] = '';
 				}
-			} else {
-				if ( MultipleValues === true ) {
+			}
+			else
+			{
+				if ( true === MultipleValues )
+				{
 					Self[ FieldModel ] = [];
-				} else {
+				}
+				else
+				{
 					Self[ FieldModel ] = '';
 				}
 			}
 		},
-		_buildGroup: function ( Group, LabelGenerator ) {
+		_buildGroup: function ( Group, LabelGenerator )
+		{
 			let Index, Mutable;
 			const GeneratedGroup = {};
-			if ( 'name' in Group ) {
+			if ( 'name' in Group )
+			{
 				GeneratedGroup.legend =
                     this.__getStringLabelOrPlaceholder( LabelGenerator, Group.name );
 				GeneratedGroup.id = Group.name;
-			} else {
+			}
+			else
+			{
 				throw new InvalidFieldException( ErrorMessages.NO_NAME );
 			}
 
 			GeneratedGroup.fields = [];
-			for ( Index in Group.group ) {
-				if ( 'prefix' in Group && ( 'prefix' in Group.group[ Index ] ) === false ) {
+			for ( Index in Group.group )
+			{
+				if ( 'prefix' in Group && false === ( 'prefix' in Group.group[ Index ] ) )
+				{
 					Group.fields[ Index ].prefix = Group.prefix;
 				}
 
@@ -903,12 +1144,15 @@ const BlubberFormFactory = {
 
 			return GeneratedGroup;
 		},
-		_buildDynamicField: function ( Field, LabelGenerator ) {
+		_buildDynamicField: function ( Field, LabelGenerator )
+		{
 			let GeneratedFields = {};
 			this.__assignOptionalFieldFunction( Field, GeneratedFields, 'bind' );
 			GeneratedFields = GeneratedFields.bind();
-			if ( Array.isArray( GeneratedFields ) === true ) {
-				if ( 'prefix' in Field ) {
+			if ( true === Array.isArray( GeneratedFields ) )
+			{
+				if ( 'prefix' in Field )
+				{
 					return [
 						this._buildFields(
 							GeneratedFields,
@@ -918,7 +1162,9 @@ const BlubberFormFactory = {
 						null,
 						null
 					];
-				} else {
+				}
+				else
+				{
 					return [
 						this._buildFields(
 							GeneratedFields,
@@ -928,41 +1174,58 @@ const BlubberFormFactory = {
 						null
 					];
 				}
-			} else {
-				if ( 'prefix' in Field ) {
+			}
+			else
+			{
+				if ( 'prefix' in Field )
+				{
 					GeneratedFields.prefix = Field.prefix;
 				}
 
-				if ( 'group' in GeneratedFields ) {
+				if ( 'group' in GeneratedFields )
+				{
 					return [ null, this._buildGroup( GeneratedFields, LabelGenerator ), null ];
-				} else {
+				}
+				else
+				{
 					return [ null, null, this._buildField( GeneratedFields, LabelGenerator ) ];
 				}
 			}
 		},
-		_buildFields: function ( Fields, LabelGenerator ) {
+		_buildFields: function ( Fields, LabelGenerator )
+		{
 			let GeneratedFields = [];
 			const GeneratedGroups = [];
 			const Model = {};
 			const Return = {};
 			let FieldIndex, Mutable;
 
-			for ( FieldIndex in Fields ) {
-				if ( 'bind' in Fields[ FieldIndex ] ) {
+			for ( FieldIndex in Fields )
+			{
+				if ( 'bind' in Fields[ FieldIndex ] )
+				{
 					Mutable = this._buildDynamicField(
 						Fields[ FieldIndex ],
 						Model,
 						LabelGenerator
 					);
-					if ( Mutable[ 1 ] === null && Mutable[ 2 ] === null ) {
+					if ( null === Mutable[ 1 ] && null === Mutable[ 2 ] )
+					{
 						GeneratedFields = GeneratedFields.concat( Mutable );
-					} else if ( Mutable[ 0 ] === null && Mutable[ 2 ] === null ) {
+					}
+					else if ( null === Mutable[ 0 ] && null === Mutable[ 2 ] )
+					{
 						GeneratedGroups.push( Mutable );
-					} else {
+					}
+					else
+					{
 						Mutable = this._buildField( Fields[ FieldIndex ], LabelGenerator );
-						if ( 'multi' in Mutable ) {
+						if ( 'multi' in Mutable )
+						{
 							this._buildModel( Mutable.model, Mutable.multi );
-						} else {
+						}
+						else
+						{
 							this._buildModel( Mutable.model );
 						}
 
@@ -971,7 +1234,8 @@ const BlubberFormFactory = {
 					continue;
 				}
 
-				if ( 'group' in Fields[ FieldIndex ] ) {
+				if ( 'group' in Fields[ FieldIndex ] )
+				{
 					GeneratedGroups.push(
 						this._buildGroup( Fields[ FieldIndex ], LabelGenerator )
 					);
@@ -979,31 +1243,38 @@ const BlubberFormFactory = {
 				}
 
 				Mutable = this._buildField( Fields[ FieldIndex ], LabelGenerator );
-				if ( 'multi' in Mutable ) {
+				if ( 'multi' in Mutable )
+				{
 					this._buildModel( Mutable.model, Mutable.multi );
-				} else {
+				}
+				else
+				{
 					this._buildModel( Mutable.model );
 				}
 
 				GeneratedFields.push( Mutable );
 			}
 
-			if ( ObjectHelper.isEmpty( GeneratedFields ) === false ) {
+			if ( false === ObjectHelper.isEmpty( GeneratedFields ) )
+			{
 				Return.fields = GeneratedFields;
 			}
 
-			if ( ObjectHelper.isEmpty( GeneratedGroups ) === false ) {
+			if ( false === ObjectHelper.isEmpty( GeneratedGroups ) )
+			{
 				Return.groups = GeneratedGroups;
 			}
 
 			return Return;
 		},
-		__addDescription: function ( createElement, Step, LabelGenerator ) {
+		__addDescription: function ( createElement, Step, LabelGenerator )
+		{
 			const DescriptionText = this.__getStringLabelOrPlaceholder(
 				LabelGenerator,
 				Step.description
 			);
-			if ( StringHelper.isEmpty( DescriptionText ) === false ) {
+			if ( false === StringHelper.isEmpty( DescriptionText ) )
+			{
 				return createElement( 'div',
 					{
 						attr: {
@@ -1014,19 +1285,25 @@ const BlubberFormFactory = {
 							innerHTML: DescriptionText
 						}
 					} );
-			} else {
+			}
+			else
+			{
 				return '';
 			}
 		},
-		__buildVueGenerator: function ( createElement, Step, LabelGenerator ) {
+		__buildVueGenerator: function ( createElement, Step, LabelGenerator )
+		{
 			let Options;
 			const Index = this.$data.blubberFormSchema[ this.$data.currentFormId ].length;
 			const GeneratedStep = this._buildFields( Step.fields, LabelGenerator );
 			this.$data.blubberFormSchema[ this.$data.currentFormId ].push( GeneratedStep );
 
-			if ( 'options' in Step ) {
+			if ( 'options' in Step )
+			{
 				Options = Step.options;
-			} else {
+			}
+			else
+			{
 				Options = {};
 			}
 
@@ -1041,26 +1318,34 @@ const BlubberFormFactory = {
 					}
 				} );
 		},
-		_buildStep: function ( createElement, Step, LabelGenerator ) {
+		_buildStep: function ( createElement, Step, LabelGenerator )
+		{
 			let Title, Icon, Mutable;
 			const BeforeChange = {};
 			const Description = this.__addDescription( createElement, Step, LabelGenerator );
 			const VueGenerator = this.__buildVueGenerator( createElement, Step, LabelGenerator );
 
-			if ( 'label' in Step ) {
+			if ( 'label' in Step )
+			{
 				Mutable = this.__executeFunctionOrGetString( Step.label, Step[ '"name"' ] );
 				Title = this.__getStringLabelOrPlaceholder( LabelGenerator, Mutable );
-			} else {
+			}
+			else
+			{
 				Title = this.__getStringLabelOrPlaceholder( LabelGenerator, Step.name );
 			}
 
-			if ( 'icon' in Step ) {
+			if ( 'icon' in Step )
+			{
 				Icon = Step.icon;
-			} else {
+			}
+			else
+			{
 				Icon = '';
 			}
 
-			if ( 'beforeChange' in Step ) {
+			if ( 'beforeChange' in Step )
+			{
 				this.__assignOptionalFieldFunction( Step, BeforeChange, 'beforeChange' );
 				return createElement( 'tab-content',
 					{
@@ -1075,7 +1360,9 @@ const BlubberFormFactory = {
 					},
 					[ Description, VueGenerator ]
 				);
-			} else {
+			}
+			else
+			{
 				return createElement( 'tab-content',
 					{
 						attr: {
@@ -1098,13 +1385,15 @@ const BlubberFormFactory = {
 			FormProperties,
 			Steps,
 			LabelGenerator
-		) {
+		)
+		{
 			let StepIndex, LabelString, LabelIndex;
 			const Tabs = [];
 			// set formproperties and add labels
 			const FormPropertiesLabels = [ 'subtitle', 'nextButtonText', 'backButtonText', 'finishButtonText' ];
 
-			if ( typeof FormId !== 'string' || StringHelper.isEmpty( FormId ) === true ) {
+			if ( 'string' !== typeof FormId || true === StringHelper.isEmpty( FormId ) )
+			{
 				throw new TypeErrorException(
 					StringHelper.format(
 						ErrorMessages.IVALID_TOP_ITEM,
@@ -1116,7 +1405,8 @@ const BlubberFormFactory = {
 
 			}
 
-			if ( typeof LabelGenerator !== 'function' ) {
+			if ( 'function' !== typeof LabelGenerator )
+			{
 				throw new TypeErrorException(
 					StringHelper.format(
 						ErrorMessages.IVALID_TOP_ITEM,
@@ -1128,13 +1418,17 @@ const BlubberFormFactory = {
 
 			}
 
-			if ( typeof FormAttributes !== 'object' ) {
+			if ( 'object' !== typeof FormAttributes )
+			{
 				FormAttributes = { id: FormId };
-			} else {
+			}
+			else
+			{
 				FormAttributes.id = FormId;
 			}
 
-			for ( LabelIndex in FormPropertiesLabels ) {
+			for ( LabelIndex in FormPropertiesLabels )
+			{
 				LabelString = this.__getStringLabelOrPlaceholder(
 					LabelGenerator,
 					FormProperties[ FormPropertiesLabels[ LabelIndex ] ],
@@ -1146,7 +1440,8 @@ const BlubberFormFactory = {
 			this.$data.blubberModel[ FormId ] = {};
 			this.$data.currentFormId = FormId;
 
-			for ( StepIndex in Steps ) {
+			for ( StepIndex in Steps )
+			{
 				Tabs.push( this._buildStep( createElement, Steps[ StepIndex ], LabelGenerator ) );
 			}
 
@@ -1157,7 +1452,8 @@ const BlubberFormFactory = {
 
 		}
 	},
-	data: function () {
+	data: function ()
+	{
 		return { currentFormId: '', blubberModel: {}, blubberFormSchema: {} };
 	}
 };

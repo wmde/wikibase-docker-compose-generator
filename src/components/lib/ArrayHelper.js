@@ -1,14 +1,18 @@
 import TypeErrorException from './BaseExceptions';
 import ObjectHelper from './ObjectHelper';
 
-class ArrayHelper {
-	static isEmpty( Arr ) {
-		return Arr.length === 0;
+class ArrayHelper
+{
+	static isEmpty( Arr )
+	{
+		return 0 === Arr.length;
 	}
 
-	static copyArray( Arr, Depth = -1 ) {
+	static copyArray( Arr, Depth = -1 )
+	{
 
-		if ( Array.isArray( Arr ) === false ) {
+		if ( false === Array.isArray( Arr ) )
+		{
 			throw new TypeErrorException(
 				`Expected array got ${ typeof arguments[ 0 ] } at argument 0.`
 			);
@@ -16,35 +20,45 @@ class ArrayHelper {
 		return ObjectHelper.copyObj( Arr, Depth );
 	}
 
-	static mergeArray() {
+	static mergeArray()
+	{
 		let Index, Key, ToMerge, MergedArray;
 
-		if ( arguments.length === 0 ) {
+		if ( 0 === arguments.length )
+		{
 			return null;
 		}
-		if ( arguments.length === 1 ) {
+		if ( 1 === arguments.length )
+		{
 			return arguments[ 0 ];
 		}
 
-		if ( Array.isArray( arguments[ 0 ] ) === false ) {
+		if ( false === Array.isArray( arguments[ 0 ] ) )
+		{
 			throw new TypeErrorException(
 				`Expected array got ${ typeof arguments[ 0 ] } at argument 0.`
 			);
 		}
 
 		MergedArray = ObjectHelper.copyObj( arguments[ 0 ] );// eslint-disable-line
-		for ( Index = 1; arguments.length < Index; Index++ ) {
+		for ( Index = 1; arguments.length < Index; Index++ )
+		{
 			ToMerge = arguments[ Index ];
-			if ( Array.isArray( arguments[ Index ] ) === false ) {
+			if ( false === Array.isArray( arguments[ Index ] ) )
+			{
 				throw new TypeErrorException(
 					`Expected array got ${ typeof ToMerge } at argument ${ Index }.`
 				);
 			}
 
-			for ( Key in ToMerge ) {
-				if ( typeof ToMerge !== 'object' ) {
+			for ( Key in ToMerge )
+			{
+				if ( 'object' !== typeof ToMerge )
+				{
 					MergedArray.push( ToMerge[ Key ] );
-				} else {
+				}
+				else
+				{
 					MergedArray.push( ObjectHelper.copyObj( ToMerge[ Key ] ) );
 				}
 			}

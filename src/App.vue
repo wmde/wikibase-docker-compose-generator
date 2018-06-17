@@ -1,18 +1,20 @@
 <script>
-import BlubberFormFactory from './components/BlubberFormFactory.js';
-import Utils from './components/Utils.js';
-import Language from './components/Language.js';
+import BlubberFormFactory from './components/BlubberFormFactory';
+import Utils from './Utils';
+import Language from './components/Language';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
-import ObjectHelper from './components/ObjectHelper';
+import ObjectHelper from './components/lib/ObjectHelper';
 
 export default {
 	name: 'Blubber',
 	mixins: [ BlubberFormFactory, Language ],
-	render: function ( createElement ) {
+	render: function ( createElement )
+	{
 		return this.buildApplication( createElement );
 	},
 	template: '<div><BlubberFormFactory/></div>',
-	data: function () {
+	data: function ()
+	{
 		const Return = {};
 		Return.buildForm = false;
 		Return.blubberGeneratorSteps = {};
@@ -20,34 +22,40 @@ export default {
 		Return.blubberGeneratorFormStyle = {};
 		return Return;
 	},
-	mounted: function () {
+	mounted: function ()
+	{
 		this.getDefaultLanguage();
 		Utils.waitUntil( this._languageIsLoaded );
 		this.getConfiguration();
 	},
 	methods: {
-		getConfiguration: function () {
-			Utils.get( './data/config.json', this.evaluateConfiguration );
+		getConfiguration: function ()
+		{
+			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
-		evaluateConfiguration: function ( Configuration ) {
+		evaluateConfiguration: function ( Configuration )
+		{
 			this.$data.blubberGeneratorSteps = Configuration.steps;
 			this.$data.blubberGeneratorFormProperties = Configuration.form;
 			this.$data.blubberFormId = Configuration.name;
 			this.$data.buildForm = true;
-			this.updateTemplate();
-		},
-		updateTemplate: function () {
 			this.$forceUpdate();
 		},
-		getI18nStrings: function ( Key, LanguageCode ) {
+		getI18nStrings: function ( Key, LanguageCode )
+		{
 			return this.$data.i18n.tc( Key, LanguageCode );
 		},
-		buildApplication: function ( createElement ) {
-			if ( this.$data.buildForm === false ) {
+		buildApplication: function ( createElement )
+		{
+			if ( false === this.$data.buildForm )
+			{
 				return createElement( 'div', { attrs: { id: 'application' } }, createElement( BlubberFormFactory, {}, '' ) );
-			} else {
+			}
+			else
+			{
 				let I18n = null;
-				if ( typeof this.$data.i18n !== 'undefined' ) {
+				if ( 'undefined' !== typeof this.$data.i18n )
+				{
 					I18n = this.getI18nStrings;
 				}
 				const Element = this.buildBlubberForm(
@@ -61,8 +69,9 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-		showPassword: function () {
-
+		showPassword: function ()
+		{
+            alert('gi')
 		}
 	}
 };
