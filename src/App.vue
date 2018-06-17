@@ -69,7 +69,7 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-		showPassword: function ()
+		showGi: function ()
 		{
             alert('gi')
 		}

@@ -2,10 +2,10 @@
     "name": "BlubberForm",
     "form": {
           "title":"Blubber",
-          "subtitle": "blub_subtitle",
-          "nextButtonText": "blub_nextButton",
-          "backButtonText": "blub_backButton",
-          "finishButtonText" : "blub_finishButton",
+          "subtitle": "subtitle",
+          "nextButtonText": "nextButton",
+          "backButtonText": "backButton",
+          "finishButtonText" : "finishButton",
           "stepSize": "md",
           "shape": "circle",
           "color": "#000000",
@@ -14,8 +14,8 @@
           "startIndex": 0
     },
     "steps":[{
-            "name":"blub_installLanguageSetting",
-            "description": "blub_installLanguageSetting_description",
+            "name":"installLanguageSetting",
+            "description": "installLanguageSetting_description",
             "icon": "settings",
             "options": {
                 "validationErrorClass": "has-error",
@@ -23,19 +23,19 @@
                 "validateAfterChanged": true
             },
             "fields":[{
-                    "name": "blub_installLanguage",
+                    "name": "installLanguage",
                     "type": "select",
                     "default": "en",
                     "required": true,
                     "values": [
-                        {"value": "en", "label":"blub_languageOption_english" },
-                        {"value": "de", "label":"blub_languageOption_german" }
+                        {"value": "en", "label":"languageOption_english" },
+                        {"value": "de", "label":"languageOption_german" }
                     ]
                 }
             ]
         },{
-            "name":"blub_generalSetting",
-            "description": "blub_generalSetting_description",
+            "name":"generalSetting",
+            "description": "generalSetting_description",
             "icon": "settings",
             "options": {
                     "validationErrorClass": "has-error",
@@ -43,40 +43,40 @@
                     "validateAfterChanged": true
             },
             "fields":[{
-                    "name": "blub_settingLanguage",
+                    "name": "settingLanguage",
                     "type": "select",
                     "default": "en",
                     "required": true,
                     "values": [
-                        {"value": "en", "label":"blub_languageOption_english" },
-                        {"value": "de", "label":"blub_languageOption_german" }
+                        {"value": "en", "label":"languageOption_english" },
+                        {"value": "de", "label":"languageOption_german" }
                     ]
                 },
                 {
-                    "name": "blub_downloadDefault",
+                    "name": "downloadDefault",
                     "type": "choise",
                     "default": false,
                     "values": [
-                        {"value": true, "label":"blub_choise_yes"},
-                        {"value": false, "label":"blub_choise_no"}
+                        {"value": true, "label":"choise_yes"},
+                        {"value": false, "label":"choise_no"}
                     ],
                     "required" : true
                 },
                 {
-                    "name": "blub_expertMode",
+                    "name": "expertMode",
                     "type": "choise",
                     "default": false,
                     "values": [
-                        {"value": true, "label":"blub_choise_yes"},
-                        {"value": false, "label":"blub_choise_no"}
+                        {"value": true, "label":"choise_yes"},
+                        {"value": false, "label":"choise_no"}
                     ],
                     "required": true
                 }],
               "advance":"",
               "template": ""
         },{
-              "name":"blub_wikibase",
-              "description": "blub_wikibase_description",
+              "name":"wikibase",
+              "description": "wikibase_description",
               "icon": "settings",
               "options": {
                   "validationErrorClass": "has-error",
@@ -84,16 +84,16 @@
                   "validateAfterChanged": true
               },
               "fields":[{
-                  "name": "blub_wikiBaseGeneral",
+                  "name": "wikiBaseGeneral",
                   "group": [{
-                          "name": "blub_wikibaseServiceAlias",
+                          "name": "wikibaseServiceAlias",
                           "type": "text",
                           "default": "",
                           "required": false,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibasePort",
+                          "name": "wikibasePort",
                           "type": "number",
                           "default": "",
                           "help": "",
@@ -102,66 +102,66 @@
                       }
                   ]
               },{
-                  "name": "blub_wikibaseDatabase",
+                  "name": "wikibaseDatabase",
                   "group": [{
-                          "name": "blub_wikibaseDatabaseHost",
+                          "name": "wikibaseDatabaseHost",
                           "type": "text",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibaseDatabasePort",
+                          "name": "wikibaseDatabasePort",
                           "type": "number",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibaseDatabaseName",
+                          "name": "wikibaseDatabaseName",
                           "type": "text",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibaseDatabaseUser",
+                          "name": "wikibaseDatabaseUser",
                           "type": "text",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibaseDatabaseUserPassword",
+                          "name": "wikibaseDatabaseUserPassword",
                           "type": "password",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": "",
                           "buttons": {
-                              "label": "blub_showPassword",
-                              "action": "showPassword"
+                              "label": "showPassword",
+                              "action": "showGi"
                           }
                       }
                   ]
               },{
-                  "name": "blub_wikibaseMediawiki",
+                  "name": "wikibaseMediawiki",
                   "group": [{
-                          "name": "blub_wikibaseMediawikiSiteName",
+                          "name": "wikibaseMediawikiSiteName",
                           "type": "text",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibaseMediawikiAdminName",
+                          "name": "wikibaseMediawikiAdminName",
                           "type": "text",
                           "default": "",
                           "required": true,
                           "help": "",
                           "hint": ""
                       },{
-                          "name": "blub_wikibaseMediawikiAdminPassword",
+                          "name": "wikibaseMediawikiAdminPassword",
                           "type": "password",
                           "default": "",
                           "required": true,
@@ -174,8 +174,8 @@
             "advance":"",
             "template": ""
         },{
-            "name": "blub_wikibaseBlazegraph",
-            "description": "blub_wikibaseBlazegraph_description",
+            "name": "wikibaseBlazegraph",
+            "description": "wikibaseBlazegraph_description",
             "icon": "settings",
             "options": {
                 "validationErrorClass": "has-error",
@@ -183,7 +183,7 @@
                 "validateAfterChanged": true
             },
             "fields":[{
-                    "name": "blub_wikibaseBlazegraphAlias ",
+                    "name": "wikibaseBlazegraphAlias ",
                     "type": "text",
                     "default": "",
                     "required": false,
@@ -191,7 +191,7 @@
                     "hint": ""
 
                 },{
-                    "name": "blub_wikibaseBlazegraphPort ",
+                    "name": "wikibaseBlazegraphPort ",
                     "type": "number",
                     "default": "",
                     "required": true,

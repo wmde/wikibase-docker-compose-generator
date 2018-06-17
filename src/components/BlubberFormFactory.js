@@ -10,8 +10,6 @@ import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 Vue.use( VueFormWizard );
 Vue.use( VueFormGenerator );
 
-const FunctionReg = [];
-
 class InvalidFieldException extends BaseException
 {
 	constructor( Message )
@@ -77,7 +75,6 @@ const BlubberFormFactory = {
 		)
 		{
 			let Self;
-
 			if ( 'function' === typeof IsTypeOrFunction )
 			{
 				if ( true === ReturnPureFunction )
@@ -111,8 +108,7 @@ const BlubberFormFactory = {
 						{
 							if ( true === ReturnPureFunction )
 							{
-								FunctionReg.push( Self );
-								return FunctionReg[ FunctionReg.length - 1 ];
+								return Self;
 							}
 							IsTypeOrFunction = Self( FieldName );
 						}
