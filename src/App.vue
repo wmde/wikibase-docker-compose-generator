@@ -71,7 +71,7 @@ export default {
 		},
 		showGi: function ()
 		{
-            alert('gi')
+
 		}
 	}
 };
