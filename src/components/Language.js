@@ -1,16 +1,16 @@
-<script>
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import Utils from './Utils';
 
 Vue.use( VueI18n );
 
-Vue.mixin( {
-	methods:
-	{
+const BlubberLanguage = {
+	methods: {
 		getDefaultLanguage: function () {
 			this.getLanguage( 'en' );
 		},
 		getLanguage: function ( LanguageCode ) {
+			this.$data.i18n = null;
 			if ( 'languages' in this.$data ) {
 				if ( LanguageCode in this.$data.currentLanguages ) {
 					this.$data.i18n = new VueI18n(
@@ -21,11 +21,11 @@ Vue.mixin( {
 						} );
 					return;
 				} else {
-					this.get( `./data/lang/${LanguageCode}.json`, this._languageHook );
+					Utils.get( `./data/lang/${LanguageCode}.json`, this.__languageHook );
 				}
 			}
 		},
-		_languageHook: function ( Response ) {
+		__languageHook: function ( Response ) {
 			const Key = Response.key;
 			delete Response.key;
 			this.$data.languages[ Key ] = Response;
@@ -36,6 +36,9 @@ Vue.mixin( {
 					fallbackLocale: this.$data.fallbackLanguage,
 					messages: this.$data.languages
 				} );
+		},
+		_languageIsLoaded: function () {
+			return this.$data.i18n === null;
 		}
 	},
 	data: function () {
@@ -46,10 +49,6 @@ Vue.mixin( {
 		Return.i18n = null;
 		return Return;
 	}
-} );
-
-export default
-{
-	name: 'BlubberLanguage'
 };
-</script>
+
+export default BlubberLanguage;
