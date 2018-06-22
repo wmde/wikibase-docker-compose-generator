@@ -5,7 +5,7 @@
   "author": "Matthias Geisler <matthias.geisler@wikimedia.de>",
   "private": true,
   "scripts": {
-    "host": "webpack-dev-server  --inline --progress --public http://10.68.20.205:8080 --config build/webpack.dev.conf.js ",
+    "host": "webpack-dev-server  --inline --progress --config build/webpack.dev.conf.js ",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "test": "jest",
