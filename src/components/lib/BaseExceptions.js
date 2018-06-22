@@ -4,7 +4,7 @@ export class BaseException extends Error
 	{
 		super( Message );
 		this.Name = Name;
-		console.trace();// eslint-disable-line
+        console.trace();// eslint-disable-line
 	}
 }
 
@@ -37,6 +37,14 @@ export class AssertionErrorException extends BaseException
 	constructor( Message )
 	{
 		super( 'AssertionErrorException', Message );
+	}
+}
+
+export class NotImplementedException extends BaseException
+{
+	constructor( What )
+	{
+		super( 'NotImplementedException', `${What} is not implemented (yet).` );
 	}
 }
 
