@@ -22,14 +22,14 @@ export class SubmitField extends CommonRequiredAttributes
         let Mutable;
         if ( this._Field.hasOwnProperty( 'label' ) )
         {
-            Mutable = this._executeFunctionOrGetString( Field.label );
+            Mutable = this._executeFunctionOrGetString( this._Field.label );
             this._GeneratedField.buttonText = this._getStringLabelOrPlaceholder(
                 Mutable
             );
         }
         else
         {
-            Mutable = this._executeFunctionOrGetString( Field.name );
+            Mutable = this._executeFunctionOrGetString( this._Field.name );
             this._GeneratedField.buttonText = this._getStringLabelOrPlaceholder(
                 Mutable
             );

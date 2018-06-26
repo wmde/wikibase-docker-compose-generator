@@ -94,7 +94,7 @@ export class FieldBase
         let ValueType = FieldBase.__ALLOWED_TYPES__.indexOf( ( typeof Value ) );
         if ( -1 === ValueType )
         {
-            throw new InvalidFieldException(
+            throw new InvalidFieldValueException(
                 StringHelper.format(
                     FieldBase.__UNSUPPORTED_TYPE__,
                     ValueType,
@@ -159,7 +159,7 @@ export class FieldBase
             return Value;
         }
 
-        throw new InvalidFieldException(
+        throw new InvalidFieldValueException(
             StringHelper.format(
                 FieldBase.__UNSUPPORTED_TYPE__,
                 ValueType,
@@ -639,7 +639,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
         if ( 'object' === typeof InsideButtons )
         {
-            Buttons.push( this.__wrapInsideButton( InsideButtons );
+            Buttons.push( this.__wrapInsideButton( InsideButtons ) );
         }
         else if ( true === Array.isArray( InsideButtons ) )
         {
