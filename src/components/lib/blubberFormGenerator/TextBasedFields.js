@@ -73,6 +73,7 @@ export class EmailField extends TextIputFields
         if ( this._GeneratedField.hasOwnProperty( 'multiple' ) )
         {
             this._GeneratedField.multi = this._GeneratedField.multiple;
+            this._fieldTakesMultibleValues();
         }
     }
 }

@@ -1,7 +1,7 @@
 import StringHelper from '../StringHelper';
 import { BaseException } from '../BaseExceptions';
 import Utils from '../../../Utils';
-import CommonRequiredAttributes from "./CommonRequiredAttributes";
+import CommonRequiredAttributes from './CommonRequiredAttributes';
 /* eslint-disable operator-linebreak */
 export class InvalidFieldException extends BaseException
 {
@@ -34,6 +34,7 @@ export class FieldBase
     static __UNSUPPORTED_TYPE__ = 'Unsupported type {} in field {}{}. Expected {}.';
     static __UNKNOWN_METHOD__ = 'Unknown method {} of field {} .';
     static __NO_NAME__ = 'A given field has no name property';
+    static __NO_BINDED_OBJECT__ = 'The given Field {} has is no pairing.';
     /*Class Constant*/
     static __IS_ANY__ = 0x0;
     static __IS_BOOLEAN__ = 0x1;
@@ -48,6 +49,9 @@ export class FieldBase
     _LabelGenerator;
     _GeneratedField;
     _Model;
+    __ModelKey;
+    __ModelPointer;
+    __HasDefaultValue;
 
     constructor( Field, BindedObject, Generator )
     {
@@ -56,6 +60,9 @@ export class FieldBase
         this._LabelGenerator = Generator;
         this._GeneratedField = {};
         this._Model = {};
+        this.__ModelKey = '';
+        this.__ModelPointer = null;
+        this.__HasDefaultValue = false;
     }
 
     __lookForPropertyAtVueObject( IsTypeOrFunction )
@@ -70,7 +77,7 @@ export class FieldBase
 
         for ( Index in Chunks )
         {
-            if ( Chunks[ Index ] in Self )
+            if ( true === Self.hasOwnProperty( Chunks[ Index ] ) )
             {
                 Self = Self[ Chunks[ Index ] ];
             }
@@ -91,7 +98,7 @@ export class FieldBase
     )
     {
         let Self = null;
-        let ValueType = FieldBase.__ALLOWED_TYPES__.indexOf( ( typeof Value ) );
+        let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
         if ( -1 === ValueType )
         {
             throw new InvalidFieldValueException(
@@ -121,7 +128,9 @@ export class FieldBase
                 if ( true === Value.includes( '.' ) )
                 {
                     Self = this.__lookForPropertyAtVueObject( Value );
-                    ValueType = FieldBase.__ALLOWED_TYPES__.indexOf( ( typeof Self ) );
+                    ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
+                        ( typeof Self )
+                    );
                 }
                 else if ( null !== this._BindedObject && 'function' === typeof this._BindedObject[ Value ] )
                 {
@@ -236,7 +245,7 @@ export class FieldBase
     )
     {
         let Self = null;
-        let ValueType = FieldBase.__ALLOWED_TYPES__.indexOf( ( typeof Value ) );
+        let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
         if ( -1 === ValueType )
         {
             throw new InvalidFieldException(
@@ -266,9 +275,9 @@ export class FieldBase
                 if ( true === Value.includes( '.' ) )
                 {
                     Self = this.__lookForPropertyAtVueObject( Value );
-                    ValueType = FieldBase.__ALLOWED_TYPES__.indexOf( ( typeof Self ) );
+                    ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Self ) );
                 }
-                else if ( null !== this.__BindedObject && 'function' === typeof this.__BindedObject[ Value ] )
+                else if ( null !== this._BindedObject && 'function' === typeof this._BindedObject[ Value ] )
                 {
                     Self = this._BindedObject[ Value ];
                     ValueType = FieldBase.__IS_FUNCTION__;
@@ -293,7 +302,7 @@ export class FieldBase
                     StringHelper.format(
                         FieldBase.__UNKNOWN_METHOD__,
                         Value,
-                        this.__Field.name
+                        this._Field.name
                     )
                 );
             }
@@ -402,10 +411,10 @@ export class FieldBase
         this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetBool );
     }
 
-    _assignObject( FieldLabel, AssignmentLabel = '' )
+    /*_assignObject( FieldLabel, AssignmentLabel = '' )
     {
         this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetObject );
-    }
+    }*/
 
     _assignFunction( FieldLabel, AssignmentLabel = '' )
     {
@@ -440,27 +449,93 @@ export class FieldBase
 
     _addKeyToModel( Key, Prefix = '' )
     {
-        if( 0 < Prefix )
-        {
-            if( false === this._Model.hasOwnProperty( Prefix ) )
-            {
-                this._Model[ Prefix ] = {};
-            }
+        var Index, Chunks;
+        var Self = this._Model;
 
-            this._Model = this._Model[ Prefix ];
+        if ( 0 === Key.length )
+        {
+            throw new InvalidFieldPropertyException( FieldBase.__NO_NAME__ );
         }
 
-        this._Model[ Key ] = '';
+        if ( 0 === Prefix.length )
+        {
+            Key = `${ Prefix }.${ Key }`;
+        }
+
+        if ( null === Self )
+        {
+            throw new InvalidFieldException(
+                StringHelper.format(
+                    FieldBase.__NO_BINDED_OBJECT__,
+                    this._Field.name
+                )
+            );
+        }
+
+        if ( true === Key.includes( '.' ) )
+        {
+            Chunks = Key.split( '.' );
+            this.__ModelKey = Chunks;
+            for ( Index in Chunks )
+            {
+                Self[ Chunks[ Index ] ] = {};
+                Self = Self[ Chunks[ Index ] ];
+            }
+
+            Self[ Chunks[ Chunks.length - 1 ] ] = '';
+        }
+        else
+        {
+            Self[ Key ] = '';
+            this.__ModelKey = Key;
+        }
+
+        this.__ModelPointer = Self;
     }
 
-    _addValueToModel( Key, Value )
+    _addValueToModel( Value )
     {
-        this._Model[ Key ] = Value;
+        this.__ModelPointer = Value;
+        this.__HasDefaultValue = true;
     }
 
-    _isInModel( Key )
+    _fieldTakesMultibleValues()
     {
-        return this._Model.hasOwnProperty( Key );
+        if( true === this.__HasDefaultValue )
+        {
+            this.__ModelPointer = [ this.__ModelPointer ];
+        }
+        else
+        {
+            this.__ModelPointer = [];
+        }
+    }
+
+    isInModel( Key )
+    {
+        if( true === Array.isArray( this.__ModelKey ) )
+        {
+            return this.__ModelKey.join( '' ) === Key;
+        }
+        else
+        {
+            return this.__ModelKey === Key;
+        }
+    }
+
+    hasDefalutValue()
+    {
+        return this.__HasDefaultValue;
+    }
+
+    getModel()
+    {
+        return this._Model;
+    }
+
+    getModelKey()
+    {
+        return this.__ModelKey;
     }
 }
 
@@ -480,7 +555,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
     {
         if (
             true === this._Field.hasOwnProperty( 'autocomplete' )
-            &&
+        &&
             false === this._Field.autocomplete
         )
         {
@@ -499,8 +574,8 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
             if ( true === this._Field.hasOwnProperty( 'prefix' ) )
             {
                 this._addKeyToModel(
-                    this._Field[ 'prefix' ],
-                    this._executeFunctionOrGetString( this._Field[ 'storesIn' ] )
+                    this._executeFunctionOrGetString( this._Field[ 'storesIn' ] ),
+                    this._Field[ 'prefix' ]
                 );
             }
             else
@@ -513,8 +588,8 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
             if ( 'prefix' in Field )
             {
                 this._addKeyToModel(
-                    this._Field[ 'prefix' ],
-                    this._executeFunctionOrGetString( this._Field[ 'name' ] )
+                    this._executeFunctionOrGetString( this._Field[ 'name' ] ),
+                    this._Field[ 'prefix' ]
                 );
             }
             else
@@ -535,9 +610,9 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
     {
         this._assignBoolean( 'isRequired', 'required' );
         this._assignString( 'defaultValue', 'default' );
-        if ( this._isInModel( this._Field.name ) && true === this._GeneratedField.hasOwnProperty( 'default' ) )
+        if ( true === this._GeneratedField.hasOwnProperty( 'default' ) )
         {
-            this._Model._addValueToModel( this._Field.name, this._GeneratedField.default );
+            this._Model._addValueToModel( this._GeneratedField.default );
         }
     }
 
@@ -598,17 +673,17 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
         }
     }
 
-    __wrapInsideButton( InsideButton )
+    __wrapInsideButton( Index )
     {
         let Mutable;
         const GeneratedButton = {};
 
 
-        GeneratedButton[ 'classes' ] = this._executeFunctionOrGetString( this._Field[ 'buttons' ]['class'] );
+        GeneratedButton[ 'classes' ] = this._executeFunctionOrGetString( this._Field[ 'buttons' ][ Index ]['class'] );
 
-        if ( true === this._Field.hasOwnProperty( 'label' ) )
+        if ( true ===this._Field[ 'buttons' ][ Index ].hasOwnProperty( 'label' ) )
         {
-            Mutable = this._executeFunctionOrGetString( this._Field[ 'buttons' ][' label '] );
+            Mutable = this._executeFunctionOrGetString( this._Field[ 'buttons' ][ Index ][' label '] );
             GeneratedButton.label = this._getStringLabelOrPlaceholder( Mutable );
         }
         else
@@ -621,7 +696,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
             );
         }
 
-        GeneratedButton[ 'onclick' ] = this._executeFunctionOrGetAnything( this._Field[ 'buttons' ]['action'], true );
+        GeneratedButton[ 'onclick' ] = this._executeFunctionOrGetAnything( this._Field[ 'buttons' ][ Index ]['action'], true );
         return GeneratedButton;
     }
 
@@ -648,7 +723,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
                 GeneratedButton = {};
                 if ( 'object' === typeof InsideButtons[ Index ] )
                 {
-                    GeneratedButton = this.__wrapInsideButton( InsideButtons );
+                    GeneratedButton = this.__wrapInsideButton( Index );
                     Buttons.push( GeneratedButton );
                 }
                 else
@@ -683,6 +758,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
     __addCommonOptionalProperties()
     {
+        this.__addClass();
         this.__addVisibilityType();
         this.__addMiscellaneous();
         this.__addInsideButton();

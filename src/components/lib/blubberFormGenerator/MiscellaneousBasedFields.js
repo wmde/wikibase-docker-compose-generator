@@ -1,4 +1,4 @@
-import { CommonRequiredAttributes, CommonOptionalAttributesAndMethods } from "./Base";
+import { CommonRequiredAttributes, CommonOptionalAttributesAndMethods } from './Base';
 
 export class SubmitField extends CommonRequiredAttributes
 {
@@ -6,6 +6,7 @@ export class SubmitField extends CommonRequiredAttributes
     {
         super( Field, BindedObject, Generator );
         this._addSubmitAttribute();
+        this._GeneratedField.type = 'submit';
     }
 
     _addSubmitAttribute()
@@ -70,6 +71,7 @@ export class FileField extends CommonOptionalAttributesAndMethods
         if ( true === this._GeneratedField.hasOwnProperty( 'multiple' ) )
         {
             this._GeneratedField.multi = this._GeneratedField.multiple;
+            this._fieldTakesMultibleValues();
         }
     }
 }
@@ -103,5 +105,14 @@ export class HiddenField extends CommonOptionalAttributesAndMethods
         super(Field, BindedObject, Generator);
         this._GeneratedField.type = 'input';
         this._GeneratedField.inputType = this._Field.type;
+    }
+}
+
+export class LabelField extends CommonOptionalAttributesAndMethods
+{
+    constructor( Field, BindedObject, Generator )
+    {
+        super(Field, BindedObject, Generator);
+        this._GeneratedField.type = 'label';
     }
 }

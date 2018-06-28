@@ -4,8 +4,8 @@ import {
     InvalidFieldException,
     InvalidFieldPropertyException,
     InvalidFieldValueException
-} from "./Base";
-import StringHelper from "../StringHelper";
+} from './Base';
+import StringHelper from '../StringHelper';
 
 class OptionBasedFields extends CommonOptionalAttributesAndMethods
 {
@@ -205,17 +205,20 @@ export class CheckListField extends OptionBasedFields
 
     __buildCheckList()
     {
-        if (this._Field.hasOwnProperty('asList'))
+        if ( this._Field.hasOwnProperty('asList' ))
         {
             this._GeneratedField.listBox = this._executeFunctionOrGetBool( this._Field.asList );
         }
         else
         {
             this._GeneratedField.listBox = false;
+            this._setAutocomplete();
         }
 
+        this._fieldTakesMultibleValues();
+
         this._GeneratedField.checklistOptions = this.__addOptionProperty();
-        this._GeneratedField..values = this.__addValueProperty(
+        this._GeneratedField.values = this.__addValueProperty(
             this._GeneratedField.checklistOptions.name,
             this._GeneratedField.checklistOptions.value
         );
