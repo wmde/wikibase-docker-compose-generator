@@ -3,7 +3,7 @@ import {
 	InvalidFieldException,
 	InvalidFieldPropertyException,
 	InvalidFieldValueException
-} from './Base';
+} from './FieldBase';
 import StringHelper from '../StringHelper';
 
 class OptionBasedFields extends CommonOptionalAttributesAndMethods
@@ -32,6 +32,7 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 		if ( true === this._Field.hasOwnProperty( 'values' ) )
 		{
 			Mutable = this._executeFunctionOrGetArray( this._Field.values );
+			console.log( )
 		}
 		else
 		{
@@ -118,8 +119,15 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 
 	_addOptionProperty()
 	{
-		const GeneratedProperty = {};
-		this._GeneratedField.options = GeneratedProperty;
+        let GeneratedProperty;
+        if( true === this._Field.hasOwnProperty( 'options' ) )
+        {
+            GeneratedProperty = this._executeFunctionOrGetObject(this._Field['options']);
+        }
+        else
+		{
+            GeneratedProperty = {};
+		}
 
 		if ( false === ( 'value' in GeneratedProperty ) )
 		{
@@ -130,6 +138,8 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 		{
 			GeneratedProperty.name = 'label';
 		}
+
+		return GeneratedProperty;
 	}
 }
 
@@ -165,6 +175,7 @@ export class SelectionField extends OptionBasedFields
 	__buildSelection()
 	{
 		this._GeneratedField.selectOptions = this._addOptionProperty();
+
 		this._GeneratedField.selectOptions.hideNoneSelectedText = false;
 
 		if ( true === this._GeneratedField.selectOptions.hasOwnProperty( 'noneSelectedText' ) )
@@ -186,10 +197,13 @@ export class SelectionField extends OptionBasedFields
 			}
 		}
 
-		this._GeneratedField.selectOptions.values = this._addValueProperty(
+        console.log( this._GeneratedField )
+		alert()
+
+		/*this._GeneratedField.selectOptions.values = this._addValueProperty(
 			this._GeneratedField.selectOptions.name,
 			this._GeneratedField.selectOptions.value
-		);
+		);*/
 	}
 }
 

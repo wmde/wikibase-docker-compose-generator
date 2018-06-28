@@ -1,10 +1,8 @@
 import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import VueFormWizard from 'vue-form-wizard';
-import { BaseException, TypeErrorException } from './lib/BaseExceptions';
 import StringHelper from './lib/StringHelper';
-import ObjectHelper from './lib/ObjectHelper';
-import Utils from '../Utils';
+import FormFactory from './lib/blubberFormGenerator/FormFactory';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 Vue.use( VueFormWizard );
@@ -12,7 +10,7 @@ Vue.use( VueFormGenerator );
 
 const BlubberFormFactory = {
 	methods: {
-		
+
 		__buildVueGenerator: function ( createElement, Step, LabelGenerator )
 		{
 			let Options;
@@ -100,63 +98,16 @@ const BlubberFormFactory = {
 			}
 
 		},
-		buildBlubberForm: function (
-			createElement,
-			FormId,
-			FormAttributes,
-			FormProperties,
-			Steps,
-			LabelGenerator
-		)
+		buildBlubberForm: function ( createElement, Form, LabelGenerator )
 		{
 			let StepIndex, LabelString, LabelIndex;
 			const Tabs = [];
 			// set formproperties and add labels
 			const FormPropertiesLabels = [ 'subtitle', 'nextButtonText', 'backButtonText', 'finishButtonText' ];
-
-			if ( 'string' !== typeof FormId || true === StringHelper.isEmpty( FormId ) )
-			{
-				throw new TypeErrorException(
-					StringHelper.format(
-						ErrorMessages.IVALID_TOP_ITEM,
-						'FormId',
-						typeof FormId,
-						'non empty string'
-					)
-				);
-
-			}
-
-			if ( 'function' !== typeof LabelGenerator )
-			{
-				throw new TypeErrorException(
-					StringHelper.format(
-						ErrorMessages.IVALID_TOP_ITEM,
-						'LabelGenerator',
-						typeof LabelGenerator,
-						'function'
-					)
-				);
-
-			}
-
-			if ( 'object' !== typeof FormAttributes )
-			{
-				FormAttributes = { id: FormId };
-			}
-			else
-			{
-				FormAttributes.id = FormId;
-			}
-
-			for ( LabelIndex in FormPropertiesLabels )
-			{
-				LabelString = this.__getStringLabelOrPlaceholder(
-					LabelGenerator,
-					FormProperties[ FormPropertiesLabels[ LabelIndex ] ],
-					FormProperties );
-				FormProperties[ FormPropertiesLabels[ LabelIndex ] ] = LabelString;
-			}
+			let Test = new FormFactory( Form, this, LabelGenerator );
+			Test.build();
+			console.log( Test.Form )
+			/*
 
 			this.$data.blubberFormSchema[ FormId ] = [];
 			this.$data.blubberModel[ FormId ] = {};
@@ -170,13 +121,13 @@ const BlubberFormFactory = {
 			return createElement( 'form-wizard', {
 				attrs: FormAttributes,
 				props: FormProperties
-			}, Tabs );
+			}, Tabs );*/
 
 		}
 	},
 	data: function ()
 	{
-		return { currentFormId: '', blubberModel: {}, blubberFormSchema: {} };
+		return {  blubberModel: {}, blubberFormSchema: {} };
 	}
 };
 

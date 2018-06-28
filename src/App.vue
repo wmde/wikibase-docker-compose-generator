@@ -166,11 +166,12 @@ export default {
 					I18n = this.getI18nStrings;
 				}
 				const Element = this.buildBlubberForm(
-					createElement,
-					this.$data.blubberFormId,
-					{},
-					ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
-					ObjectHelper.copyObj( this.$data.blubberGeneratorSteps ),
+                    createElement,
+                    {
+                        id: this.$data.blubberFormId,
+                        formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
+                        steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
+					},
 					I18n
 				);
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );

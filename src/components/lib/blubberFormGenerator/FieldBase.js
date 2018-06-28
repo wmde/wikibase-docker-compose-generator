@@ -30,7 +30,7 @@ export class InvalidFieldPropertyException extends BaseException
 export class FieldBase
 {
 	/* ErrorStrings*/
-	static __UNSUPPORTED_TYPE__ = 'Unsupported type {} in field {}{}. Expected {}.';
+	static __UNSUPPORTED_TYPE__ = 'Unsupported type {} in field {}. Expected {}.';
 	static __UNKNOWN_METHOD__ = 'Unknown method {} of field {} .';
 	static __NO_NAME__ = 'A given field has no name property';
 	static __NO_BINDED_OBJECT__ = 'The given Field {} has is no pairing.';
@@ -97,14 +97,16 @@ export class FieldBase
 	{
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
-		if ( -1 === ValueType )
+		console.log( Type )
+        console.log( Value )
+        console.log( ValueType )
+		if ( -1 === ValueType && FieldBase.__IS_ANY__ !== Type )
 		{
 			throw new InvalidFieldValueException(
 				StringHelper.format(
 					FieldBase.__UNSUPPORTED_TYPE__,
-					ValueType,
+                    typeof Value,
 					this._Field.name,
-					'',
 					FieldBase.__ALLOWED_TYPES__[ Type ]
 				)
 			);
@@ -147,6 +149,9 @@ export class FieldBase
 					}
 
 					Value = Self( this._Field.name );
+                    ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
+                        ( typeof Value )
+                    );
 				}
 			}
 			else if ( true === ReturnPureFunction )
@@ -169,9 +174,8 @@ export class FieldBase
 		throw new InvalidFieldValueException(
 			StringHelper.format(
 				FieldBase.__UNSUPPORTED_TYPE__,
-				ValueType,
+				typeof Value,
 				this._Field.name,
-				'',
 				FieldBase.__ALLOWED_TYPES__[ Type ]
 			)
 		);
@@ -416,23 +420,23 @@ export class FieldBase
 
 	_assignFunction( FieldLabel, AssignmentLabel = '' )
 	{
-		if ( true === this.__Field.hasOwnProperty( FieldLabel ) )
+		if ( true === this._Field.hasOwnProperty( FieldLabel ) )
 		{
-			if ( 0 === AssignmentLabel.length )
-			{
-				this._GeneratedField[ AssignmentLabel ] = this._executeFunctionOrGetAnything(
-					this._Field[ FieldLabel ],
-					true
-				);
-			}
-		}
-		else
-		{
-			this._GeneratedField[ FieldLabel ] = this._executeFunctionOrGetAnything(
-				this._Field[ FieldLabel ],
-				true
-			);
-		}
+            if (0 === AssignmentLabel.length)
+            {
+                this._GeneratedField[AssignmentLabel] = this._executeFunctionOrGetAnything(
+                    this._Field[FieldLabel],
+                    true
+                );
+            }
+            else
+            {
+                this._GeneratedField[FieldLabel] = this._executeFunctionOrGetAnything(
+                    this._Field[FieldLabel],
+                    true
+                );
+            }
+        }
 	}
 
 	_assignEmptyStringOrLabelString( FieldLabel, AssignmentLabel = '' )
@@ -670,7 +674,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addMethods()
 	{
-		this._assignFunction( 'setFormatter', 'set' );
+        this._assignFunction( 'setFormatter', 'set' );
 		this._assignFunction( 'getFormatter', 'get' );
 	}
 
@@ -678,6 +682,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	{
 		this._assignFunction( 'afterChanged', 'onChanged' );
 		this._assignFunction( 'afterValidated', 'onValidated' );
+		this._assignFunction( 'validator' );
 	}
 
 	__addClass()

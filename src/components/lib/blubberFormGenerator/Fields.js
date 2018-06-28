@@ -7,6 +7,7 @@ import StringHelper from '../StringHelper';
 import Utils from '../../../Utils';
 import ObjectHelper from '../ObjectHelper';
 /* eslint-disable operator-linebreak */
+
 export default class BlubberFields extends FieldBase
 {
 	/* ErrorStrings*/
@@ -61,29 +62,28 @@ export default class BlubberFields extends FieldBase
 
 	__addToModel( Field )
 	{
-		const CurrentModelKey = Field.getModelKey();
-		let Key, Self;
+		//const CurrentModelKey = Field.getModelKey();
+		//let Key;
 
-		if ( true === Array.isArray( CurrentModelKey ) )
+		/*if ( true === Array.isArray( CurrentModelKey ) )
 		{
-			Self = this.Model;
 			for ( Key in CurrentModelKey )
 			{
-				if ( false === Self.hasOwnProperty( Key ) )
+				if ( false === this.Model.hasOwnProperty( Key ) )
 				{
 					break;
 				}
 			}
 
-			throw new InvalidFieldPropertyException(
+			/*throw new InvalidFieldPropertyException(
 				StringHelper.format(
 					BlubberFields.__MODEL_ENTRY_EXISTS__,
-					this._Field.name
+                    CurrentModelKey
 				)
 			);
-		}
+		}*/
 
-		this.Model = ObjectHelper.mergeObj( this.__CurrentField.getModel(), this.Model );
+		this.Model = ObjectHelper.mergeObj( Field.getModel(), this.Model );
 	}
 
 	__buildDynamicField( Index )

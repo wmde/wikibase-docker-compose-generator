@@ -1,4 +1,4 @@
-import CommonOptionalAttributesAndMethods from './CommonOptionalAttributesAndMethods';
+import { CommonOptionalAttributesAndMethods } from './FieldBase';
 
 class NumericBasedFields extends CommonOptionalAttributesAndMethods
 {

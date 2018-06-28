@@ -1,4 +1,4 @@
-import { CommonRequiredAttributes, CommonOptionalAttributesAndMethods } from './Base';
+import { CommonRequiredAttributes, CommonOptionalAttributesAndMethods } from './FieldBase';
 
 export class SubmitField extends CommonRequiredAttributes
 {

@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import { CommonOptionalAttributesAndMethods } from './Base';
+import { CommonOptionalAttributesAndMethods } from './FieldBase';
 
 class TextBasedFields extends CommonOptionalAttributesAndMethods
 {

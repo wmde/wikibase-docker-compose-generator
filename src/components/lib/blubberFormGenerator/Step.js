@@ -1,4 +1,4 @@
-import { BlubberFields } from './Fields';
+import BlubberFields from './Fields';
 import Utils from '../../../Utils';
 import { InvalidFieldException } from './FieldBase';
 /* eslint-disable operator-linebreak */
