@@ -29,7 +29,7 @@ export default {
 		this.getConfiguration();
 	},
 	methods: {
-		/*getClientLanguages: function ()
+		/* getClientLanguages: function ()
 		{
 			let Index, Value, Index2;
 
