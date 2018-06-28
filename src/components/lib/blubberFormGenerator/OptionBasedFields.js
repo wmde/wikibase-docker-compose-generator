@@ -8,129 +8,129 @@ import StringHelper from '../StringHelper';
 
 class OptionBasedFields extends CommonOptionalAttributesAndMethods
 {
-    /* Errors */
-    static __NO_VALUES__ = 'The given field {} has no \'values\' property.';
-    static __CANNOT_SWITCH_VALUES__ = 'Cannot switch from automatic field definition to manual at field {}.'
+	/* Errors */
+	static __NO_VALUES__ = 'The given field {} has no \'values\' property.';
+	static __CANNOT_SWITCH_VALUES__ = 'Cannot switch from automatic field definition to manual at field {}.'
 
-    constructor( Field, BindedObject, Generator )
-    {
-    	super( Field, BindedObject, Generator );
-    }
+	constructor( Field, BindedObject, Generator )
+	{
+		super( Field, BindedObject, Generator );
+	}
 
-    __addLabel( Where, Label, AssignmentLabel )
-    {
-    	if ( Where.hasOwnProperty( Label ) )
-    	{
-    		Where[ AssignmentLabel ] = this.__getStringLabelOrPlaceholder( Where[ Label ] );
-    	}
-    }
+	__addLabel( Where, Label, AssignmentLabel )
+	{
+		if ( Where.hasOwnProperty( Label ) )
+		{
+			Where[ AssignmentLabel ] = this.__getStringLabelOrPlaceholder( Where[ Label ] );
+		}
+	}
 
-    _addValueProperty( LabelKey, ValueKey )
-    {
-    	let Mutable, GeneratedValue, ValueIndex, ValueIsString;
-    	const GeneratedValues = [];
-    	if ( true === this._Field.hasOwnProperty( 'values' ) )
-    	{
-    		Mutable = this._executeFunctionOrGetArray( Field.values );
-    	}
-    	else
-    	{
-    		throw new InvalidFieldException(
-    			StringHelper.format(
-    				OptionBasedFields.__NO_VALUES__,
-    				this._Field.name
-    			)
-    		);
-    	}
+	_addValueProperty( LabelKey, ValueKey )
+	{
+		let Mutable, GeneratedValue, ValueIndex, ValueIsString;
+		const GeneratedValues = [];
+		if ( true === this._Field.hasOwnProperty( 'values' ) )
+		{
+			Mutable = this._executeFunctionOrGetArray( this._Field.values );
+		}
+		else
+		{
+			throw new InvalidFieldException(
+				StringHelper.format(
+					OptionBasedFields.__NO_VALUES__,
+					this._Field.name
+				)
+			);
+		}
 
-    	if ( false === Array.isArray( Mutable ) )
-    	{
-    		return Mutable;
-    	}
+		if ( false === Array.isArray( Mutable ) )
+		{
+			return Mutable;
+		}
 
-    	if ( 'string' === typeof Mutable[ 0 ] )
-    	{
-    		ValueIsString = true;
-    	}
-    	else
-    	{
-    		ValueIsString = false;
-    	}
+		if ( 'string' === typeof Mutable[ 0 ] )
+		{
+			ValueIsString = true;
+		}
+		else
+		{
+			ValueIsString = false;
+		}
 
-    	for ( ValueIndex in Mutable )
-    	{
-    		if ( 'string' === typeof Mutable[ ValueIndex ] )
-    		{
-    			if ( true === ValueIsString )
-    			{
-    				GeneratedValues.push( Mutable[ ValueIndex ] );
-    			}
-    			else
-    			{
-    				throw new InvalidFieldValueException(
-    					StringHelper.format(
-    						OptionBasedFields.__CANNOT_SWITCH_VALUES__,
-    						this._Field.name
-    					)
-    				);
+		for ( ValueIndex in Mutable )
+		{
+			if ( 'string' === typeof Mutable[ ValueIndex ] )
+			{
+				if ( true === ValueIsString )
+				{
+					GeneratedValues.push( Mutable[ ValueIndex ] );
+				}
+				else
+				{
+					throw new InvalidFieldValueException(
+						StringHelper.format(
+							OptionBasedFields.__CANNOT_SWITCH_VALUES__,
+							this._Field.name
+						)
+					);
 
-    			}
-    		}
-    		else if ( 'object' === typeof Mutable[ ValueIndex ] )
-    		{
-    			if ( false !== ValueIsString )
-    			{
-    				throw new InvalidFieldValueException(
-    					StringHelper.format(
-    						OptionBasedFields.__CANNOT_SWITCH_VALUES__,
-    						this._Field.name
-    					)
-    				);
+				}
+			}
+			else if ( 'object' === typeof Mutable[ ValueIndex ] )
+			{
+				if ( false !== ValueIsString )
+				{
+					throw new InvalidFieldValueException(
+						StringHelper.format(
+							OptionBasedFields.__CANNOT_SWITCH_VALUES__,
+							this._Field.name
+						)
+					);
 
-    			}
+				}
 
-    			GeneratedValue = {};
-    			GeneratedValue[ ValueKey ] = Mutable[ ValueIndex ][ ValueKey ];
-    			this.__addLabel(
-    				GeneratedValue,
-    				Mutable[ ValueIndex ],
-    				LabelKey
-    			);
+				GeneratedValue = {};
+				GeneratedValue[ ValueKey ] = Mutable[ ValueIndex ][ ValueKey ];
+				this.__addLabel(
+					GeneratedValue,
+					Mutable[ ValueIndex ],
+					LabelKey
+				);
 
-    			GeneratedValues.push( GeneratedValue );
-    		}
-    		else
-    		{
-    			throw new InvalidFieldPropertyException(
-    				StringHelper.format(
-    					OptionBasedFields.__UNSUPPORTED_TYPE__,
-    					typeof Mutable[ ValueIndex ],
-    					this._Field.name,
-    					'at values',
-    					'object or string'
-    				)
-    			);
-    		}
-    	}
+				GeneratedValues.push( GeneratedValue );
+			}
+			else
+			{
+				throw new InvalidFieldPropertyException(
+					StringHelper.format(
+						OptionBasedFields.__UNSUPPORTED_TYPE__,
+						typeof Mutable[ ValueIndex ],
+						this._Field.name,
+						'at values',
+						'object or string'
+					)
+				);
+			}
+		}
 
-    	return GeneratedValues;
-    }
+		return GeneratedValues;
+	}
 
-    _addOptionProperty()
-    {
-    	const GeneratedProperty = {};
-    	this._GeneratedField.options = GeneratedProperty;
+	_addOptionProperty()
+	{
+		const GeneratedProperty = {};
+		this._GeneratedField.options = GeneratedProperty;
 
-    	if ( false === ( 'value' in GeneratedProperty ) )
-    	{
-    		GeneratedProperty.value = 'value';
-    	}
+		if ( false === ( 'value' in GeneratedProperty ) )
+		{
+			GeneratedProperty.value = 'value';
+		}
 
-    	if ( false === ( 'name' in GeneratedProperty ) )
-    	{
-    		GeneratedProperty.name = 'label';
-    	}
-    }
+		if ( false === ( 'name' in GeneratedProperty ) )
+		{
+			GeneratedProperty.name = 'label';
+		}
+	}
 }
 
 export class ChoiceField extends OptionBasedFields
