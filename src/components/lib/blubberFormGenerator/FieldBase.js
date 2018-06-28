@@ -97,9 +97,6 @@ export class FieldBase
 	{
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
-		console.log( Type )
-        console.log( Value )
-        console.log( ValueType )
 		if ( -1 === ValueType && FieldBase.__IS_ANY__ !== Type )
 		{
 			throw new InvalidFieldValueException(
@@ -459,7 +456,7 @@ export class FieldBase
 			throw new InvalidFieldPropertyException( FieldBase.__NO_NAME__ );
 		}
 
-		if ( 0 === Prefix.length )
+		if ( 0 < Prefix.length )
 		{
 			Key = `${ Prefix }.${ Key }`;
 		}
@@ -493,6 +490,7 @@ export class FieldBase
 		}
 
 		this.__ModelPointer = Self;
+        console.log( this._Model )
 	}
 
 	_addValueToModel( Value )
@@ -724,16 +722,20 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		}
 	}
 
-	__wrapInsideButton( Index )
+	__wrapInsideButton( Button )
 	{
 		let Mutable;
 		const GeneratedButton = {};
 
-		GeneratedButton.classes = this._executeFunctionOrGetString( this._Field.buttons[ Index ].class );
+        if( true === Button.hasOwnProperty( 'class' ) )
+        {
+    		GeneratedButton.classes = this._executeFunctionOrGetString( Button['class'] );
+        }
 
-		if ( true === this._Field.buttons[ Index ].hasOwnProperty( 'label' ) )
+		if ( true === Button.hasOwnProperty( 'label' ) )
 		{
-			Mutable = this._executeFunctionOrGetString( this._Field.buttons[ Index ][ ' label ' ] );
+            console.log( Button )
+			Mutable = this._executeFunctionOrGetString( Button[ 'label' ] );
 			GeneratedButton.label = this._getStringLabelOrPlaceholder( Mutable );
 		}
 		else
@@ -746,7 +748,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 			);
 		}
 
-		GeneratedButton.onclick = this._executeFunctionOrGetAnything( this._Field.buttons[ Index ].action, true );
+		GeneratedButton.onclick = this._executeFunctionOrGetAnything( Button.action, true );
 		return GeneratedButton;
 	}
 
@@ -773,7 +775,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 				GeneratedButton = {};
 				if ( 'object' === typeof InsideButtons[ Index ] )
 				{
-					GeneratedButton = this.__wrapInsideButton( Index );
+					GeneratedButton = this.__wrapInsideButton( InsideButtons[ Index ] );
 					Buttons.push( GeneratedButton );
 				}
 				else

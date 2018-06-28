@@ -39,10 +39,12 @@ export default class BlubberStep extends BlubberFields
 	{
 		let Options;
 		const GeneratedStep = new BlubberFields( this.__Template.fields, this._BindedObject, this._LabelGenerator );
-
 		GeneratedStep.build();
-		this.NodeSchema.schema = GeneratedStep;
-
+        if( true === Utils.isEmpty( GeneratedStep ) )
+        {
+            return;
+        }
+		//this.NodeSchema.schema = GeneratedStep;
 		if ( true === this.__Template.hasOwnProperty( 'options' ) )
 		{
 			Options = this.__Template.options;

@@ -70,17 +70,16 @@ export default class BlubberFormFactory
 			this.Form.schema = [];
 			for ( Index in this.__From[ 'steps' ] )
 			{
+                console.log( Index )
 				Generated = new BlubberStep( this.__From[ 'steps' ][ Index ], this.__BindedObject, this.__LabelGenerator );
 				Generated.build();
-				console.log( Generated )
-				this.Form.model = ObjectHelper.mergeObj( Generated.props.model, this.Form.model );
-
+				this.Form.model = ObjectHelper.mergeObj( Generated['NodeSchema'].props.model, this.Form.model );
 				if ( true === Generated.getCondition() )
 				{
 					continue;
 				}
 
-				this.Form.schema.push( Generated.props.schema );
+				this.Form.schema.push( Generated['NodeSchema'].props.schema );
 			}
 		}
 		else

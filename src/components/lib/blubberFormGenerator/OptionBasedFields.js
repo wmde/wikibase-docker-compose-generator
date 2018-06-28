@@ -15,13 +15,14 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 	constructor( Field, BindedObject, Generator )
 	{
 		super( Field, BindedObject, Generator );
+        console.log( this._Model );
 	}
 
-	__addLabel( Where, Label, AssignmentLabel )
+	__addLabel( Source, Target, Label )
 	{
-		if ( Where.hasOwnProperty( Label ) )
+		if ( Source.hasOwnProperty( Label ) )
 		{
-			Where[ AssignmentLabel ] = this.__getStringLabelOrPlaceholder( Where[ Label ] );
+			Target[ Label ] = this._getStringLabelOrPlaceholder( Source[ Label ] );
 		}
 	}
 
@@ -32,7 +33,6 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 		if ( true === this._Field.hasOwnProperty( 'values' ) )
 		{
 			Mutable = this._executeFunctionOrGetArray( this._Field.values );
-			console.log( )
 		}
 		else
 		{
@@ -93,11 +93,10 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 				GeneratedValue = {};
 				GeneratedValue[ ValueKey ] = Mutable[ ValueIndex ][ ValueKey ];
 				this.__addLabel(
-					GeneratedValue,
 					Mutable[ ValueIndex ],
+                    GeneratedValue,
 					LabelKey
 				);
-
 				GeneratedValues.push( GeneratedValue );
 			}
 			else
@@ -113,7 +112,6 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 				);
 			}
 		}
-
 		return GeneratedValues;
 	}
 
@@ -197,13 +195,11 @@ export class SelectionField extends OptionBasedFields
 			}
 		}
 
-        console.log( this._GeneratedField )
-		alert()
-
-		/*this._GeneratedField.selectOptions.values = this._addValueProperty(
+		this._GeneratedField.selectOptions.values = this._addValueProperty(
 			this._GeneratedField.selectOptions.name,
 			this._GeneratedField.selectOptions.value
-		);*/
+		);
+
 	}
 }
 

@@ -54,7 +54,7 @@ export default class BlubberFields extends FieldBase
 	constructor( Fields, BindedObject, Generator )
 	{
 		super( null, BindedObject, Generator );
-		this.__Templates = Fields;
+        this.__Templates = Fields;
 		this.Fields = [];
 		this.Groups = [];
 		this.Model = {};
@@ -62,10 +62,10 @@ export default class BlubberFields extends FieldBase
 
 	__addToModel( Field )
 	{
-		//const CurrentModelKey = Field.getModelKey();
-		//let Key;
+		const CurrentModelKey = Field.getModelKey();
+		let Key;
 
-		/*if ( true === Array.isArray( CurrentModelKey ) )
+		if ( true === Array.isArray( CurrentModelKey ) )
 		{
 			for ( Key in CurrentModelKey )
 			{
@@ -80,8 +80,8 @@ export default class BlubberFields extends FieldBase
 					BlubberFields.__MODEL_ENTRY_EXISTS__,
                     CurrentModelKey
 				)
-			);
-		}*/
+			);*/
+		}
 
 		this.Model = ObjectHelper.mergeObj( Field.getModel(), this.Model );
 	}
@@ -159,7 +159,7 @@ export default class BlubberFields extends FieldBase
 		}
 		// eslint-disable-next-line
 		Generated = new BlubberFields(
-			this.__Templates[ Index ].fields,
+			this.__Templates[ Index ]['group'],
 			this._BindedObject, this._LabelGenerator
 		);
 		Generated.build();

@@ -18,7 +18,7 @@ class TextBasedFields extends CommonOptionalAttributesAndMethods
 		this._assignNumeric( 'maximum', 'maxlength' );
 		this._assignString( 'pattern' );
 		this._assignEmptyStringOrLabelString( 'briefDescription', 'placeholder' );
-		this.__assignOptionalFieldNumeric( 'size' );
+		this._assignNumeric( 'size' );
 	}
 }
 
