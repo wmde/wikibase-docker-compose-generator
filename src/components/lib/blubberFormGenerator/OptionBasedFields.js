@@ -15,7 +15,6 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 	constructor( Field, BindedObject, Generator )
 	{
 		super( Field, BindedObject, Generator );
-        console.log( this._Model );
 	}
 
 	__addLabel( Source, Target, Label )

@@ -82,7 +82,7 @@ export default class BlubberFields extends FieldBase
 				)
 			);*/
 		}
-
+        
 		this.Model = ObjectHelper.mergeObj( Field.getModel(), this.Model );
 	}
 

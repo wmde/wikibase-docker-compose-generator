@@ -490,7 +490,6 @@ export class FieldBase
 		}
 
 		this.__ModelPointer = Self;
-        console.log( this._Model )
 	}
 
 	_addValueToModel( Value )
@@ -734,7 +733,6 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 		if ( true === Button.hasOwnProperty( 'label' ) )
 		{
-            console.log( Button )
 			Mutable = this._executeFunctionOrGetString( Button[ 'label' ] );
 			GeneratedButton.label = this._getStringLabelOrPlaceholder( Mutable );
 		}
