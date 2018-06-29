@@ -37,14 +37,14 @@ export default class BlubberStep extends BlubberFields
 
 	__buildStep()
 	{
-		let Options;
+		let Options, Multiple, IsNewModel, Tag;
 		const GeneratedStep = new BlubberFields( this.__Template.fields, this._BindedObject, this._LabelGenerator );
 		GeneratedStep.build();
-        if( true === Utils.isEmpty( GeneratedStep ) )
-        {
-            return;
-        }
-		//this.NodeSchema.schema = GeneratedStep;
+		if ( true === Utils.isEmpty( GeneratedStep ) )
+		{
+			return;
+		}
+		// this.NodeSchema.schema = GeneratedStep;
 		if ( true === this.__Template.hasOwnProperty( 'options' ) )
 		{
 			Options = this.__Template.options;
@@ -54,13 +54,44 @@ export default class BlubberStep extends BlubberFields
 			Options = {};
 		}
 
+		if ( true === this.__Template.hasOwnProperty( 'isMultiple' ) )
+		{
+			Multiple = this.__Template.isMultiple;
+		}
+		else
+		{
+			Multiple = false;
+		}
+
+		if ( true === this.__Template.hasOwnProperty( 'isNewModel' ) )
+		{
+			IsNewModel = this.__Template.isNewModel;
+		}
+		else
+		{
+			IsNewModel = false;
+		}
+
+		if ( true === this.__Template.hasOwnProperty( 'tag' ) )
+		{
+			Tag = this.__Template.tag;
+		}
+		else
+		{
+			Tag = 'fieldset';
+		}
+
+		this.Model = GeneratedStep.Model;
+		this.Groups = GeneratedStep.Groups;
+		this.Fields = GeneratedStep.Fields;
+
 		this.NodeSchema.props = {
-			model: GeneratedStep.Model,
-			schema: {
-				fields: GeneratedStep.Fields,
-				groups: GeneratedStep.Groups
-			},
+		    model: this.Model,
+			schema: { fields: this.Fields, groups: this.Groups },
 			options: Options,
+			multiple: Multiple,
+			isNewModel: IsNewModel,
+			tag: Tag,
 			ref: this.__Template.name
 		};
 	}
@@ -121,7 +152,7 @@ export default class BlubberStep extends BlubberFields
 		if (
 			true === this.__Template.hasOwnProperty( 'condition' )
         &&
-            true === this._executeFunctionOrGetBool( this.__Template.condition )
+            true === this._executeFunctionOrGetBoolean( this.__Template.condition )
 		)
 		{
 			return true;

@@ -183,7 +183,7 @@
                 "validateAfterChanged": true
             },
             "fields":[{
-                    "name": "wikibaseBlazegraphAlias ",
+                    "name": "wikibaseBlazegraphAlias",
                     "type": "text",
                     "default": "",
                     "required": false,
@@ -191,7 +191,7 @@
                     "hint": ""
 
                 },{
-                    "name": "wikibaseBlazegraphPort ",
+                    "name": "wikibaseBlazegraphPort",
                     "type": "number",
                     "default": "",
                     "required": true,

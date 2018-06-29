@@ -93,7 +93,7 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 				GeneratedValue[ ValueKey ] = Mutable[ ValueIndex ][ ValueKey ];
 				this.__addLabel(
 					Mutable[ ValueIndex ],
-                    GeneratedValue,
+					GeneratedValue,
 					LabelKey
 				);
 				GeneratedValues.push( GeneratedValue );
@@ -116,14 +116,14 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods
 
 	_addOptionProperty()
 	{
-        let GeneratedProperty;
-        if( true === this._Field.hasOwnProperty( 'options' ) )
-        {
-            GeneratedProperty = this._executeFunctionOrGetObject(this._Field['options']);
-        }
-        else
+		let GeneratedProperty;
+		if ( true === this._Field.hasOwnProperty( 'options' ) )
 		{
-            GeneratedProperty = {};
+			GeneratedProperty = this._executeFunctionOrGetObject( this._Field.options );
+		}
+		else
+		{
+			GeneratedProperty = {};
 		}
 
 		if ( false === ( 'value' in GeneratedProperty ) )
@@ -215,7 +215,7 @@ export class CheckListField extends OptionBasedFields
 	{
 		if ( this._Field.hasOwnProperty( 'asList' ) )
 		{
-			this._GeneratedField.listBox = this._executeFunctionOrGetBool( this._Field.asList );
+			this._GeneratedField.listBox = this._executeFunctionOrGetBoolean( this._Field.asList );
 		}
 		else
 		{

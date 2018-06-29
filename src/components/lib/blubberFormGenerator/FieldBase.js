@@ -102,7 +102,7 @@ export class FieldBase
 			throw new InvalidFieldValueException(
 				StringHelper.format(
 					FieldBase.__UNSUPPORTED_TYPE__,
-                    typeof Value,
+					typeof Value,
 					this._Field.name,
 					FieldBase.__ALLOWED_TYPES__[ Type ]
 				)
@@ -146,9 +146,9 @@ export class FieldBase
 					}
 
 					Value = Self( this._Field.name );
-                    ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
-                        ( typeof Value )
-                    );
+					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
+						( typeof Value )
+					);
 				}
 			}
 			else if ( true === ReturnPureFunction )
@@ -202,7 +202,7 @@ export class FieldBase
 		);
 	}
 
-	_executeFunctionOrGetBool(
+	_executeFunctionOrGetBoolean(
 		Value,
 		ReturnPureFunction = false
 	)
@@ -380,7 +380,7 @@ export class FieldBase
 	{
 		if ( true === this._Field.hasOwnProperty( FieldLabel ) )
 		{
-			if ( 0 === AssignmentLabel.length )
+			if ( 0 < AssignmentLabel.length )
 			{
 				this._GeneratedField[ AssignmentLabel ] = AssignFunction(
 					this._Field[ FieldLabel ]
@@ -407,7 +407,7 @@ export class FieldBase
 
 	_assignBoolean( FieldLabel, AssignmentLabel = '' )
 	{
-		this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetBool );
+		this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetBoolean );
 	}
 
 	/* _assignObject( FieldLabel, AssignmentLabel = '' )
@@ -419,21 +419,21 @@ export class FieldBase
 	{
 		if ( true === this._Field.hasOwnProperty( FieldLabel ) )
 		{
-            if (0 === AssignmentLabel.length)
-            {
-                this._GeneratedField[AssignmentLabel] = this._executeFunctionOrGetAnything(
-                    this._Field[FieldLabel],
-                    true
-                );
-            }
-            else
-            {
-                this._GeneratedField[FieldLabel] = this._executeFunctionOrGetAnything(
-                    this._Field[FieldLabel],
-                    true
-                );
-            }
-        }
+			if ( 0 < AssignmentLabel.length )
+			{
+				this._GeneratedField[ AssignmentLabel ] = this._executeFunctionOrGetAnything(
+					this._Field[ FieldLabel ],
+					true
+				);
+			}
+			else
+			{
+				this._GeneratedField[ FieldLabel ] = this._executeFunctionOrGetAnything(
+					this._Field[ FieldLabel ],
+					true
+				);
+			}
+		}
 	}
 
 	_assignEmptyStringOrLabelString( FieldLabel, AssignmentLabel = '' )
@@ -535,6 +535,11 @@ export class FieldBase
 	getModelKey()
 	{
 		return this.__ModelKey;
+	}
+
+	getGeneratedField()
+	{
+		return this._GeneratedField;
 	}
 }
 
@@ -671,7 +676,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addMethods()
 	{
-        this._assignFunction( 'setFormatter', 'set' );
+		this._assignFunction( 'setFormatter', 'set' );
 		this._assignFunction( 'getFormatter', 'get' );
 	}
 
@@ -726,14 +731,14 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		let Mutable;
 		const GeneratedButton = {};
 
-        if( true === Button.hasOwnProperty( 'class' ) )
-        {
-    		GeneratedButton.classes = this._executeFunctionOrGetString( Button['class'] );
-        }
+		if ( true === Button.hasOwnProperty( 'class' ) )
+		{
+			GeneratedButton.classes = this._executeFunctionOrGetString( Button.class );
+		}
 
 		if ( true === Button.hasOwnProperty( 'label' ) )
 		{
-			Mutable = this._executeFunctionOrGetString( Button[ 'label' ] );
+			Mutable = this._executeFunctionOrGetString( Button.label );
 			GeneratedButton.label = this._getStringLabelOrPlaceholder( Mutable );
 		}
 		else

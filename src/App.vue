@@ -144,7 +144,7 @@ export default {
 		{
 			this.$data.blubberGeneratorSteps = Configuration.steps;
 			this.$data.blubberGeneratorFormProperties = Configuration.form;
-			this.$data.blubberFormId = Configuration.name;
+			this.$data.blubberGeneratorFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
@@ -166,11 +166,10 @@ export default {
 					I18n = this.getI18nStrings;
 				}
 				const Element = this.buildBlubberForm(
-                    createElement,
-                    {
-                        id: this.$data.blubberFormId,
-                        formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
-                        steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
+					createElement,
+					{
+						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
+						steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
 					},
 					I18n
 				);

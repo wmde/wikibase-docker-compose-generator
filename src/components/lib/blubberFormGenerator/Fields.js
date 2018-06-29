@@ -5,7 +5,7 @@ import { CheckListField, ChoiceField, SelectionField } from './OptionBasedFields
 import { FieldBase, InvalidFieldException, InvalidFieldPropertyException } from './FieldBase';
 import StringHelper from '../StringHelper';
 import Utils from '../../../Utils';
-import ObjectHelper from '../ObjectHelper';
+import BlubberStep from "./Step";
 /* eslint-disable operator-linebreak */
 
 export default class BlubberFields extends FieldBase
@@ -15,6 +15,7 @@ export default class BlubberFields extends FieldBase
 	static __UNKNOWN__FIELDTYPE__ = 'The given fieldtype {} of {} is unknown.';
 	static __INVALID__DYNAMIC_FIED__ = 'The given field {} does not work.';
 	static __INVALID__SUB_MODEL__ = 'The generated model of field {} does not work.';
+	static __NO_NAME__ = 'The given fieldset has no identifier (name).'
 	/* Class Constant*/
 	static __FIELDTYPES__ = {
 		checkbox: CheckListField,
@@ -47,6 +48,7 @@ export default class BlubberFields extends FieldBase
 	};
 	/* Properties*/
 	__Templates;
+	__NodeProperties;
 	Fields;
 	Groups;
 	Model;
@@ -54,7 +56,8 @@ export default class BlubberFields extends FieldBase
 	constructor( Fields, BindedObject, Generator )
 	{
 		super( null, BindedObject, Generator );
-        this.__Templates = Fields;
+		this.__Templates = Fields[ 'fields' ];
+        this.__NodeProperties = Fields[ 'node' ];
 		this.Fields = [];
 		this.Groups = [];
 		this.Model = {};
@@ -75,15 +78,119 @@ export default class BlubberFields extends FieldBase
 				}
 			}
 
-			/*throw new InvalidFieldPropertyException(
+			/* throw new InvalidFieldPropertyException(
 				StringHelper.format(
 					BlubberFields.__MODEL_ENTRY_EXISTS__,
                     CurrentModelKey
 				)
 			);*/
 		}
-        
-		this.Model = ObjectHelper.mergeObj( Field.getModel(), this.Model );
+
+		this.Model = Object.assign( {}, Field.getModel(), this.Model );
+	}
+
+	__buildNodeSchema()
+	{
+        let Options, Multiple, IsNewModel, Tag, Title, Icon, BeforeChange;
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'options' ) )
+        {
+            Options = this.__NodeProperties.options;
+        }
+        else
+        {
+            Options = {};
+        }
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'isMultiple' ) )
+        {
+            Multiple = this.__NodeProperties.isMultiple;
+        }
+        else
+        {
+            Multiple = false;
+        }
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'isNewModel' ) )
+        {
+            IsNewModel = this.__NodeProperties.isNewModel;
+        }
+        else
+        {
+            IsNewModel = false;
+        }
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'tag' ) )
+        {
+            Tag = this.__NodeProperties.tag;
+        }
+        else
+        {
+            Tag = 'fieldset';
+        }
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'label' ) )
+        {
+            Title = this._getStringLabelOrPlaceholder(
+                this._executeFunctionOrGetString( this.__NodeProperties.label )
+            );
+        }
+        else
+        {
+            Title = this._getStringLabelOrPlaceholder(
+                this._executeFunctionOrGetString( this.__NodeProperties.name )
+            );
+        }
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'icon' ) )
+        {
+            Icon = this._executeFunctionOrGetString( this.__NodeProperties.icon );
+        }
+        else
+        {
+            Icon = '';
+        }
+
+        if ( false === this.__NodeProperties.hasOwnProperty( 'name' ) )
+        {
+            throw new InvalidFieldException( BlubberStep.__NO_NAME__ );
+        }
+
+
+        if ( true === this.__NodeProperties.hasOwnProperty( 'beforeChange' ) )
+        {
+            // eslint-disable-next-line
+            BeforeChange = this._executeFunctionOrGetAnything( this.__NodeProperties.beforeChange, true );
+            this.NodeSchema.props = {
+                model: this.Model,
+                schema: { fields: this.Fields, groups: this.Groups },
+                options: Options,
+                multiple: Multiple,
+                isNewModel: IsNewModel,
+                tag: Tag,
+                title: Title,
+                icon: Icon,
+                beforeChange: BeforeChange,
+				ref: this.__NodeProperties.name
+			};
+
+            this.NodeSchema.attr = { id: this.__Template.name };
+        }
+        else
+        {
+            this.NodeSchema.props = {
+                model: this.Model,
+                schema: { fields: this.Fields, groups: this.Groups },
+                options: Options,
+                multiple: Multiple,
+                isNewModel: IsNewModel,
+                tag: Tag,
+                title: Title,
+                icon: Icon,
+				ref: this.__NodeProperties.name
+        	};
+            this.NodeSchema.attr = { id: this.__Template.name };
+        }
 	}
 
 	__buildDynamicField( Index )
@@ -132,7 +239,7 @@ export default class BlubberFields extends FieldBase
 				this.Groups = this.Groups.concat( FieldExecution.Groups );
 			}
 
-			this.Model = ObjectHelper.mergeObj( FieldExecution.Model, this.Model );
+			this.Model = Object.assign( {}, FieldExecution.Model, this.Model );
 
 			return true;
 		}
@@ -159,7 +266,7 @@ export default class BlubberFields extends FieldBase
 		}
 		// eslint-disable-next-line
 		Generated = new BlubberFields(
-			this.__Templates[ Index ]['group'],
+			this.__Templates[ Index ].group,
 			this._BindedObject, this._LabelGenerator
 		);
 		Generated.build();
@@ -184,7 +291,9 @@ export default class BlubberFields extends FieldBase
 			GroupPointer.groups = Generated.Groups;
 		}
 
-		this.Model = ObjectHelper.mergeObj( Generated.Model, this.Model );
+		// console.log( this.Model )
+		this.Model = Object.assign( {}, Generated.Model, this.Model );
+		// console.log( this.Model )
 
 	}
 
@@ -210,7 +319,7 @@ export default class BlubberFields extends FieldBase
 				if (
 					true === this.__Templates[ FieldIndex ].hasOwnProperty( 'condition' )
 				&&
-					true === this._executeFunctionOrGetBool( this.__Templates[ FieldIndex ].condition )
+					true === this._executeFunctionOrGetBoolean( this.__Templates[ FieldIndex ].condition )
 				)
 				{
 					this.Groups.pop();
@@ -241,14 +350,15 @@ export default class BlubberFields extends FieldBase
 			if (
 				true === this.__Templates[ FieldIndex ].hasOwnProperty( 'condition' )
 			&&
-				true === this._executeFunctionOrGetBool( this.__Templates[ FieldIndex ].condition )
+				true === this._executeFunctionOrGetBoolean( this.__Templates[ FieldIndex ].condition )
 			)
 			{
 				continue;
 			}
 
-			this.Fields.push( Field );
+			this.Fields.push( Field.getGeneratedField() );
 		}
 
+		this.__buildNodeSchema();
 	}
 }
