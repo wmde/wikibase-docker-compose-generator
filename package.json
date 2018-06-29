@@ -1,6 +1,6 @@
 {
   "name": "blubber",
-  "version": "0.0.1a",
+  "version": "0.0.22a",
   "description": "A yml builder for wikibase docker-image",
   "author": "Matthias Geisler <matthias.geisler@wikimedia.de>",
   "private": true,
@@ -18,8 +18,7 @@
     "vue": "^2.5.2",
     "vue-form-generator": "^2.2.2",
     "vue-form-wizard": "^0.8.4",
-    "vue-i18n": "^7.7.0",
-    "vue-router": "^3.0.1"
+    "vue-i18n": "^7.7.0"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.16",
@@ -27,6 +26,7 @@
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
+    "babel-preset-es2017": "^6.24.1",
     "babel-jest": "^23.0.1",
     "babel-loader": "^7.1.1",
     "babel-plugin-dynamic-import-node": "^1.2.0",
