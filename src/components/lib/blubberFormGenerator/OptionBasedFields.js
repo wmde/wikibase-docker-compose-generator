@@ -194,7 +194,7 @@ export class SelectionField extends OptionBasedFields
 			}
 		}
 
-		this._GeneratedField.selectOptions.values = this._addValueProperty(
+		this._GeneratedField.values = this._addValueProperty(
 			this._GeneratedField.selectOptions.name,
 			this._GeneratedField.selectOptions.value
 		);
@@ -225,8 +225,8 @@ export class CheckListField extends OptionBasedFields
 
 		this._fieldTakesMultibleValues();
 
-		this._GeneratedField.checklistOptions = this.__addOptionProperty();
-		this._GeneratedField.values = this.__addValueProperty(
+		this._GeneratedField.checklistOptions = this._addOptionProperty();
+		this._GeneratedField.values = this._addValueProperty(
 			this._GeneratedField.checklistOptions.name,
 			this._GeneratedField.checklistOptions.value
 		);

@@ -1,5 +1,4 @@
 import BlubberStep from './Step';
-import BlubberFields from './Fields';
 import { TypeErrorException, BaseException } from '../BaseExceptions';
 import Utils from '../../../Utils';
 import { FieldBase } from './FieldBase';
@@ -15,19 +14,19 @@ class InvalidFormException extends BaseException
 export default class BlubberFormSchemaConstructor extends FieldBase
 {
 	static __FORM_LABELED_PROPERTIES__ = [ 'backButtonText', 'finishButtonText', 'nextButtonText', 'subtitle', 'title' ];
-    static __FORM_ATTRIBUTES__ = [ 'class', 'id' ];
-    static __FORM_EVENTS__ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
-    static __BOOLEAN_PROPERTIES__ = [ 'validateOnBack' ];
-    static __NUMERIC_PROPERTIES__ = [ 'startIndex' ];
+	static __FORM_ATTRIBUTES__ = [ 'class', 'id' ];
+	static __FORM_EVENTS__ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
+	static __BOOLEAN_PROPERTIES__ = [ 'validateOnBack' ];
+	static __NUMERIC_PROPERTIES__ = [ 'startIndex' ];
 
-    __Form;
+	__Form;
 	Form;
 
 	constructor( Form, BindedObject, Generator )
 	{
 		super( null, BindedObject, Generator );
 		this.__Form = Form;
-		this.Form = { FormEvents: {}, FormProperties:{}, FormAttributes: {}, Schema: {}, Model: {}, Steps: [] };
+		this.Form = { FormEvents: {}, FormProperties: {}, FormAttributes: {}, Schema: {}, Model: {}, Steps: [] };
 		this.__validateProperties();
 		this.__setFormPropterties();
 	}
@@ -48,42 +47,43 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 	__setFormPropterties()
 	{
 		let Label;
-        for( Label in this.__Form.formAttributes )
-        {
-        	if ( -1 !== BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) )
+		for ( Label in this.__Form.formAttributes )
+		{
+			if ( -1 !== BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) )
 			{
+				Label = Label.substring( 2 ).toLowerCase();
 				this.Form.FormEvents[ Label ] = this._executeFunctionOrGetAnything(
 					this.__Form.formAttributes[ Label ],
 					true
 				);
 			}
-            else if( -1 !== BlubberFormSchemaConstructor.__FORM_ATTRIBUTES__.indexOf( Label ) )
+			else if ( -1 !== BlubberFormSchemaConstructor.__FORM_ATTRIBUTES__.indexOf( Label ) )
 			{
-                this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
+				this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
 			}
-            else if ( -1 !== BlubberFormSchemaConstructor.__FORM_LABELED_PROPERTIES__.indexOf( Label ) )
-            {
-                this.Form.FormProperties[ Label ] = this._getStringLabelOrPlaceholder(
-                	this.__Form.formAttributes[ Label ]
-				);
-            }
-            else if ( -1 !== BlubberFormSchemaConstructor.__BOOLEAN_PROPERTIES__.indexOf( Label ) )
+			else if ( -1 !== BlubberFormSchemaConstructor.__FORM_LABELED_PROPERTIES__.indexOf( Label ) )
 			{
-                this.Form.FormProperties[ Label ] = this._executeFunctionOrGetBoolean(
-                	this.__Form.formAttributes[ Label ]
+				this.Form.FormProperties[ Label ] = this._getStringLabelOrPlaceholder(
+					this.__Form.formAttributes[ Label ]
 				);
 			}
-			else if( -1 !== BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) )
+			else if ( -1 !== BlubberFormSchemaConstructor.__BOOLEAN_PROPERTIES__.indexOf( Label ) )
 			{
-                this.Form.FormProperties[ Label ] = this._executeFunctionOrGetNumber(
-                	this.__Form.formAttributes[ Label ]
+				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetBoolean(
+					this.__Form.formAttributes[ Label ]
 				);
-            }
-            else
-            {
-                this.Form.FormProperties[ Label ] = this.__Form.formAttributes[ Label ];
-            }
-        }
+			}
+			else if ( -1 !== BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) )
+			{
+				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetNumber(
+					this.__Form.formAttributes[ Label ]
+				);
+			}
+			else
+			{
+				this.Form.FormProperties[ Label ] = this.__Form.formAttributes[ Label ];
+			}
+		}
 	}
 
 	build()
@@ -92,13 +92,14 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 		if ( true === this.__Form.hasOwnProperty( 'fields' ) )
 		{
-			Generated = new BlubberFields( this.__Form.fields, this._BindedObject, this._LabelGenerator );
+			Generated = new BlubberStep( this.__Form.fields, this._BindedObject, this._LabelGenerator );
 			this.Form.Schema = {
 				fields: Generated.Fields,
 				groups: Generated.Groups
 			};
 
 			this.Form.model = Generated.Model;
+			this.Form.Steps = Generated.NodeSchema;
 		}
 		else if ( true === this.__Form.hasOwnProperty( 'steps' ) && true === Array.isArray( this.__Form.steps ) )
 		{
