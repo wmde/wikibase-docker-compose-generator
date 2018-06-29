@@ -8,25 +8,23 @@
 		"ecmaVersion": 2017,
 		"sourceType": "module"
 	},
-	"plugins": [ "vue" ],
+	"plugins": [ "vue", "jest" ],
 	"env": {
 		"browser": true,
-		"commonjs": true
+		"commonjs": true,
+		"jest/globals": true
 	},
 	"rules": {
 		"no-underscore-dangle": 0,
 		"dot-notation": [ 2, { "allowKeywords": true } ],
-        "yoda": ["error", "always"],
 		"no-use-before-define": 0,
 		"no-var": 2,
-		"brace-style": ["error", "allman"],
-		"no-bitwise":"off",
 		"prefer-const": 1,
 		"prefer-template": 1,
 		"one-var": 0,
 		"max-len": [ 1, {
-			"tabWidth": 4,
-			"code": 150,
+			"tabWidth": 2,
+			"code": 100,
 			"ignorePattern": "^// eslint-.+",
 			"ignoreUrls": true,
 			"ignoreComments": false,
