@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import VueFormWizard from 'vue-form-wizard';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
 import Utils from '../Utils';
 /* eslint-disable operator-linebreak */

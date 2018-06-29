@@ -2,7 +2,6 @@
 import BlubberFormFactory from './components/BlubberFormFactory';
 import Utils from './Utils';
 import Language from './components/Language';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
 
