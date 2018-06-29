@@ -96,6 +96,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 					this._LabelGenerator
 				);
 				Generated.build();
+                console.log(Generated)
 				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
 				if ( Generated.getCondition() === true ) {
 					continue;

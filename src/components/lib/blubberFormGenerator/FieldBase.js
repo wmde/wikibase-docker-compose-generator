@@ -59,13 +59,29 @@ export class FieldBase {
 	__lookForPropertyAtVueObject( IsTypeOrFunction ) {
 		let Index;
 		const Chunks = IsTypeOrFunction.split( '.' );
-		let Self = this._BindedObject;
+        let Self;
+        if( true === this._Field.hasOwnProperty( 'prefix' ) )
+        {
+            if( false === ( this._Field.prefix in this.__BindedObject ) )
+            {
+                return null;
+            }
+            else
+            {
+                Self = this.__BindedObject[ this._Field.prefix ];
+            }
+        }
+        else
+        {
+            Self = this._BindedObject;
+        }
+
 		if ( Self === null ) {
 			return null;
 		}
 
 		for ( Index in Chunks ) {
-			if ( Self.hasOwnProperty( Chunks[ Index ] ) === true ) {
+			if ( Chunks[ Index ] in Self ) {
 				Self = Self[ Chunks[ Index ] ];
 			} else {
 				return null;
@@ -306,6 +322,10 @@ export class FieldBase {
 				Label = Label( this._Field.name );
 			}
 
+            if( 'undefined' === typeof this)
+            {
+                console.trace()
+            }
 			LabelValue = this._LabelGenerator( Label );
 
 			if ( Utils.isEmpty( LabelValue ) === true ) {
@@ -481,6 +501,15 @@ export class CommonRequiredAttributes extends FieldBase {
 		} else {
 			this._GeneratedField.id = this._Field.name;
 		}
+
+        if ( true === this._Field.hasOwnProperty( 'label' ) )
+        {
+            this._assignPlaceholderOrLabelString( 'label ');
+        }
+        else
+        {
+            this._assignPlaceholderOrLabelString( 'name', 'label' );
+        }
 	}
 }
 
