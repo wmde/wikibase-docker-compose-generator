@@ -82,6 +82,11 @@ export class FieldBase {
 	) {
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
+
+		if ( this._Field === null ) {
+			this._Field = { name: 'not set' };
+		}
+
 		if ( ValueType === -1 && FieldBase.__IS_ANY__ !== Type ) {
 			throw new InvalidFieldValueException(
 				StringHelper.format(

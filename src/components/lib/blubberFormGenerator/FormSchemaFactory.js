@@ -67,7 +67,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 				);
 			} else if ( BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) !== -1 ) {
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetNumber(
-					this.__Form.formAttributes[ Label ]
+					parseInt( this.__Form.formAttributes[ Label ] )
 				);
 			} else {
 				this.Form.FormProperties[ Label ] = this.__Form.formAttributes[ Label ];
