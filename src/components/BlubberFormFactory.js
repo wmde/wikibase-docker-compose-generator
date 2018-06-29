@@ -9,19 +9,15 @@ Vue.use( VueFormGenerator );
 
 const BlubberFormFactory = {
 	methods: {
-		buildBlubberForm: function ( createElement, Form, LabelGenerator )
-		{
+		buildBlubberForm: function ( createElement, Form, LabelGenerator ) {
 			let Tab, VGenerator, Description, Step, Index;
 			const Tabs = [];
 			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 			FormSchema.build();
 
-			if ( false === Array.isArray( FormSchema.Form.Steps[ 0 ] ) )
-			{
-				if ( true === FormSchema.Form.Steps[ 1 ] )
-				{
-					if ( false === Utils.isEmpty( FormSchema.Form.Steps[ 0 ].inner.schema ) )
-					{
+			if ( Array.isArray( FormSchema.Form.Steps[ 0 ] ) === false ) {
+				if ( FormSchema.Form.Steps[ 1 ] === true ) {
+					if ( Utils.isEmpty( FormSchema.Form.Steps[ 0 ].inner.schema ) === false ) {
 						VGenerator = createElement(
 							'vue-form-generator',
 							{
@@ -29,14 +25,11 @@ const BlubberFormFactory = {
 								attr: FormSchema.Form.Steps[ 0 ].attr
 							}
 						);
-					}
-					else
-					{
+					} else {
 						VGenerator = '';
 					}
 
-					if ( false === Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps ) )
-					{
+					if ( Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps ) === false ) {
 						Description = createElement(
 							'div',
 							{
@@ -44,9 +37,7 @@ const BlubberFormFactory = {
 								domProps: FormSchema.Form.Steps[ 0 ].description.domProps
 							}
 						);
-					}
-					else
-					{
+					} else {
 						Description = '';
 					}
 
@@ -59,36 +50,26 @@ const BlubberFormFactory = {
 						},
 						[ Description, VGenerator ]
 					);
-				}
-				else
-				{
+				} else {
 					return '';
 				}
-			}
-			else
-			{
-				for ( Index in FormSchema.Form.Steps )
-				{
+			} else {
+				for ( Index in FormSchema.Form.Steps ) {
 					Step = FormSchema.Form.Steps[ Index ][ 0 ];
 
-					if ( false === FormSchema.Form.Steps[ Index ][ 1 ] )
-					{
-						if ( false === Utils.isEmpty( Step.inner.schema ) )
-						{
+					if ( FormSchema.Form.Steps[ Index ][ 1 ] === false ) {
+						if ( Utils.isEmpty( Step.inner.schema ) === false ) {
 							VGenerator = createElement(
 								'vue-form-generator',
 								{
 									props: Step.inner
 								}
 							);
-						}
-						else
-						{
+						} else {
 							VGenerator = '';
 						}
 
-						if ( false === Utils.isEmpty( Step.description.domProps ) )
-						{
+						if ( Utils.isEmpty( Step.description.domProps ) === false ) {
 							Description = createElement(
 								'div',
 								{
@@ -96,9 +77,7 @@ const BlubberFormFactory = {
 									domProps: Step.description.domProps
 								}
 							);
-						}
-						else
-						{
+						} else {
 							Description = '';
 						}
 
@@ -136,8 +115,7 @@ const BlubberFormFactory = {
 		r*/
 		}
 	},
-	data: function ()
-	{
+	data: function () {
 		return { blubberModel: {}, blubberFormSchema: {} };
 	}
 };

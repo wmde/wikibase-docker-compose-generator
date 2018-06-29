@@ -8,13 +8,11 @@ import AvailableLanguages from './components/data/lang/availableLanguages';
 export default {
 	name: 'Blubber',
 	mixins: [ BlubberFormFactory, Language ],
-	render: function ( createElement )
-	{
+	render: function ( createElement ) {
 		return this.buildApplication( createElement );
 	},
 	template: '<div><BlubberFormFactory/></div>',
-	data: function ()
-	{
+	data: function () {
 		const Return = {};
 		Return.buildForm = false;
 		Return.blubberGeneratorSteps = {};
@@ -22,8 +20,7 @@ export default {
 		Return.blubberGeneratorFormStyle = {};
 		return Return;
 	},
-	mounted: function ()
-	{
+	mounted: function () {
 		let Language;
 		this.initLanguages();
 		this.getClientLanguages();
@@ -34,33 +31,25 @@ export default {
 		this.getConfiguration();
 	},
 	methods: {
-		getConfiguration: function ()
-		{
+		getConfiguration: function () {
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
-		evaluateConfiguration: function ( Configuration )
-		{
+		evaluateConfiguration: function ( Configuration ) {
 			this.$data.blubberGeneratorSteps = Configuration.steps;
 			this.$data.blubberGeneratorFormProperties = Configuration.form;
 			this.$data.blubberGeneratorFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
-		getI18nStrings: function ( Key, LanguageCode )
-		{
+		getI18nStrings: function ( Key, LanguageCode ) {
 			return this.$data.i18n.tc( Key, LanguageCode );
 		},
-		buildApplication: function ( createElement )
-		{
-			if ( false === this.$data.buildForm )
-			{
+		buildApplication: function ( createElement ) {
+			if ( this.$data.buildForm === false ) {
 				return createElement( 'div', { attrs: { id: 'application' } }, createElement( BlubberFormFactory, {}, '' ) );
-			}
-			else
-			{
+			} else {
 				let I18n = null;
-				if ( 'undefined' !== typeof this.$data.i18n )
-				{
+				if ( typeof this.$data.i18n !== 'undefined' ) {
 					I18n = this.getI18nStrings;
 				}
 				const Element = this.buildBlubberForm(
@@ -74,8 +63,7 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-		showGi: function ()
-		{
+		showGi: function () {
 
 		}
 	}
