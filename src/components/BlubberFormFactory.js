@@ -3,7 +3,8 @@ import VueFormGenerator from 'vue-form-generator';
 import VueFormWizard from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
-
+import Utils from '../Utils';
+/* eslint-disable operator-linebreak */
 Vue.use( VueFormWizard );
 Vue.use( VueFormGenerator );
 
@@ -16,63 +17,103 @@ const BlubberFormFactory = {
 			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 			FormSchema.build();
 
-			if ( false === Array.isArray( FormSchema.Form.Steps ) )
+			if ( false === Array.isArray( FormSchema.Form.Steps[ 0 ] ) )
 			{
-				Description = createElement(
-					'div',
+				if ( true === FormSchema.Form.Steps[ 1 ] )
+				{
+					if ( false === Utils.isEmpty( FormSchema.Form.Steps[ 0 ].inner.schema ) )
 					{
-						attr: FormSchema.Form.Steps.description.attr,
-						domProps: FormSchema.Form.Steps.description.domProps
+						VGenerator = createElement(
+							'vue-form-generator',
+							{
+								props: FormSchema.Form.Steps[ 0 ].inner,
+								attr: FormSchema.Form.Steps[ 0 ].attr
+							}
+						);
 					}
-				);
+					else
+					{
+						VGenerator = '';
+					}
 
-				VGenerator = createElement(
-					'vue-form-generator',
+					if ( false === Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps ) )
 					{
-						props: FormSchema.Form.Steps.inner,
-						attr: FormSchema.Form.Steps.attr
+						Description = createElement(
+							'div',
+							{
+								attr: FormSchema.Form.Steps[ 0 ].description.attr,
+								domProps: FormSchema.Form.Steps[ 0 ].description.domProps
+							}
+						);
 					}
-				);
-				return createElement(
-					'form-wizard',
+					else
 					{
-						attrs: FormSchema.Form.FormAttributes,
-						props: FormSchema.Form.FormProperties,
-						on: FormSchema.Form.FormEvents
-					},
-					[ Description, VGenerator ]
-				);
+						Description = '';
+					}
+
+					return createElement(
+						'form-wizard',
+						{
+							attrs: FormSchema.Form.FormAttributes,
+							props: FormSchema.Form.FormProperties,
+							on: FormSchema.Form.FormEvents
+						},
+						[ Description, VGenerator ]
+					);
+				}
+				else
+				{
+					return '';
+				}
 			}
 			else
 			{
 				for ( Index in FormSchema.Form.Steps )
 				{
-					Step = FormSchema.Form.Steps[ Index ];
-					VGenerator = createElement(
-						'vue-form-generator',
+					Step = FormSchema.Form.Steps[ Index ][ 0 ];
+
+					if ( false === FormSchema.Form.Steps[ Index ][ 1 ] )
+					{
+						if ( false === Utils.isEmpty( Step.inner.schema ) )
 						{
-							props: Step.inner
+							VGenerator = createElement(
+								'vue-form-generator',
+								{
+									props: Step.inner
+								}
+							);
 						}
-					);
-
-					Description = createElement(
-						'div',
+						else
 						{
-							attr: Step.description.attr,
-							domProps: Step.description.domProps
+							VGenerator = '';
 						}
-					);
 
-					Tab = createElement(
-						'tab-content',
+						if ( false === Utils.isEmpty( Step.description.domProps ) )
 						{
-							attr: Step.attr,
-							props: Step.tab
-						},
-						[ Description, VGenerator ]
-					);
+							Description = createElement(
+								'div',
+								{
+									attr: Step.description.attr,
+									domProps: Step.description.domProps
+								}
+							);
+						}
+						else
+						{
+							Description = '';
+						}
 
-					Tabs.push( Tab );
+						Tab = createElement(
+							'tab-content',
+							{
+								attr: Step.attr,
+								props: Step.tab
+							},
+							[ Description, VGenerator ]
+						);
+
+						Tabs.push( Tab );
+					}
 				}
 
 				return createElement(

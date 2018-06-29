@@ -299,11 +299,12 @@ export default class BlubberStep extends BlubberFields
 	{
 		let Options, Multiple, IsNewModel, Tag, Title, Icon, BeforeChange;
 		const GeneratedStep = new BlubberFields( this.__Template.fields, this._BindedObject, this._LabelGenerator );
-		GeneratedStep.build();
-		if ( true === Utils.isEmpty( GeneratedStep ) )
+		const Schema = {};
+		if ( true === this.__Template.hasOwnProperty( 'fields' ) )
 		{
-			return;
+			GeneratedStep.build();
 		}
+
 		// this.NodeSchema.schema = GeneratedStep;
 		if ( true === this.__Template.hasOwnProperty( 'options' ) )
 		{
@@ -372,13 +373,23 @@ export default class BlubberStep extends BlubberFields
 		this.Groups = GeneratedStep.Groups;
 		this.Fields = GeneratedStep.Fields;
 
+		if ( 0 < this.Fields.length )
+		{
+			Schema.fields = this.Fields;
+		}
+
+		if ( 0 < this.Groups.length )
+		{
+			Schema.groups = this.Groups;
+		}
+
 		if ( true === this.__Template.hasOwnProperty( 'beforeChange' ) )
 		{
 			// eslint-disable-next-line
 			BeforeChange = this._executeFunctionOrGetAnything( this.__Template.beforeChange, true );
 			this.NodeSchema.inner = {
 				model: this.Model,
-				schema: { fields: this.Fields, groups: this.Groups },
+				schema: Schema,
 				options: Options,
 				multiple: Multiple,
 				isNewModel: IsNewModel,
@@ -395,7 +406,7 @@ export default class BlubberStep extends BlubberFields
 		{
 			this.NodeSchema.inner = {
 				model: this.Model,
-				schema: { fields: this.Fields, groups: this.Groups },
+				schema: Schema,
 				options: Options,
 				multiple: Multiple,
 				isNewModel: IsNewModel,

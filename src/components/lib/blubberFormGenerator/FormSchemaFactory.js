@@ -119,7 +119,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 					groups: Generated.Groups
 				} );
 
-				this.Form.Steps.push( Generated.NodeSchema );
+				this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
 			}
 		}
 		else

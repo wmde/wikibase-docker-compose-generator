@@ -16,23 +16,7 @@
     "steps":[{
             "name":"installLanguageSetting",
             "description": "installLanguageSetting_description",
-            "icon": "settings",
-            "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-            },
-            "fields":[{
-                    "name": "installLanguage",
-                    "type": "select",
-                    "default": "en",
-                    "required": true,
-                    "values": [
-                        {"value": "en", "label":"languageOption_english" },
-                        {"value": "de", "label":"languageOption_german" }
-                    ]
-                }
-            ]
+            "icon": "settings"
         },{
             "name":"generalSetting",
             "description": "generalSetting_description",

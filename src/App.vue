@@ -4,6 +4,7 @@ import Utils from './Utils';
 import Language from './components/Language';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import ObjectHelper from './components/lib/ObjectHelper';
+import AvailableLanguages from './components/data/lang/availableLanguages';
 
 export default {
 	name: 'Blubber',
@@ -24,118 +25,16 @@ export default {
 	},
 	mounted: function ()
 	{
-		this.getDefaultLanguage();
+		let Language;
+		this.initLanguages();
+		this.getClientLanguages();
+		// eslint-disable-next-line
+		Language = this.getDefaultLanguage( AvailableLanguages );
+		this.getLanguage( Language );
 		Utils.waitUntil( this._languageIsLoaded );
 		this.getConfiguration();
 	},
 	methods: {
-		/* getClientLanguages: function ()
-		{
-			let Index, Value, Index2;
-
-			if ( 'undefined' !== typeof window.navigator.language )
-			{
-				this.$data.defaultLanguage = window.navigator.language.toLowerCase();
-				this.$data.languages.push( this.$data.defaultLanguage );
-			}
-
-			if ( 'undefined' !== typeof window.navigator.languages )
-			{
-				for ( Index in window.navigator.languages )
-				{
-
-					Value = window.navigator.languages[ Index ].toLowerCase();
-
-					Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-					if ( 0 > Index2 )
-					{
-						this.$data.languages.splice(
-							-( Index2 + 1 ),
-							0,
-							Value
-						);
-					}
-				}
-			}
-
-			if ( 'undefined' !== typeof window.navigator.systemLanguage )
-			{
-
-				Value = window.navigator.systemLanguage.toLowerCase();
-
-				Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-				if ( 0 > Index2 )
-				{
-					this.$data.languages.splice(
-						-( Index2 + 1 ),
-						0,
-						Value// any formatter could putted here
-					);
-				}
-				this.$data.defaultLanguage = Value;
-			}
-
-			if ( 'undefined' !== typeof window.navigator.browserLanguage )
-			{
-
-				Value = window.navigator.browserLanguage.toLowerCase();
-
-				Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-				if ( 0 > Index2 )
-				{
-					this.$data.languages.splice(
-						-( Index2 + 1 ),
-						0,
-						Value// any formatter could putted here
-					);
-				}
-				this.$data.defaultLanguage = Value;
-			}
-
-			if ( 'undefined' !== typeof window.navigator.userLanguage )
-			{
-
-				Value = window.navigator.userLanguage.toLowerCase();
-
-				Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-				if ( 0 > Index2 )
-				{
-					this.$data.languages.splice(
-						-( Index2 + 1 ),
-						0,
-						Value// any formatter could putted here
-					);
-				}
-				this.$data.defaultLanguage = Value;
-			}
-		},
-		getCurrentLanguage: function ( SupportedLanguages )
-		{
-			let Index;
-
-			if ( -1 === SupportedLanguages.indexOf( this.$data.defaultLanguage ) )
-			{
-				this.$data.languages.splice( this.$data.languages.indexOf( this.$data.defaultLanguage ), 1 );
-				for ( Index in this.$data.languages )
-				{
-					if ( -1 < SupportedLanguages.indexOf( this.$data.languages[ Index ] ) )
-					{
-						return this.$data.languages[ Index ];
-					}
-				}
-
-				if ( -1 < SupportedLanguages.indexOf( 'en' ) )
-				{
-					this.$data.defaultLanguage = 'en';
-				}
-				else
-				{
-					this.$data.defaultLanguage = SupportedLanguages[ 0 ];
-				}
-			}
-
-			return this.$data.defaultLanguage;
-		},*/
 		getConfiguration: function ()
 		{
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
