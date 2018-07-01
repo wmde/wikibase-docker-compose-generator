@@ -7,22 +7,28 @@ Vue.use( VueI18n );
 
 const BlubberLanguage = {
 	methods: {
-		initLanguages() {
+		initLanguages()
+		{
 			this.$data.currentLanguages.push( 'en' );
 			delete DefaultLanguage.key;
 			this.$data.languages.en = DefaultLanguage;
 		},
-		getClientLanguages: function () {
+		getClientLanguages: function ()
+		{
 			let Index, Value, Index2;
-			if ( typeof window.navigator.language !== 'undefined' ) {
+			if ( 'undefined' !== typeof window.navigator.language )
+			{
 				this.$data.defaultLanguage = window.navigator.language.toLowerCase();
 				this.$data.clientLanguages.push( this.$data.defaultLanguage );
 			}
-			if ( typeof window.navigator.languages !== 'undefined' ) {
-				for ( Index in window.navigator.languages ) {
+			if ( 'undefined' !== typeof window.navigator.languages )
+			{
+				for ( Index in window.navigator.languages )
+				{
 					Value = window.navigator.languages[ Index ].toLowerCase();
 					Index2 = Utils.binaryInsertSearch( this.$data.clientLanguages, Value );
-					if ( Index2 < 0 ) {
+					if ( 0 > Index2 )
+					{
 						this.$data.clientLanguages.splice(
 							-( Index2 + 1 ),
 							0,
@@ -31,10 +37,12 @@ const BlubberLanguage = {
 					}
 				}
 			}
-			if ( typeof window.navigator.systemLanguage !== 'undefined' ) {
+			if ( 'undefined' !== typeof window.navigator.systemLanguage )
+			{
 				Value = window.navigator.systemLanguage.toLowerCase();
 				Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-				if ( Index2 < 0 ) {
+				if ( 0 > Index2 )
+				{
 					this.$data.languages.splice(
 						-( Index2 + 1 ),
 						0,
@@ -44,10 +52,12 @@ const BlubberLanguage = {
 				this.$data.defaultLanguage = Value;
 				this.$data.clientLanguages.push( this.$data.defaultLanguage );
 			}
-			if ( typeof window.navigator.browserLanguage !== 'undefined' ) {
+			if ( 'undefined' !== typeof window.navigator.browserLanguage )
+			{
 				Value = window.navigator.browserLanguage.toLowerCase();
 				Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-				if ( Index2 < 0 ) {
+				if ( 0 > Index2 )
+				{
 					this.$data.languages.splice(
 						-( Index2 + 1 ),
 						0,
@@ -57,10 +67,12 @@ const BlubberLanguage = {
 				this.$data.defaultLanguage = Value;
 				this.$data.clientLanguages.push( this.$data.defaultLanguage );
 			}
-			if ( typeof window.navigator.userLanguage !== 'undefined' ) {
+			if ( 'undefined' !== typeof window.navigator.userLanguage )
+			{
 				Value = window.navigator.userLanguage.toLowerCase();
 				Index2 = Utils.binaryInsertSearch( this.$data.languages, Value );
-				if ( Index2 < 0 ) {
+				if ( 0 > Index2 )
+				{
 					this.$data.languages.splice(
 						-( Index2 + 1 ),
 						0,
@@ -71,30 +83,39 @@ const BlubberLanguage = {
 				this.$data.clientLanguages.push( this.$data.defaultLanguage );
 			}
 		},
-		getDefaultLanguage: function ( SupportedLanguages ) {
+		getDefaultLanguage: function ( SupportedLanguages )
+		{
 			let Index;
-			if ( SupportedLanguages.indexOf( this.$data.defaultLanguage ) === -1 ) {
+			if ( -1 === SupportedLanguages.indexOf( this.$data.defaultLanguage ) )
+			{
 				this.$data.clientLanguages.splice(
 					this.$data.clientLanguages.indexOf( this.$data.defaultLanguage ),
 					1
 				);
-				for ( Index in this.$data.clientLanguages ) {
-					if ( SupportedLanguages.indexOf( this.$data.clientLanguages[ Index ] ) > -1 ) {
+				for ( Index in this.$data.clientLanguages )
+				{
+					if ( -1 < SupportedLanguages.indexOf( this.$data.clientLanguages[ Index ] ) )
+					{
 						return this.$data.clientLanguages[ Index ];
 					}
 				}
-				if ( SupportedLanguages.indexOf( 'en' ) > -1 ) {
+				if ( -1 < SupportedLanguages.indexOf( 'en' ) )
+				{
 					this.$data.defaultLanguage = 'en';
-				} else {
+				}
+				else
+				{
 					this.$data.defaultLanguage = SupportedLanguages[ 0 ];
 				}
 			}
 			return this.$data.defaultLanguage;
 		},
-		getLanguage: function ( LanguageCode ) {
+		getLanguage: function ( LanguageCode )
+		{
 			this.$data.i18n = null;
 
-			if ( this.$data.currentLanguages.indexOf( LanguageCode ) > -1 ) {
+			if ( -1 < this.$data.currentLanguages.indexOf( LanguageCode ) )
+			{
 				this.$data.i18n = new VueI18n(
 					{
 						locale: LanguageCode,
@@ -102,11 +123,14 @@ const BlubberLanguage = {
 						messages: this.$data.languages
 					} );
 				return;
-			} else {
+			}
+			else
+			{
 				Utils.get( `./components/data/lang/${LanguageCode}.json`, this.__languageHook );
 			}
 		},
-		__languageHook: function ( Response ) {
+		__languageHook: function ( Response )
+		{
 			const Key = Response.key;
 			delete Response.key;
 			this.$data.languages[ Key ] = Response;
@@ -118,11 +142,13 @@ const BlubberLanguage = {
 					messages: this.$data.languages
 				} );
 		},
-		_languageIsLoaded: function () {
-			return this.$data.i18n === null;
+		_languageIsLoaded: function ()
+		{
+			return null === this.$data.i18n;
 		}
 	},
-	data: function () {
+	data: function ()
+	{
 		const Return = {};
 		Return.languages = {};
 		Return.clientLanguages = [];

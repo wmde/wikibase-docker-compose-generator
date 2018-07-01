@@ -3,13 +3,16 @@ import { TypeErrorException, BaseException } from '../BaseExceptions';
 import Utils from '../../../Utils';
 import { FieldBase } from './FieldBase';
 
-class InvalidFormException extends BaseException {
-	constructor() {
+class InvalidFormException extends BaseException
+{
+	constructor()
+	{
 		super( 'InvalidFormException', 'The given form is invalid.' );
 	}
 }
 
-export default class BlubberFormSchemaConstructor extends FieldBase {
+export default class BlubberFormSchemaConstructor extends FieldBase
+{
 	static __FORM_LABELED_PROPERTIES__ = [ 'backButtonText', 'finishButtonText', 'nextButtonText', 'subtitle', 'title' ];
 	static __FORM_ATTRIBUTES__ = [ 'class', 'id' ];
 	static __FORM_EVENTS__ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
@@ -19,7 +22,8 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 	__Form;
 	Form;
 
-	constructor( Form, BindedObject, Generator ) {
+	constructor( Form, BindedObject, Generator )
+	{
 		super( null, BindedObject, Generator );
 		this.__Form = Form;
 		this.Form = {
@@ -34,51 +38,69 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 		this.__setFormPropterties();
 	}
 
-	__validateProperties() {
-		if ( typeof this._LabelGenerator !== 'function' ) {
+	__validateProperties()
+	{
+		if ( 'function' !== typeof this._LabelGenerator )
+		{
 			throw new TypeErrorException( 'Invalid Labelgenerator' );
 		}
 
-		if ( Utils.isEmpty( this.__Form.formAttributes.id ) === true ) {
+		if ( true === Utils.isEmpty( this.__Form.formAttributes.id ) )
+		{
 			throw new InvalidFormException();
 		}
 	}
 
-	__setFormPropterties() {
+	__setFormPropterties()
+	{
 		let Label;
-		for ( Label in this.__Form.formAttributes ) {
-			if ( BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) !== -1 ) {
+		for ( Label in this.__Form.formAttributes )
+		{
+			if ( -1 !== BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) )
+			{
 				Label = Label.substring( 2 ).toLowerCase();
 				this.Form.FormEvents[ Label ] = this._executeFunctionOrGetAnything(
 					this.__Form.formAttributes[ Label ],
 					true
 				);
-			} else if ( BlubberFormSchemaConstructor.__FORM_ATTRIBUTES__.indexOf( Label ) !== -1 ) {
+			}
+			else if ( -1 !== BlubberFormSchemaConstructor.__FORM_ATTRIBUTES__.indexOf( Label ) )
+			{
 				this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
-			} else if (
-				BlubberFormSchemaConstructor.__FORM_LABELED_PROPERTIES__.indexOf( Label ) !== -1
-			) {
+			}
+			else if (
+				-1 !== BlubberFormSchemaConstructor.__FORM_LABELED_PROPERTIES__.indexOf( Label )
+			)
+			{
 				this.Form.FormProperties[ Label ] = this._getStringLabelOrPlaceholder(
 					this.__Form.formAttributes[ Label ]
 				);
-			} else if ( BlubberFormSchemaConstructor.__BOOLEAN_PROPERTIES__.indexOf( Label ) !== -1 ) {
+			}
+			else if ( -1 !== BlubberFormSchemaConstructor.__BOOLEAN_PROPERTIES__.indexOf( Label ) )
+			{
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetBoolean(
 					this.__Form.formAttributes[ Label ]
 				);
-			} else if ( BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) !== -1 ) {
+			}
+			else if ( -1 !== BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) )
+			{
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetNumber(
 					parseInt( this.__Form.formAttributes[ Label ] )
 				);
-			} else {
+			}
+			else
+			{
 				this.Form.FormProperties[ Label ] = this.__Form.formAttributes[ Label ];
 			}
 		}
 	}
 
-	build() {
+	build()
+	{
 		let Generated, Index;
 
-		if ( this.__Form.hasOwnProperty( 'fields' ) === true ) {
+		if ( true === this.__Form.hasOwnProperty( 'fields' ) )
+		{
 			Generated = new BlubberStep( this.__Form.fields, this._BindedObject, this._LabelGenerator );
 			this.Form.Schema = {
 				fields: Generated.Fields,
@@ -87,18 +109,21 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 
 			this.Form.model = Generated.Model;
 			this.Form.Steps = Generated.NodeSchema;
-		} else if ( this.__Form.hasOwnProperty( 'steps' ) === true && Array.isArray( this.__Form.steps ) === true ) {
+		}
+		else if ( true === this.__Form.hasOwnProperty( 'steps' ) && true === Array.isArray( this.__Form.steps ) )
+		{
 			this.Form.Schema = [];
-			for ( Index in this.__Form.steps ) {
+			for ( Index in this.__Form.steps )
+			{
 				Generated = new BlubberStep(
 					this.__Form.steps[ Index ],
 					this._BindedObject,
 					this._LabelGenerator
 				);
 				Generated.build();
-                console.log(Generated)
 				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
-				if ( Generated.getCondition() === true ) {
+				if ( true === Generated.getCondition() )
+				{
 					continue;
 				}
 
@@ -109,7 +134,9 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 
 				this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
 			}
-		} else {
+		}
+		else
+		{
 			throw new InvalidFormException();
 		}
 	}

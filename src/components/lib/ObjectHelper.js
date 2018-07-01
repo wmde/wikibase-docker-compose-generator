@@ -1,43 +1,56 @@
 import TypeErrorException from './BaseExceptions';
 
-class ObjectHelper {
+class ObjectHelper
+{
 
-	static objectSize( Obj ) {
+	static objectSize( Obj )
+	{
 		let Key;
 		let Size = 0;
-		for ( Key in Obj ) {
-			if ( Obj.hasOwnProperty( Key ) === true ) {
+		for ( Key in Obj )
+		{
+			if ( true === Obj.hasOwnProperty( Key ) )
+			{
 				Size++;
 			}
 		}
 		return Size;
 	}
 
-	static isEmpty( Obj ) {
-		return ObjectHelper.objectSize( Obj ) === 0;
+	static isEmpty( Obj )
+	{
+		return 0 === ObjectHelper.objectSize( Obj );
 	}
 
-	static copyObj( Obj, Depth = -1 ) {
+	static copyObj( Obj, Depth = -1 )
+	{
 		let Dolly, Key;
 
-		if ( typeof Obj !== 'object' ) {
+		if ( 'object' !== typeof Obj )
+		{
 			throw new TypeErrorException(
 				`Expected object got ${ typeof arguments[ 0 ] } at argument 0.`
 			);
 		}
 
-		if ( Array.isArray( Obj ) === true ) {
+		if ( true === Array.isArray( Obj ) )
+		{
 			Dolly = Obj.slice( 0 );
-		} else {
+		}
+		else
+		{
 			Dolly = Object.assign( {}, Obj );
 		}
 
-		if ( Depth === 0 ) {
+		if ( 0 === Depth )
+		{
 			return Dolly;
 		}
 
-		for ( Key in Dolly ) {
-			if ( typeof Dolly[ Key ] === 'object' ) {
+		for ( Key in Dolly )
+		{
+			if ( 'object' === typeof Dolly[ Key ] )
+			{
 				Dolly[ Key ] = ObjectHelper.copyObj( Dolly[ Key ], Depth - 1 );
 			}
 		}
@@ -45,36 +58,46 @@ class ObjectHelper {
 		return Dolly;
 	}
 
-	static mergeObj() {
+	static mergeObj()
+	{
 		let Index, Key, ToMerge, MergedObject;
 
-		if ( arguments.length === 0 ) {
+		if ( 0 === arguments.length )
+		{
 			return null;
 		}
 
-		if ( arguments.length === 1 ) {
+		if ( 1 === arguments.length )
+		{
 			return arguments[ 0 ];
 		}
 
-		if ( typeof arguments[ 0 ] !== 'object' || Array.isArray( arguments[ 0 ] ) === true ) {
+		if ( 'object' !== typeof arguments[ 0 ] || true === Array.isArray( arguments[ 0 ] ) )
+		{
 			throw new TypeErrorException(
 				`Expected object got ${ typeof arguments[ 0 ] } at argument 0.`
 			);
 		}
 
 		MergedObject = ObjectHelper.copyObj( arguments[ 0 ] );// eslint-disable-line
-		for ( Index = 1; arguments.length < Index; Index++ ) {
+		for ( Index = 1; arguments.length < Index; Index++ )
+		{
 			ToMerge = arguments[ Index ];
-			if ( typeof ToMerge !== 'object' || Array.isArray( arguments[ Index ] ) === true ) {
+			if ( 'object' !== typeof ToMerge || true === Array.isArray( arguments[ Index ] ) )
+			{
 				throw new TypeErrorException(
 					`Expected object got ${ typeof ToMerge } at argument ${ Index }.`
 				);
 			}
 
-			for ( Key in ToMerge ) {
-				if ( typeof ToMerge !== 'object' ) {
+			for ( Key in ToMerge )
+			{
+				if ( 'object' !== typeof ToMerge )
+				{
 					MergedObject[ Key ] = ToMerge[ Key ];
-				} else {
+				}
+				else
+				{
 					MergedObject[ Key ] = ObjectHelper.copyObj( ToMerge[ Key ] );
 				}
 			}

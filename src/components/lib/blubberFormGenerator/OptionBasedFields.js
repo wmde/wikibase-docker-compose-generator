@@ -6,27 +6,35 @@ import {
 } from './FieldBase';
 import StringHelper from '../StringHelper';
 
-class OptionBasedFields extends CommonOptionalAttributesAndMethods {
+class OptionBasedFields extends CommonOptionalAttributesAndMethods
+{
 	/* Errors */
 	static __NO_VALUES__ = 'The given field {} has no \'values\' property.';
 	static __CANNOT_SWITCH_VALUES__ = 'Cannot switch from automatic field definition to manual at field {}.'
 
-	constructor( Field, BindedObject, Generator ) {
+	constructor( Field, BindedObject, Generator )
+	{
 		super( Field, BindedObject, Generator );
 	}
 
-	__addLabel( Source, Target, Label ) {
-		if ( Source.hasOwnProperty( Label ) ) {
+	__addLabel( Source, Target, Label )
+	{
+		if ( Source.hasOwnProperty( Label ) )
+		{
 			Target[ Label ] = this._getStringLabelOrPlaceholder( Source[ Label ] );
 		}
 	}
 
-	_addValueProperty( LabelKey, ValueKey ) {
+	_addValueProperty( LabelKey, ValueKey )
+	{
 		let Mutable, GeneratedValue, ValueIndex, ValueIsString;
 		const GeneratedValues = [];
-		if ( this._Field.hasOwnProperty( 'values' ) === true ) {
+		if ( true === this._Field.hasOwnProperty( 'values' ) )
+		{
 			Mutable = this._executeFunctionOrGetArray( this._Field.values );
-		} else {
+		}
+		else
+		{
 			throw new InvalidFieldException(
 				StringHelper.format(
 					OptionBasedFields.__NO_VALUES__,
@@ -35,21 +43,30 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods {
 			);
 		}
 
-		if ( Array.isArray( Mutable ) === false ) {
+		if ( false === Array.isArray( Mutable ) )
+		{
 			return Mutable;
 		}
 
-		if ( typeof Mutable[ 0 ] === 'string' ) {
+		if ( 'string' === typeof Mutable[ 0 ] )
+		{
 			ValueIsString = true;
-		} else {
+		}
+		else
+		{
 			ValueIsString = false;
 		}
 
-		for ( ValueIndex in Mutable ) {
-			if ( typeof Mutable[ ValueIndex ] === 'string' ) {
-				if ( ValueIsString === true ) {
+		for ( ValueIndex in Mutable )
+		{
+			if ( 'string' === typeof Mutable[ ValueIndex ] )
+			{
+				if ( true === ValueIsString )
+				{
 					GeneratedValues.push( Mutable[ ValueIndex ] );
-				} else {
+				}
+				else
+				{
 					throw new InvalidFieldValueException(
 						StringHelper.format(
 							OptionBasedFields.__CANNOT_SWITCH_VALUES__,
@@ -58,8 +75,11 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods {
 					);
 
 				}
-			} else if ( typeof Mutable[ ValueIndex ] === 'object' ) {
-				if ( ValueIsString !== false ) {
+			}
+			else if ( 'object' === typeof Mutable[ ValueIndex ] )
+			{
+				if ( false !== ValueIsString )
+				{
 					throw new InvalidFieldValueException(
 						StringHelper.format(
 							OptionBasedFields.__CANNOT_SWITCH_VALUES__,
@@ -77,7 +97,9 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods {
 					LabelKey
 				);
 				GeneratedValues.push( GeneratedValue );
-			} else {
+			}
+			else
+			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
 						OptionBasedFields.__UNSUPPORTED_TYPE__,
@@ -92,19 +114,25 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods {
 		return GeneratedValues;
 	}
 
-	_addOptionProperty() {
+	_addOptionProperty()
+	{
 		let GeneratedProperty;
-		if ( this._Field.hasOwnProperty( 'options' ) === true ) {
+		if ( true === this._Field.hasOwnProperty( 'options' ) )
+		{
 			GeneratedProperty = this._executeFunctionOrGetObject( this._Field.options );
-		} else {
+		}
+		else
+		{
 			GeneratedProperty = {};
 		}
 
-		if ( ( 'value' in GeneratedProperty ) === false ) {
+		if ( false === ( 'value' in GeneratedProperty ) )
+		{
 			GeneratedProperty.value = 'value';
 		}
 
-		if ( ( 'name' in GeneratedProperty ) === false ) {
+		if ( false === ( 'name' in GeneratedProperty ) )
+		{
 			GeneratedProperty.name = 'label';
 		}
 
@@ -112,14 +140,17 @@ class OptionBasedFields extends CommonOptionalAttributesAndMethods {
 	}
 }
 
-export class ChoiceField extends OptionBasedFields {
-	constructor( Field, BindedObject, Generator ) {
+export class ChoiceField extends OptionBasedFields
+{
+	constructor( Field, BindedObject, Generator )
+	{
 		super( Field, BindedObject, Generator );
 		this._GeneratedField.type = 'radios';
 		this.__buildChoise();
 	}
 
-	__buildChoise() {
+	__buildChoise()
+	{
 		this._GeneratedField.radiosOptions = this._addOptionProperty();
 		this._GeneratedField.values = this._addValueProperty(
 			this._GeneratedField.radiosOptions.name,
@@ -128,29 +159,37 @@ export class ChoiceField extends OptionBasedFields {
 	}
 }
 
-export class SelectionField extends OptionBasedFields {
+export class SelectionField extends OptionBasedFields
+{
 
-	constructor( Field, BindedObject, Generator ) {
+	constructor( Field, BindedObject, Generator )
+	{
 		super( Field, BindedObject, Generator );
 		this._GeneratedField.type = 'select';
 		this.__buildSelection();
 	}
 
-	__buildSelection() {
+	__buildSelection()
+	{
 		this._GeneratedField.selectOptions = this._addOptionProperty();
 
 		this._GeneratedField.selectOptions.hideNoneSelectedText = false;
 
-		if ( this._GeneratedField.selectOptions.hasOwnProperty( 'noneSelectedText' ) === true ) {
+		if ( true === this._GeneratedField.selectOptions.hasOwnProperty( 'noneSelectedText' ) )
+		{
 			this._GeneratedField.selectOptions.noneSelectedText = this._getStringLabelOrPlaceholder(
 				this._GeneratedField.selectOptions.noneSelectedText
 			);
 
-			if ( this._GeneratedField.selectOptions.hasOwnProperty( 'hideNoneSelectedText' ) === true ) {
+			if ( true === this._GeneratedField.selectOptions.hasOwnProperty( 'hideNoneSelectedText' ) )
+			{
 				this._GeneratedField.selectOptions.hideNoneSelectedText = true;
 			}
-		} else {
-			if ( this._GeneratedField.selectOptions.hasOwnProperty( 'hideNoneSelectedText' ) === true ) {
+		}
+		else
+		{
+			if ( true === this._GeneratedField.selectOptions.hasOwnProperty( 'hideNoneSelectedText' ) )
+			{
 				this._GeneratedField.selectOptions.hideNoneSelectedText = true;
 			}
 		}
@@ -163,17 +202,23 @@ export class SelectionField extends OptionBasedFields {
 	}
 }
 
-export class CheckListField extends OptionBasedFields {
-	constructor( Field, BindedObject, Generator ) {
+export class CheckListField extends OptionBasedFields
+{
+	constructor( Field, BindedObject, Generator )
+	{
 		super( Field, BindedObject, Generator );
 		this._GeneratedField.type = 'checklist';
 		this.__buildCheckList();
 	}
 
-	__buildCheckList() {
-		if ( this._Field.hasOwnProperty( 'asList' ) ) {
+	__buildCheckList()
+	{
+		if ( this._Field.hasOwnProperty( 'asList' ) )
+		{
 			this._GeneratedField.listBox = this._executeFunctionOrGetBoolean( this._Field.asList );
-		} else {
+		}
+		else
+		{
 			this._GeneratedField.listBox = false;
 			this._setAutocomplete();
 		}

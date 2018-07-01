@@ -6,7 +6,8 @@ import { CheckListField, ChoiceField, SelectionField } from './OptionBasedFields
 import { FieldBase, InvalidFieldException } from './FieldBase';
 import StringHelper from '../StringHelper';
 /* eslint-disable operator-linebreak */
-class BlubberFields extends FieldBase {
+class BlubberFields extends FieldBase
+{
 	/* ErrorStrings*/
 	static __MODEL_ENTRY_EXISTS__ = 'The given model entry of {} is allready defined.';
 	static __UNKNOWN__FIELDTYPE__ = 'The given fieldtype {} of {} is unknown.';
@@ -48,7 +49,8 @@ class BlubberFields extends FieldBase {
 	Groups;
 	Model;
 
-	constructor( Fields, BindedObject, Generator ) {
+	constructor( Fields, BindedObject, Generator )
+	{
 		super( null, BindedObject, Generator );
 		this.__Fields = Fields;
 		this.Fields = [];
@@ -56,13 +58,17 @@ class BlubberFields extends FieldBase {
 		this.Model = {};
 	}
 
-	__addToModel( Field ) {
+	__addToModel( Field )
+	{
 		const CurrentModelKey = Field.getModelKey();
 		let Key;
 
-		if ( Array.isArray( CurrentModelKey ) === true ) {
-			for ( Key in CurrentModelKey ) {
-				if ( this.Model.hasOwnProperty( Key ) === false ) {
+		if ( true === Array.isArray( CurrentModelKey ) )
+		{
+			for ( Key in CurrentModelKey )
+			{
+				if ( false === this.Model.hasOwnProperty( Key ) )
+				{
 					break;
 				}
 			}
@@ -78,7 +84,8 @@ class BlubberFields extends FieldBase {
 		this.Model = Object.assign( {}, Field.getModel(), this.Model );
 	}
 
-	__buildDynamicField( Index ) {
+	__buildDynamicField( Index )
+	{
 		let GeneratedFields;
 		let FieldExecution;
 		const Bind = this._executeFunctionOrGetAnything(
@@ -88,7 +95,8 @@ class BlubberFields extends FieldBase {
 		// eslint-disable-next-line
 		GeneratedFields = Bind();
 
-		if ( GeneratedFields === null || typeof GeneratedFields !== 'object' ) {
+		if ( null === GeneratedFields || 'object' !== typeof GeneratedFields )
+		{
 			throw new InvalidFieldException(
 				StringHelper.format(
 					BlubberFields.__INVALID__DYNAMIC_FIED__,
@@ -97,7 +105,8 @@ class BlubberFields extends FieldBase {
 			);
 		}
 
-		if ( Array.isArray( GeneratedFields ) === true ) {
+		if ( true === Array.isArray( GeneratedFields ) )
+		{
 			FieldExecution = new BlubberFields(
 				GeneratedFields,
 				this._BindedObject,
@@ -105,7 +114,8 @@ class BlubberFields extends FieldBase {
 			);
 			GeneratedFields.build();
 
-			if ( Utils.isEmpty( FieldExecution.Model ) === true ) {
+			if ( true === Utils.isEmpty( FieldExecution.Model ) )
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						BlubberFields.__INVALID__SUB_MODEL__,
@@ -114,31 +124,39 @@ class BlubberFields extends FieldBase {
 				);
 			}
 
-			if ( FieldExecution.Fields.length > 0 ) {
+			if ( 0 < FieldExecution.Fields.length )
+			{
 				this.Fields = this.Fields.concat( FieldExecution.Fields );
 			}
 
-			if ( FieldExecution.Groups.length > 0 ) {
+			if ( 0 < FieldExecution.Groups.length )
+			{
 				this.Groups = this.Groups.concat( FieldExecution.Groups );
 			}
 
 			this.Model = Object.assign( {}, FieldExecution.Model, this.Model );
 
 			return true;
-		} else {
+		}
+		else
+		{
 			this.__Fields[ Index ] = GeneratedFields;
 			return false;
 		}
 	}
 
-	__buildGroup( Index ) {
+	__buildGroup( Index )
+	{
 		const GroupPointer = this.Groups[ this.Groups.length - 1 ];
 		let Generated;
 
-		if ( this.__Fields[ Index ].hasOwnProperty( 'name' ) ) {
+		if ( this.__Fields[ Index ].hasOwnProperty( 'name' ) )
+		{
 			GroupPointer.legend = this._getStringLabelOrPlaceholder( this.__Fields[ Index ].name );
 			GroupPointer.id = this.__Fields[ Index ].name;
-		} else {
+		}
+		else
+		{
 			throw new InvalidFieldException( FieldBase.__NO_NAME__ );
 		}
 		// eslint-disable-next-line
@@ -148,7 +166,8 @@ class BlubberFields extends FieldBase {
 		);
 		Generated.build();
 
-		if ( Utils.isEmpty( Generated.Model ) === true ) {
+		if ( true === Utils.isEmpty( Generated.Model ) )
+		{
 			throw new InvalidFieldException(
 				StringHelper.format(
 					BlubberFields.__INVALID__SUB_MODEL__,
@@ -157,11 +176,13 @@ class BlubberFields extends FieldBase {
 			);
 		}
 
-		if ( Generated.Fields.length > 0 ) {
+		if ( 0 < Generated.Fields.length )
+		{
 			GroupPointer.fields = Generated.Fields;
 		}
 
-		if ( Generated.Groups.length > 0 ) {
+		if ( 0 < Generated.Groups.length )
+		{
 			GroupPointer.groups = Generated.Groups;
 		}
 
@@ -171,25 +192,31 @@ class BlubberFields extends FieldBase {
 
 	}
 
-	build() {
+	build()
+	{
 		let FieldIndex, Field;
-		for ( FieldIndex = 0; FieldIndex < this.__Fields.length; FieldIndex++ ) {
-			if ( this.__Fields[ FieldIndex ].hasOwnProperty( 'bind' ) === true ) {
-				if ( this.__buildDynamicField( FieldIndex ) === false ) {
+		for ( FieldIndex = 0; FieldIndex < this.__Fields.length; FieldIndex++ )
+		{
+			if ( true === this.__Fields[ FieldIndex ].hasOwnProperty( 'bind' ) )
+			{
+				if ( false === this.__buildDynamicField( FieldIndex ) )
+				{
 					FieldIndex--;
 				}
 
 				continue;
 			}
 
-			if ( this.__Fields[ FieldIndex ].hasOwnProperty( 'group' ) === true ) {
+			if ( true === this.__Fields[ FieldIndex ].hasOwnProperty( 'group' ) )
+			{
 				this.Groups.push( {} );
 				this.__buildGroup( FieldIndex );
 				if (
-					this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' ) === true
+					true === this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' )
 					&&
-					this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition ) === true
-				) {
+					true === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
+				)
+				{
 					this.Groups.pop();
 				}
 				continue;
@@ -197,9 +224,10 @@ class BlubberFields extends FieldBase {
 
 			this.__Fields[ FieldIndex ].type = this.__Fields[ FieldIndex ].type.toLowerCase();
 			if (
-				BlubberFields.__FIELDTYPES__.hasOwnProperty(
+				false === BlubberFields.__FIELDTYPES__.hasOwnProperty(
 					this.__Fields[ FieldIndex ].type
-				) === false ) {
+				) )
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						BlubberFields.__UNKNOWN__FIELDTYPE__,
@@ -218,10 +246,11 @@ class BlubberFields extends FieldBase {
 			this.__addToModel( Field );
 
 			if (
-				this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' ) === true
+				true === this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' )
 				&&
-				this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition ) === true
-			) {
+				true === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
+			)
+			{
 				continue;
 			}
 
@@ -229,31 +258,38 @@ class BlubberFields extends FieldBase {
 		}
 	}
 }
-export default class BlubberStep extends BlubberFields {
+export default class BlubberStep extends BlubberFields
+{
 	static __NO_NAME__ = 'The given fieldset has no identifier (name).';
 	__Template;
 	NodeSchema;
 	__Condition;
 
-	constructor( Fields, BindedObject, Generator ) {
+	constructor( Fields, BindedObject, Generator )
+	{
 		super( null, BindedObject, Generator );
 		this.__Template = Fields;
 		this.NodeSchema = { tab: {}, inner: {} };
 
-		if ( this.__Template.hasOwnProperty( 'condition' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'condition' ) )
+		{
 			this.__Condition = this.__Template.condition;
-		} else {
+		}
+		else
+		{
 			this.__Condition = false;
 		}
 	}
 
-	__addDescription() {
+	__addDescription()
+	{
 		const DescriptionText = this._getStringLabelOrPlaceholder(
 			this.__Template.description
 		);
 		const DescriptionClass = this._getStringLabelOrEmpty( this.__Template.descriptionClass );
 
-		if ( Utils.isEmpty( this.__Template.description ) === false ) {
+		if ( false === Utils.isEmpty( this.__Template.description ) )
+		{
 			this.NodeSchema.description = {
 				attr: {
 					'class': DescriptionClass,
@@ -266,7 +302,8 @@ export default class BlubberStep extends BlubberFields {
 		}
 	}
 
-	__buildStep() {
+	__buildStep()
+	{
 		let Options, Multiple, IsNewModel, Tag, Title, Icon, BeforeChange;
 		const GeneratedStep = new BlubberFields(
 			this.__Template.fields,
@@ -274,52 +311,72 @@ export default class BlubberStep extends BlubberFields {
 			this._LabelGenerator
 		);
 		const Schema = {};
-		if ( this.__Template.hasOwnProperty( 'fields' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'fields' ) )
+		{
 			GeneratedStep.build();
 		}
 
 		// this.NodeSchema.schema = GeneratedStep;
-		if ( this.__Template.hasOwnProperty( 'options' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'options' ) )
+		{
 			Options = this.__Template.options;
-		} else {
+		}
+		else
+		{
 			Options = {};
 		}
 
-		if ( this.__Template.hasOwnProperty( 'isMultiple' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'isMultiple' ) )
+		{
 			Multiple = this.__Template.isMultiple;
-		} else {
+		}
+		else
+		{
 			Multiple = false;
 		}
 
-		if ( this.__Template.hasOwnProperty( 'isNewModel' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'isNewModel' ) )
+		{
 			IsNewModel = this.__Template.isNewModel;
-		} else {
+		}
+		else
+		{
 			IsNewModel = false;
 		}
 
-		if ( this.__Template.hasOwnProperty( 'tag' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'tag' ) )
+		{
 			Tag = this.__Template.tag;
-		} else {
+		}
+		else
+		{
 			Tag = 'fieldset';
 		}
 
-		if ( this.__Template.hasOwnProperty( 'label' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'label' ) )
+		{
 			Title = this._getStringLabelOrPlaceholder(
 				this._executeFunctionOrGetString( this.__Template.label )
 			);
-		} else {
+		}
+		else
+		{
 			Title = this._getStringLabelOrPlaceholder(
 				this._executeFunctionOrGetString( this.__Template.name )
 			);
 		}
 
-		if ( this.__Template.hasOwnProperty( 'icon' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'icon' ) )
+		{
 			Icon = this._executeFunctionOrGetString( this.__Template.icon );
-		} else {
+		}
+		else
+		{
 			Icon = '';
 		}
 
-		if ( this.__Template.hasOwnProperty( 'name' ) === false ) {
+		if ( false === this.__Template.hasOwnProperty( 'name' ) )
+		{
 			throw new InvalidFieldException( BlubberStep.__NO_NAME__ );
 		}
 
@@ -327,15 +384,18 @@ export default class BlubberStep extends BlubberFields {
 		this.Groups = GeneratedStep.Groups;
 		this.Fields = GeneratedStep.Fields;
 
-		if ( this.Fields.length > 0 ) {
+		if ( 0 < this.Fields.length )
+		{
 			Schema.fields = this.Fields;
 		}
 
-		if ( this.Groups.length > 0 ) {
+		if ( 0 < this.Groups.length )
+		{
 			Schema.groups = this.Groups;
 		}
 
-		if ( this.__Template.hasOwnProperty( 'beforeChange' ) === true ) {
+		if ( true === this.__Template.hasOwnProperty( 'beforeChange' ) )
+		{
 			// eslint-disable-next-line
 			BeforeChange = this._executeFunctionOrGetAnything( this.__Template.beforeChange, true );
 			this.NodeSchema.inner = {
@@ -352,7 +412,9 @@ export default class BlubberStep extends BlubberFields {
 				icon: Icon,
 				beforeChange: BeforeChange
 			};
-		} else {
+		}
+		else
+		{
 			this.NodeSchema.inner = {
 				model: this.Model,
 				schema: Schema,
@@ -372,12 +434,14 @@ export default class BlubberStep extends BlubberFields {
 		this.NodeSchema.attr = { id: this.__Template.name };
 	}
 
-	build() {
+	build()
+	{
 		this.__addDescription();
 		this.__buildStep();
 	}
 
-	getCondition() {
+	getCondition()
+	{
 		return this._executeFunctionOrGetBoolean( this.__Condition );
 	}
 }

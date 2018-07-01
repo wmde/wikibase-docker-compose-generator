@@ -3,25 +3,32 @@ import { BaseException } from '../BaseExceptions';
 import Utils from '../../../Utils';
 
 /* eslint-disable operator-linebreak */
-export class InvalidFieldException extends BaseException {
-	constructor( Message ) {
+export class InvalidFieldException extends BaseException
+{
+	constructor( Message )
+	{
 		super( 'InvalidFieldException', Message );
 	}
 }
 
-export class InvalidFieldValueException extends BaseException {
-	constructor( Message ) {
+export class InvalidFieldValueException extends BaseException
+{
+	constructor( Message )
+	{
 		super( 'InvalidFieldValueException', Message );
 	}
 }
 
-export class InvalidFieldPropertyException extends BaseException {
-	constructor( Message ) {
+export class InvalidFieldPropertyException extends BaseException
+{
+	constructor( Message )
+	{
 		super( 'InvalidFieldPropertyException', Message );
 	}
 }
 
-export class FieldBase {
+export class FieldBase
+{
 	/* ErrorStrings*/
 	static __UNSUPPORTED_TYPE__ = 'Unsupported type {} in field {}. Expected {}.';
 	static __UNKNOWN_METHOD__ = 'Unknown method {} of field {} .';
@@ -45,7 +52,8 @@ export class FieldBase {
 	__ModelPointer;
 	__HasDefaultValue;
 
-	constructor( Field, BindedObject, Generator ) {
+	constructor( Field, BindedObject, Generator )
+	{
 		this._Field = Field;
 		this._BindedObject = BindedObject;
 		this._LabelGenerator = Generator;
@@ -56,34 +64,40 @@ export class FieldBase {
 		this.__HasDefaultValue = false;
 	}
 
-	__lookForPropertyAtVueObject( IsTypeOrFunction ) {
+	__lookForPropertyAtVueObject( IsTypeOrFunction )
+	{
 		let Index;
 		const Chunks = IsTypeOrFunction.split( '.' );
-        let Self;
-        if( true === this._Field.hasOwnProperty( 'prefix' ) )
-        {
-            if( false === ( this._Field.prefix in this.__BindedObject ) )
-            {
-                return null;
-            }
-            else
-            {
-                Self = this.__BindedObject[ this._Field.prefix ];
-            }
-        }
-        else
-        {
-            Self = this._BindedObject;
-        }
+		let Self;
+		if ( true === this._Field.hasOwnProperty( 'prefix' ) )
+		{
+			if ( false === ( this._Field.prefix in this.__BindedObject ) )
+			{
+				return null;
+			}
+			else
+			{
+				Self = this.__BindedObject[ this._Field.prefix ];
+			}
+		}
+		else
+		{
+			Self = this._BindedObject;
+		}
 
-		if ( Self === null ) {
+		if ( null === Self )
+		{
 			return null;
 		}
 
-		for ( Index in Chunks ) {
-			if ( Chunks[ Index ] in Self ) {
+		for ( Index in Chunks )
+		{
+			if ( Chunks[ Index ] in Self )
+			{
 				Self = Self[ Chunks[ Index ] ];
-			} else {
+			}
+			else
+			{
 				return null;
 			}
 		}
@@ -95,15 +109,18 @@ export class FieldBase {
 		Value,
 		Type,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
 
-		if ( this._Field === null ) {
+		if ( null === this._Field )
+		{
 			this._Field = { name: 'not set' };
 		}
 
-		if ( ValueType === -1 && FieldBase.__IS_ANY__ !== Type ) {
+		if ( -1 === ValueType && FieldBase.__IS_ANY__ !== Type )
+		{
 			throw new InvalidFieldValueException(
 				StringHelper.format(
 					FieldBase.__UNSUPPORTED_TYPE__,
@@ -114,28 +131,39 @@ export class FieldBase {
 			);
 		}
 
-		if ( FieldBase.__IS_FUNCTION__ === ValueType ) {
-			if ( ReturnPureFunction === true ) {
+		if ( FieldBase.__IS_FUNCTION__ === ValueType )
+		{
+			if ( true === ReturnPureFunction )
+			{
 				return Value;
 			}
 
 			Value = Value( this._Field.name );
-		} else {
-			if ( FieldBase.__IS_STRING__ === ValueType ) {
-				if ( Value.includes( '.' ) === true ) {
+		}
+		else
+		{
+			if ( FieldBase.__IS_STRING__ === ValueType )
+			{
+				if ( true === Value.includes( '.' ) )
+				{
 					Self = this.__lookForPropertyAtVueObject( Value );
 					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
 						( typeof Self )
 					);
-				} else if ( this._BindedObject !== null && typeof this._BindedObject[ Value ] === 'function' ) {
+				}
+				else if ( null !== this._BindedObject && 'function' === typeof this._BindedObject[ Value ] )
+				{
 					Self = this._BindedObject[ Value ];
 					ValueType = FieldBase.__IS_FUNCTION__;
 				}
 			}
 
-			if ( Self !== null ) {
-				if ( FieldBase.__IS_FUNCTION__ === ValueType ) {
-					if ( ReturnPureFunction === true ) {
+			if ( null !== Self )
+			{
+				if ( FieldBase.__IS_FUNCTION__ === ValueType )
+				{
+					if ( true === ReturnPureFunction )
+					{
 						return Self;
 					}
 
@@ -144,7 +172,9 @@ export class FieldBase {
 						( typeof Value )
 					);
 				}
-			} else if ( ReturnPureFunction === true ) {
+			}
+			else if ( true === ReturnPureFunction )
+			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
 						FieldBase.__UNKNOWN_METHOD__,
@@ -155,7 +185,8 @@ export class FieldBase {
 			}
 		}
 
-		if ( ValueType === Type || FieldBase.__IS_ANY__ === Type ) {
+		if ( ValueType === Type || FieldBase.__IS_ANY__ === Type )
+		{
 			return Value;
 		}
 
@@ -172,7 +203,8 @@ export class FieldBase {
 	_executeFunctionOrGetString(
 		Value,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		return this._genericExecuteFuncionOrGetSomething(
 			Value,
 			FieldBase.__IS_STRING__,
@@ -183,7 +215,8 @@ export class FieldBase {
 	_executeFunctionOrGetNumber(
 		Value,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		return this._genericExecuteFuncionOrGetSomething(
 			Value,
 			FieldBase.__IS_NUMERIC__,
@@ -194,7 +227,8 @@ export class FieldBase {
 	_executeFunctionOrGetBoolean(
 		Value,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		return this._genericExecuteFuncionOrGetSomething(
 			Value,
 			FieldBase.__IS_BOOLEAN__,
@@ -205,7 +239,8 @@ export class FieldBase {
 	_executeFunctionOrGetObject(
 		Value,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		return this._genericExecuteFuncionOrGetSomething(
 			Value,
 			FieldBase.__IS_OBJECT__,
@@ -216,7 +251,8 @@ export class FieldBase {
 	_executeFunctionOrGetAnything(
 		Value,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		return this._genericExecuteFuncionOrGetSomething(
 			Value,
 			FieldBase.__IS_ANY__,
@@ -227,10 +263,12 @@ export class FieldBase {
 	_executeFunctionOrGetArray(
 		Value,
 		ReturnPureFunction = false
-	) {
+	)
+	{
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
-		if ( ValueType === -1 && Array.isArray( Value ) === false ) {
+		if ( -1 === ValueType && false === Array.isArray( Value ) )
+		{
 			throw new InvalidFieldException(
 				StringHelper.format(
 					FieldBase.__UNSUPPORTED_TYPE__,
@@ -242,32 +280,45 @@ export class FieldBase {
 			);
 		}
 
-		if ( FieldBase.__IS_FUNCTION__ === ValueType ) {
-			if ( ReturnPureFunction === true ) {
+		if ( FieldBase.__IS_FUNCTION__ === ValueType )
+		{
+			if ( true === ReturnPureFunction )
+			{
 				return Value;
 			}
 
 			Value = Value( this._Field.name );
-		} else {
-			if ( FieldBase.__IS_STRING__ === ValueType ) {
-				if ( Value.includes( '.' ) === true ) {
+		}
+		else
+		{
+			if ( FieldBase.__IS_STRING__ === ValueType )
+			{
+				if ( true === Value.includes( '.' ) )
+				{
 					Self = this.__lookForPropertyAtVueObject( Value );
 					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Self ) );
-				} else if ( this._BindedObject !== null && typeof this._BindedObject[ Value ] === 'function' ) {
+				}
+				else if ( null !== this._BindedObject && 'function' === typeof this._BindedObject[ Value ] )
+				{
 					Self = this._BindedObject[ Value ];
 					ValueType = FieldBase.__IS_FUNCTION__;
 				}
 			}
 
-			if ( Self !== null ) {
-				if ( FieldBase.__IS_FUNCTION__ === ValueType ) {
-					if ( ReturnPureFunction === true ) {
+			if ( null !== Self )
+			{
+				if ( FieldBase.__IS_FUNCTION__ === ValueType )
+				{
+					if ( true === ReturnPureFunction )
+					{
 						return Self;
 					}
 
 					Value = Self( this._Field.name );
 				}
-			} else if ( ReturnPureFunction === true ) {
+			}
+			else if ( true === ReturnPureFunction )
+			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
 						FieldBase.__UNKNOWN_METHOD__,
@@ -278,7 +329,8 @@ export class FieldBase {
 			}
 		}
 
-		if ( Array.isArray( Value ) === true ) {
+		if ( true === Array.isArray( Value ) )
+		{
 			return Value;
 		}
 
@@ -293,88 +345,111 @@ export class FieldBase {
 		);
 	}
 
-	_getStringLabelOrEmpty( Label ) {
+	_getStringLabelOrEmpty( Label )
+	{
 		let LabelValue;
 
-		if ( Utils.isEmpty( Label ) === true ) {
+		if ( true === Utils.isEmpty( Label ) )
+		{
 			return '';
-		} else {
-			if ( typeof Label === 'function' ) {
+		}
+		else
+		{
+			if ( 'function' === typeof Label )
+			{
 				Label = Label( this._Field.name );
 			}
 
 			LabelValue = this._LabelGenerator( Label );
 
-			if ( Utils.isEmpty( LabelValue ) === true || Label === LabelValue ) {
+			if ( true === Utils.isEmpty( LabelValue ) || Label === LabelValue )
+			{
 				return '';
 			}
 			return Label;
 		}
 	}
 
-	_getStringLabelOrPlaceholder( Label ) {
+	_getStringLabelOrPlaceholder( Label )
+	{
 		let LabelValue;
 
-		if ( Utils.isEmpty( Label ) === true ) {
+		if ( true === Utils.isEmpty( Label ) )
+		{
 			return '';
-		} else {
-			if ( typeof Label === 'function' ) {
+		}
+		else
+		{
+			if ( 'function' === typeof Label )
+			{
 				Label = Label( this._Field.name );
 			}
 
-            if( 'undefined' === typeof this)
-            {
-                console.trace()
-            }
 			LabelValue = this._LabelGenerator( Label );
 
-			if ( Utils.isEmpty( LabelValue ) === true ) {
+			if ( true === Utils.isEmpty( LabelValue ) )
+			{
 				return Label;
-			} else {
+			}
+			else
+			{
 				return LabelValue;
 			}
 		}
 	}
 
-	__assignGeneric( FieldLabel, AssignmentLabel, AssignFunction ) {
-		if ( this._Field.hasOwnProperty( FieldLabel ) === true ) {
-			if ( AssignmentLabel.length > 0 ) {
-				this._GeneratedField[ AssignmentLabel ] = AssignFunction(
+	__assignGeneric( FieldLabel, AssignmentLabel, AssignFunction )
+	{
+		if ( true === this._Field.hasOwnProperty( FieldLabel ) )
+		{
+			if ( 0 < AssignmentLabel.length )
+			{
+				this._GeneratedField[ AssignmentLabel ] = this[AssignFunction](
 					this._Field[ FieldLabel ]
 				);
-			} else {
-				this._GeneratedField[ FieldLabel ] = AssignFunction(
+			}
+			else
+			{
+				this._GeneratedField[ FieldLabel ] = this[AssignFunction](
 					this._Field[ FieldLabel ]
 				);
 			}
 		}
 	}
 
-	_assignString( FieldLabel, AssignmentLabel = '' ) {
-		this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetString );
+	_assignString( FieldLabel, AssignmentLabel = '' )
+	{
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetString' );
 	}
 
-	_assignNumeric( FieldLabel, AssignmentLabel = '' ) {
-		this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetNumber );
+	_assignNumeric( FieldLabel, AssignmentLabel = '' )
+	{
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetNumber' );
 	}
 
-	_assignBoolean( FieldLabel, AssignmentLabel = '' ) {
-		this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetBoolean );
+	_assignBoolean( FieldLabel, AssignmentLabel = '' )
+	{
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetBoolean' );
 	}
 
 	/* _assignObject( FieldLabel, AssignmentLabel = '' )
 	{
-	this.__assignGeneric( FieldLabel, AssignmentLabel, this._executeFunctionOrGetObject );
+	this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetObject' );
 	}*/
 
-	_assignFunction( FieldLabel, AssignmentLabel = '' ) {
-		if ( this._Field.hasOwnProperty( FieldLabel ) === true ) {
-			if ( AssignmentLabel.length > 0 ) {
+	_assignFunction( FieldLabel, AssignmentLabel = '' )
+	{
+		if ( true === this._Field.hasOwnProperty( FieldLabel ) )
+		{
+			if ( 0 < AssignmentLabel.length )
+			{
 				this._GeneratedField[ AssignmentLabel ] = this._executeFunctionOrGetAnything(
 					this._Field[ FieldLabel ],
 					true
 				);
-			} else {
+			}
+			else
+			{
 				this._GeneratedField[ FieldLabel ] = this._executeFunctionOrGetAnything(
 					this._Field[ FieldLabel ],
 					true
@@ -383,27 +458,33 @@ export class FieldBase {
 		}
 	}
 
-	_assignEmptyStringOrLabelString( FieldLabel, AssignmentLabel = '' ) {
-		this.__assignGeneric( FieldLabel, AssignmentLabel, this._getStringLabelOrEmpty );
+	_assignEmptyStringOrLabelString( FieldLabel, AssignmentLabel = '' )
+	{
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_getStringLabelOrEmpty' );
 	}
 
-	_assignPlaceholderOrLabelString( FieldLabel, AssignmentLabel = '' ) {
-		this.__assignGeneric( FieldLabel, AssignmentLabel, this._getStringLabelOrPlaceholder );
+	_assignPlaceholderOrLabelString( FieldLabel, AssignmentLabel = '' )
+	{
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_getStringLabelOrPlaceholder' );
 	}
 
-	_addKeyToModel( Key, Prefix = '' ) {
+	_addKeyToModel( Key, Prefix = '' )
+	{
 		let Index, Chunks;
 		let Self = this._Model;
 
-		if ( Key.length === 0 ) {
+		if ( 0 === Key.length )
+		{
 			throw new InvalidFieldPropertyException( FieldBase.__NO_NAME__ );
 		}
 
-		if ( Prefix.length > 0 ) {
+		if ( 0 < Prefix.length )
+		{
 			Key = `${ Prefix }.${ Key }`;
 		}
 
-		if ( Self === null ) {
+		if ( null === Self )
+		{
 			throw new InvalidFieldException(
 				StringHelper.format(
 					FieldBase.__NO_BINDED_OBJECT__,
@@ -412,16 +493,20 @@ export class FieldBase {
 			);
 		}
 
-		if ( Key.includes( '.' ) === true ) {
+		if ( true === Key.includes( '.' ) )
+		{
 			Chunks = Key.split( '.' );
 			this.__ModelKey = Chunks;
-			for ( Index in Chunks ) {
+			for ( Index in Chunks )
+			{
 				Self[ Chunks[ Index ] ] = {};
 				Self = Self[ Chunks[ Index ] ];
 			}
 
 			Self[ Chunks[ Chunks.length - 1 ] ] = '';
-		} else {
+		}
+		else
+		{
 			Self[ Key ] = '';
 			this.__ModelKey = Key;
 		}
@@ -429,63 +514,83 @@ export class FieldBase {
 		this.__ModelPointer = Self;
 	}
 
-	_addValueToModel( Value ) {
+	_addValueToModel( Value )
+	{
 		this.__ModelPointer = Value;
 		this.__HasDefaultValue = true;
 	}
 
-	_fieldTakesMultibleValues() {
-		if ( this.__HasDefaultValue === true ) {
+	_fieldTakesMultibleValues()
+	{
+		if ( true === this.__HasDefaultValue )
+		{
 			this.__ModelPointer = [ this.__ModelPointer ];
-		} else {
+		}
+		else
+		{
 			this.__ModelPointer = [];
 		}
 	}
 
-	isInModel( Key ) {
-		if ( Array.isArray( this.__ModelKey ) === true ) {
+	isInModel( Key )
+	{
+		if ( true === Array.isArray( this.__ModelKey ) )
+		{
 			return this.__ModelKey.join( '' ) === Key;
-		} else {
+		}
+		else
+		{
 			return this.__ModelKey === Key;
 		}
 	}
 
-	hasDefalutValue() {
+	hasDefalutValue()
+	{
 		return this.__HasDefaultValue;
 	}
 
-	getModel() {
+	getModel()
+	{
 		return this._Model;
 	}
 
-	getModelKey() {
+	getModelKey()
+	{
 		return this.__ModelKey;
 	}
 
-	getGeneratedField() {
+	getGeneratedField()
+	{
 		return this._GeneratedField;
 	}
 }
 
-export class CommonRequiredAttributes extends FieldBase {
-	constructor( Field, BindedObject, Generator ) {
+export class CommonRequiredAttributes extends FieldBase
+{
+	constructor( Field, BindedObject, Generator )
+	{
 		super( Field, BindedObject, Generator );
 		this.__addNeccesaryAttributes();
 	}
 
-	__addNeccesaryAttributes() {
-		if ( 'class' in this._Field ) {
+	__addNeccesaryAttributes()
+	{
+		if ( 'class' in this._Field )
+		{
 			this._Field.styleClasses = this._Field.class;
 			delete this._Field.class;
 		}
 
-		if ( this._Field.hasOwnProperty( 'name' ) === false ) {
+		if ( false === this._Field.hasOwnProperty( 'name' ) )
+		{
 			throw new InvalidFieldException( FieldBase.__NO_NAME__ );
 		}
 
 		// common required properties
-		if ( this._Field.hasOwnProperty( 'prefix' ) === true ) {
-			if ( this._Field.prefix !== 'string' ) {
+		if ( true === this._Field.hasOwnProperty( 'prefix' ) )
+		{
+			if ( 'string' !== this._Field.prefix )
+			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						FieldBase.__UNSUPPORTED_TYPE__,
@@ -495,16 +600,20 @@ export class CommonRequiredAttributes extends FieldBase {
 						'string'
 					)
 				);
-			} else {
+			}
+			else
+			{
 				this._GeneratedField.id = `${ this._Field.prefix }_${ this._Field.name }`;
 			}
-		} else {
+		}
+		else
+		{
 			this._GeneratedField.id = this._Field.name;
 		}
 
         if ( true === this._Field.hasOwnProperty( 'label' ) )
         {
-            this._assignPlaceholderOrLabelString( 'label ');
+            this._assignPlaceholderOrLabelString( 'label' );
         }
         else
         {
@@ -513,84 +622,109 @@ export class CommonRequiredAttributes extends FieldBase {
 	}
 }
 
-export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes {
+export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
+{
 	/* ERRORS*/
 	static __NO_LABEL_INSIDE_BUTTON__ = 'A insidebutton of field {} has no label.';
 
-	constructor( Field, BindedObject, Generator ) {
+	constructor( Field, BindedObject, Generator )
+	{
 		super( Field, BindedObject, Generator );
 		this.__addStore();
 		this.__addCommonOptionalProperties();
 	}
 
-	_setAutocomplete() {
+	_setAutocomplete()
+	{
 		if (
-			this._Field.hasOwnProperty( 'autocomplete' ) === true
+			true === this._Field.hasOwnProperty( 'autocomplete' )
 		&&
-			this._Field.autocomplete === false
-		) {
+			false === this._Field.autocomplete
+		)
+		{
 			this._GeneratedField.autocomplete = 'off';
-		} else {
+		}
+		else
+		{
 			this._GeneratedField.autocomplete = 'on';
 		}
 	}
 
-	__addStore() {
-		if ( this._Field.hasOwnProperty( 'storesIn' ) === true ) {
-			if ( this._Field.hasOwnProperty( 'prefix' ) === true ) {
+	__addStore()
+	{
+		if ( true === this._Field.hasOwnProperty( 'storesIn' ) )
+		{
+			if ( true === this._Field.hasOwnProperty( 'prefix' ) )
+			{
 				this._addKeyToModel(
 					this._executeFunctionOrGetString( this._Field.storesIn ),
 					this._Field.prefix
 				);
-			} else {
+			}
+			else
+			{
 				this._addKeyToModel( this._executeFunctionOrGetString( this._Field.storesIn ) );
 			}
-		} else {
-			if ( this._Field.hasOwnProperty( 'prefix' ) === true ) {
+		}
+		else
+		{
+			if ( true === this._Field.hasOwnProperty( 'prefix' ) )
+			{
 				this._addKeyToModel(
 					this._executeFunctionOrGetString( this._Field.name ),
 					this._Field.prefix
 				);
-			} else {
+			}
+			else
+			{
 				this._addKeyToModel( this._executeFunctionOrGetString( this._Field.name ) );
 			}
 		}
 	}
 
-	__addVisibilityType() {
+	__addVisibilityType()
+	{
 		this._assignBoolean( 'isVisible', 'visible' );
 		this._assignBoolean( 'isDisabled', 'disabled' );
 		this._assignBoolean( 'isFeatured', 'featured' );
 	}
 
-	__addMiscellaneous() {
+	__addMiscellaneous()
+	{
 		this._assignBoolean( 'isRequired', 'required' );
 		this._assignString( 'defaultValue', 'default' );
-		if ( this._GeneratedField.hasOwnProperty( 'default' ) === true ) {
+		if ( true === this._GeneratedField.hasOwnProperty( 'default' ) )
+		{
 			this._Model._addValueToModel( this._GeneratedField.default );
 		}
 	}
 
-	__addStringBasedAttributes() {
+	__addStringBasedAttributes()
+	{
 		this._assignPlaceholderOrLabelString( 'help' );
 		this._assignPlaceholderOrLabelString( 'hint' );
 	}
 
-	__addMethods() {
+	__addMethods()
+	{
 		this._assignFunction( 'setFormatter', 'set' );
 		this._assignFunction( 'getFormatter', 'get' );
 	}
 
-	__addEvents() {
+	__addEvents()
+	{
 		this._assignFunction( 'afterChanged', 'onChanged' );
 		this._assignFunction( 'afterValidated', 'onValidated' );
 		this._assignFunction( 'validator' );
 	}
 
-	__addClass() {
+	__addClass()
+	{
 		let Miscellaneous;
-		if ( this._Field.hasOwnProperty( 'styleClasses' ) ) {
-			if ( Array.isArray( this._Field.styleClasses ) === false && typeof this._Field.styleClasses !== 'string' ) {
+		if ( this._Field.hasOwnProperty( 'styleClasses' ) )
+		{
+			if ( false === Array.isArray( this._Field.styleClasses ) && 'string' !== typeof this._Field.styleClasses )
+			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
 						FieldBase.__UNSUPPORTED_TYPE__,
@@ -601,9 +735,13 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 					)
 				);
 
-			} else if ( Array.isArray( this._Field.styleClasses ) === true ) {
-				for ( Miscellaneous in this._Field.styleClasses ) {
-					if ( typeof this._Field.styleClasses[ Miscellaneous ] !== 'string' ) {
+			}
+			else if ( true === Array.isArray( this._Field.styleClasses ) )
+			{
+				for ( Miscellaneous in this._Field.styleClasses )
+				{
+					if ( 'string' !== typeof this._Field.styleClasses[ Miscellaneous ] )
+					{
 						throw new InvalidFieldPropertyException(
 							StringHelper.format(
 								FieldBase.__UNSUPPORTED_TYPE__,
@@ -619,18 +757,23 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		}
 	}
 
-	__wrapInsideButton( Button ) {
+	__wrapInsideButton( Button )
+	{
 		let Mutable;
 		const GeneratedButton = {};
 
-		if ( Button.hasOwnProperty( 'class' ) === true ) {
+		if ( true === Button.hasOwnProperty( 'class' ) )
+		{
 			GeneratedButton.classes = this._executeFunctionOrGetString( Button.class );
 		}
 
-		if ( Button.hasOwnProperty( 'label' ) === true ) {
+		if ( true === Button.hasOwnProperty( 'label' ) )
+		{
 			Mutable = this._executeFunctionOrGetString( Button.label );
 			GeneratedButton.label = this._getStringLabelOrPlaceholder( Mutable );
-		} else {
+		}
+		else
+		{
 			throw new InvalidFieldPropertyException(
 				StringHelper.format(
 					CommonOptionalAttributesAndMethods.__NO_LABEL_INSIDE_BUTTON__,
@@ -643,25 +786,34 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		return GeneratedButton;
 	}
 
-	__addInsideButton() {
+	__addInsideButton()
+	{
 		let Index, GeneratedButton, InsideButtons;
 		const Buttons = [];
 
-		if ( this._Field.hasOwnProperty( 'buttons' ) === false ) {
+		if ( false === this._Field.hasOwnProperty( 'buttons' ) )
+		{
 			return;
 		}
 		// eslint-disable-next-line
 		InsideButtons = this._executeFunctionOrGetAnything(this._Field['buttons']);
 
-		if ( typeof InsideButtons === 'object' ) {
+		if ( 'object' === typeof InsideButtons )
+		{
 			Buttons.push( this.__wrapInsideButton( InsideButtons ) );
-		} else if ( Array.isArray( InsideButtons ) === true ) {
-			for ( Index in InsideButtons ) {
+		}
+		else if ( true === Array.isArray( InsideButtons ) )
+		{
+			for ( Index in InsideButtons )
+			{
 				GeneratedButton = {};
-				if ( typeof InsideButtons[ Index ] === 'object' ) {
+				if ( 'object' === typeof InsideButtons[ Index ] )
+				{
 					GeneratedButton = this.__wrapInsideButton( InsideButtons[ Index ] );
 					Buttons.push( GeneratedButton );
-				} else {
+				}
+				else
+				{
 					throw new InvalidFieldPropertyException(
 						StringHelper.format(
 							FieldBase.__UNSUPPORTED_TYPE__,
@@ -673,7 +825,9 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 					);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			throw new InvalidFieldPropertyException(
 				StringHelper.format(
 					FieldBase.__UNSUPPORTED_TYPE__,
@@ -688,7 +842,8 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		this._GeneratedField.buttons = Buttons;
 	}
 
-	__addCommonOptionalProperties() {
+	__addCommonOptionalProperties()
+	{
 		this.__addClass();
 		this.__addVisibilityType();
 		this.__addMiscellaneous();
