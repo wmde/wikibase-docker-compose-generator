@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import { FormWizard, TabContent } from 'vue-form-wizard';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
 import Utils from '../Utils';
 /* eslint-disable operator-linebreak */
@@ -20,7 +19,7 @@ export default {
 			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 			FormSchema.build();
 			this.$data.blubberModel[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Model;
-            this.$data.blubberSchema[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Schema;
+			this.$data.blubberSchema[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Schema;
 			if ( false === Array.isArray( FormSchema.Form.Steps[ 0 ] ) )
 			{
 				if ( true === FormSchema.Form.Steps[ 1 ] )
@@ -134,7 +133,7 @@ export default {
 					{
 						attrs: FormSchema.Form.FormAttributes,
 						props: FormSchema.Form.FormProperties,
-                        on: FormSchema.Form.FormEvents
+						on: FormSchema.Form.FormEvents
 					},
 					Tabs
 				);

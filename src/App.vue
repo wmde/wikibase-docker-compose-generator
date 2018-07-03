@@ -67,7 +67,7 @@ export default {
 					createElement,
 					{
 						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
-                        formEvents: { Complete: 'done' },
+						formEvents: { Complete: 'done' },
 						steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
 					},
 					I18n
@@ -75,18 +75,24 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-        getValidator( FieldId )
-        {
-            return function( value, schema, model){ return []; };
-        },
+		getValidator( FieldId )
+		{
+			return function ( value, schema, model )
+			{
+				return [];
+			};
+		},
 		showGi: function ()
 		{
 
 		},
-        done()
-        {
-            console.log( this.$data.blubberModel )
-        }
+		done()
+		{
+
+		}
 	}
 };
 </script>
+<style>
+@import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+</style>

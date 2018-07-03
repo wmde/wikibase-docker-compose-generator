@@ -223,8 +223,8 @@ export class CheckListField extends OptionBasedFields
 			this._setAutocomplete();
 		}
 
-        this._GeneratedField.multi = this._GeneratedField.multiple;
-        this._fieldTakesMultibleValues();
+		this._GeneratedField.multi = this._GeneratedField.multiple;
+		this._fieldTakesMultibleValues();
 
 		this._GeneratedField.checklistOptions = this._addOptionProperty();
 		this._GeneratedField.values = this._addValueProperty(

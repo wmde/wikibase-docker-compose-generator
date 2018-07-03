@@ -102,10 +102,10 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 		if ( true === this.__Form.hasOwnProperty( 'fields' ) )
 		{
 			Generated = new BlubberStep(
-                this.__Form.fields,
-                this._BindedObject,
-                this._LabelGenerator
-            );
+				this.__Form.fields,
+				this._BindedObject,
+				this._LabelGenerator
+			);
 			Generated.build();
 			this.Form.Schema = {
 				fields: Generated.Fields,
@@ -126,7 +126,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 					this._LabelGenerator
 				);
 
-                Generated.build();
+				Generated.build();
 
 				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
 				if ( true === Generated.getCondition() )
@@ -142,10 +142,10 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 				this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
 			}
 
-            for ( Index in this.Form.Steps )
-            {
-                this.Form.Steps[Index][0].inner.model = this.Form.Model;
-            }
+			for ( Index in this.Form.Steps )
+			{
+				this.Form.Steps[ Index ][ 0 ].inner.model = this.Form.Model;
+			}
 		}
 		else
 		{

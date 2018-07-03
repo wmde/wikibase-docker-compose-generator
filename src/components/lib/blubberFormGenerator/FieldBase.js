@@ -431,11 +431,6 @@ export class FieldBase
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetBoolean' );
 	}
 
-	/* _assignObject( FieldLabel, AssignmentLabel = '' )
-	{
-		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetObject' );
-	}*/
-
 	_assignAnything( FieldLabel, AssignmentLabel = '' )
 	{
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetAnything' );
@@ -594,7 +589,7 @@ export class CommonRequiredAttributes extends FieldBase
 
 		// common required properties
 		this._GeneratedField.id = this._Field.name;
-        this._GeneratedField.model = `${ this._Field.name }`;
+		this._GeneratedField.model = `${ this._Field.name }`;
 
 		if ( true === this._Field.hasOwnProperty( 'label' ) )
 		{
@@ -695,21 +690,19 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addValidator()
 	{
-		let FieldName;
-
 		if ( 'function' !== typeof this._BindedObject.getValidator )
 		{
 			return '';
 		}
 
-		if( true === this._Field.name.includes( '.' ) )
+		if ( true === this._Field.name.includes( '.' ) )
 		{
-            this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
+			this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
 		}
 		else
 		{
-            this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
-        }
+			this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
+		}
 	}
 
 	__addClass()
