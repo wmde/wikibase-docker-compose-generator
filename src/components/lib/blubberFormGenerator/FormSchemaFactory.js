@@ -53,13 +53,13 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 	__setFormPropterties()
 	{
-		let Label;
+		let Label, AssigmentLabel;
 		for ( Label in this.__Form.formAttributes )
 		{
 			if ( -1 !== BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) )
 			{
-				Label = Label.substring( 2 ).toLowerCase();
-				this.Form.FormEvents[ Label ] = this._executeFunctionOrGetAnything(
+				AssigmentLabel = `on-${ Label.substring( 2 ).toLowerCase() }`;
+				this.Form.FormEvents[ AssigmentLabel ] = this._executeFunctionOrGetAnything(
 					this.__Form.formAttributes[ Label ],
 					true
 				);
@@ -101,13 +101,18 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 		if ( true === this.__Form.hasOwnProperty( 'fields' ) )
 		{
-			Generated = new BlubberStep( this.__Form.fields, this._BindedObject, this._LabelGenerator );
+			Generated = new BlubberStep(
+                this.__Form.fields,
+                this._BindedObject,
+                this._LabelGenerator
+            );
+			Generated.build();
 			this.Form.Schema = {
 				fields: Generated.Fields,
 				groups: Generated.Groups
 			};
 
-			this.Form.model = Generated.Model;
+			this.Form.Model = Generated.Model;
 			this.Form.Steps = Generated.NodeSchema;
 		}
 		else if ( true === this.__Form.hasOwnProperty( 'steps' ) && true === Array.isArray( this.__Form.steps ) )
@@ -120,7 +125,9 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 					this._BindedObject,
 					this._LabelGenerator
 				);
-				Generated.build();
+
+                Generated.build();
+
 				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
 				if ( true === Generated.getCondition() )
 				{
@@ -134,6 +141,11 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 				this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
 			}
+
+            for ( Index in this.Form.Steps )
+            {
+                this.Form.Steps[Index][0].inner.model = this.Form.Model;
+            }
 		}
 		else
 		{

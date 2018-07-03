@@ -11,7 +11,8 @@
           "color": "#3366cc",
           "errorColor": "#f81717",
           "transition": "fade",
-          "startIndex": 0
+          "startIndex": 0,
+          "onComplete": "done"
     },
     "steps":[ {
             "name":"prolog",
@@ -38,7 +39,7 @@
                 "name": "stepsToUse",
                 "type": "pick",
                 "required": true,
-                "values": [ "wikibase", "quickstatements", "blazegraph", "WDQS-Proxy", "WDQS-UI" ]
+                "values": [ "wikibase", "quickstatements", "queryservice", "WDQS-Proxy", "WDQS-UI" ]
               }
             ]
         },{
@@ -55,8 +56,7 @@
                   "default": "",
                   "required": true,
                   "help": "",
-                  "hint": "",
-                  "styleClasses":"col-xs-3"
+                  "hint": ""
                 },{
                   "name": "mediawikiAdminName",
                   "type": "text",
@@ -135,10 +135,9 @@
                           "name": "wikibaseAlias",
                           "type": "text",
                           "default": "test",
-                          "required": false,
-                          "help": "help me",
-                          "hint": "what a hint",
-                          "styleClasses":"col-xs-3"
+                          "required": true,
+                          "help": "",
+                          "validator": "validateAlias"
                       },{
                           "name": "wikibasePort",
                           "type": "number",

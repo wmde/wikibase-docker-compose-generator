@@ -19,7 +19,8 @@ export default {
 			const Tabs = [];
 			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 			FormSchema.build();
-
+			this.$data.blubberModel[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Model;
+            this.$data.blubberSchema[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Schema;
 			if ( false === Array.isArray( FormSchema.Form.Steps[ 0 ] ) )
 			{
 				if ( true === FormSchema.Form.Steps[ 1 ] )
@@ -86,7 +87,8 @@ export default {
 							VGenerator = createElement(
 								'vue-form-generator',
 								{
-									props: Step.inner
+									props: Step.inner,
+									ref: Step.ref
 								}
 							);
 						}
@@ -132,21 +134,15 @@ export default {
 					{
 						attrs: FormSchema.Form.FormAttributes,
 						props: FormSchema.Form.FormProperties,
-						on: FormSchema.Form.FormEvents
+                        on: FormSchema.Form.FormEvents
 					},
 					Tabs
 				);
 			}
-			/*
-
-			this.$data.blubberFormSchema[ FormId ] = [];
-			this.$data.blubberModel[ FormId ] = {};
-			this.$data.currentFormId = FormId;
-		}*/
 		}
 	},
 	data: function ()
 	{
-		return { blubberModel: {}, blubberFormSchema: {} };
+		return { blubberModel: {}, blubberSchema: {} };
 	}
 };

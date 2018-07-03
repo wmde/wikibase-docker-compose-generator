@@ -67,6 +67,7 @@ export default {
 					createElement,
 					{
 						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
+                        formEvents: { Complete: 'done' },
 						steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
 					},
 					I18n
@@ -74,10 +75,18 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
+        getValidator( FieldId )
+        {
+            return function( value, schema, model){ return []; };
+        },
 		showGi: function ()
 		{
 
-		}
+		},
+        done()
+        {
+            console.log( this.$data.blubberModel )
+        }
 	}
 };
 </script>

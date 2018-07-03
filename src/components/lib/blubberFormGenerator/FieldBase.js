@@ -68,22 +68,7 @@ export class FieldBase
 	{
 		let Index;
 		const Chunks = IsTypeOrFunction.split( '.' );
-		let Self;
-		if ( true === this._Field.hasOwnProperty( 'prefix' ) )
-		{
-			if ( false === ( this._Field.prefix in this._BindedObject ) )
-			{
-				return null;
-			}
-			else
-			{
-				Self = this._BindedObject[ this._Field.prefix ];
-			}
-		}
-		else
-		{
-			Self = this._BindedObject;
-		}
+		let Self = this._BindedObject;
 
 		if ( null === Self )
 		{
@@ -366,14 +351,7 @@ export class FieldBase
 			}
 			else
 			{
-				if ( false === Utils.isEmpty( this._Field.prefix ) )
-				{
-					LabelValue = this._LabelGenerator( `${ this._Field.prefix }.${ this._Field.name }` );
-				}
-				else
-				{
-					LabelValue = this._LabelGenerator( this._Field.name );
-				}
+				LabelValue = this._LabelGenerator( this._Field.name );
 			}
 
 			if ( true === Utils.isEmpty( LabelValue ) || Label === LabelValue )
@@ -405,14 +383,7 @@ export class FieldBase
 			}
 			else
 			{
-				if ( false === Utils.isEmpty( this._Field.prefix ) )
-				{
-					LabelValue = this._LabelGenerator( `${ this._Field.prefix }.${ this._Field.name }` );
-				}
-				else
-				{
-					LabelValue = this._LabelGenerator( this._Field.name );
-				}
+				LabelValue = this._LabelGenerator( this._Field.name );
 			}
 
 			if ( true === Utils.isEmpty( LabelValue ) )
@@ -501,15 +472,10 @@ export class FieldBase
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_getStringLabelOrPlaceholder' );
 	}
 
-	_addKeyToModel( Key, UsePrefix = true )
+	_addKeyToModel( Key )
 	{
 		let Index, Chunks;
 		let Self = this._Model;
-
-		if ( true === UsePrefix && false === Utils.isEmpty( this._Field.prefix ) )
-		{
-			Key = `${ this._Field.prefix }.${ Key }`;
-		}
 
 		if ( 0 === Key.length )
 		{
@@ -564,7 +530,7 @@ export class FieldBase
 	{
 		if ( true === this.__HasDefaultValue )
 		{
-			this.__ModelPointer[ this.__ModelKey ] = [ this.__ModelPointer[ this.__ModelKey ] ];
+			this.__ModelPointer[ this.__ModelKey ] = [ this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ] ];
 		}
 		else
 		{
@@ -627,36 +593,8 @@ export class CommonRequiredAttributes extends FieldBase
 		}
 
 		// common required properties
-		if ( true === this._Field.hasOwnProperty( 'prefix' ) )
-		{
-			if ( 'string' !== typeof this._Field.prefix )
-			{
-				throw new InvalidFieldException(
-					StringHelper.format(
-						FieldBase.__UNSUPPORTED_TYPE__,
-						typeof this._Field.prefix,
-						this._Field.name,
-						'string'
-					)
-				);
-			}
-			else
-			{
-				if ( true === Utils.isEmpty( this._Field.prefix ) )
-				{
-					this._GeneratedField.id = `${ this._Field.name }`;
-				}
-				else
-				{
-					this._GeneratedField.id = `${ this._Field.prefix }_${ this._Field.name }`;
-				}
-			}
-		}
-		else
-		{
-			this._Field.prefix = '';
-			this._GeneratedField.id = this._Field.name;
-		}
+		this._GeneratedField.id = this._Field.name;
+        this._GeneratedField.model = `${ this._Field.name }`;
 
 		if ( true === this._Field.hasOwnProperty( 'label' ) )
 		{
@@ -718,7 +656,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addMiscellaneous()
 	{
-		this._assignBoolean( 'isRequired', 'required' );
+		this._assignBoolean( 'required' );
 		this._assignAnything( 'default' );
 
 		if (
@@ -752,7 +690,26 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	{
 		this._assignFunction( 'afterChanged', 'onChanged' );
 		this._assignFunction( 'afterValidated', 'onValidated' );
-		this._assignFunction( 'validator' );
+		this.__addValidator();
+	}
+
+	__addValidator()
+	{
+		let FieldName;
+
+		if ( 'function' !== typeof this._BindedObject.getValidator )
+		{
+			return '';
+		}
+
+		if( true === this._Field.name.includes( '.' ) )
+		{
+            this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
+		}
+		else
+		{
+            this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
+        }
 	}
 
 	__addClass()

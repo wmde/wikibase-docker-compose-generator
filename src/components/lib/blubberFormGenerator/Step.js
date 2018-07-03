@@ -193,7 +193,8 @@ class BlubberFields extends FieldBase
 		// eslint-disable-next-line
 		Generated = new BlubberFields(
 			this.__Fields[ Index ].group,
-			this._BindedObject, this._LabelGenerator
+			this._BindedObject,
+			this._LabelGenerator
 		);
 		Generated.build();
 
@@ -217,9 +218,7 @@ class BlubberFields extends FieldBase
 			GroupPointer.groups = Generated.Groups;
 		}
 
-		// console.log( this.Model )
 		this.Model = Object.assign( {}, Generated.Model, this.Model );
-		// console.log( this.Model )
 
 	}
 
@@ -254,6 +253,7 @@ class BlubberFields extends FieldBase
 			}
 
 			this.__Fields[ FieldIndex ].type = this.__Fields[ FieldIndex ].type.toLowerCase();
+
 			if (
 				false === BlubberFields.__FIELDTYPES__.hasOwnProperty(
 					this.__Fields[ FieldIndex ].type
@@ -430,13 +430,11 @@ export default class BlubberStep extends BlubberFields
 			// eslint-disable-next-line
 			BeforeChange = this._executeFunctionOrGetAnything( this.__Template.beforeChange, true );
 			this.NodeSchema.inner = {
-				model: this.Model,
 				schema: Schema,
 				options: Options,
 				multiple: Multiple,
 				isNewModel: IsNewModel,
-				tag: Tag,
-				ref: this.__Template.name
+				tag: Tag
 			};
 			this.NodeSchema.tab = {
 				title: Title,
@@ -447,15 +445,13 @@ export default class BlubberStep extends BlubberFields
 		else
 		{
 			this.NodeSchema.inner = {
-				model: this.Model,
 				schema: Schema,
 				options: Options,
 				multiple: Multiple,
 				isNewModel: IsNewModel,
 				tag: Tag,
 				title: Title,
-				icon: Icon,
-				ref: this.__Template.name
+				icon: Icon
 			};
 			this.NodeSchema.tab = {
 				title: Title,
@@ -463,6 +459,7 @@ export default class BlubberStep extends BlubberFields
 			};
 		}
 		this.NodeSchema.attr = { id: this.__Template.name };
+		this.NodeSchema.ref = this.__Template.name;
 	}
 
 	build()
