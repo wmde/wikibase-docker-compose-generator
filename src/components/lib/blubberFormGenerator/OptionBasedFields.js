@@ -194,13 +194,6 @@ export class SelectionField extends OptionBasedFields
 			}
 		}
 
-		this._assignBoolean( 'multipleInput', 'multiple' );
-		if ( this._GeneratedField.hasOwnProperty( 'multiple' ) )
-		{
-			this._GeneratedField.multi = this._GeneratedField.multiple;
-			this._fieldTakesMultibleValues();
-		}
-
 		this._GeneratedField.values = this._addValueProperty(
 			this._GeneratedField.selectOptions.name,
 			this._GeneratedField.selectOptions.value
@@ -223,18 +216,15 @@ export class CheckListField extends OptionBasedFields
 		if ( this._Field.hasOwnProperty( 'asList' ) )
 		{
 			this._GeneratedField.listBox = this._executeFunctionOrGetBoolean( this._Field.asList );
-			this._assignBoolean( 'multipleInput', 'multiple' );
-			if ( this._GeneratedField.hasOwnProperty( 'multiple' ) )
-			{
-				this._GeneratedField.multi = this._GeneratedField.multiple;
-				this._fieldTakesMultibleValues();
-			}
 		}
 		else
 		{
 			this._GeneratedField.listBox = false;
 			this._setAutocomplete();
 		}
+
+        this._GeneratedField.multi = this._GeneratedField.multiple;
+        this._fieldTakesMultibleValues();
 
 		this._GeneratedField.checklistOptions = this._addOptionProperty();
 		this._GeneratedField.values = this._addValueProperty(

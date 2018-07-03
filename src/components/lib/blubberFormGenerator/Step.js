@@ -467,7 +467,10 @@ export default class BlubberStep extends BlubberFields
 
 	build()
 	{
-		this.__addDescription();
+		if( true === this.__Template.hasOwnProperty( 'description' ) )
+		{
+            this.__addDescription();
+        }
 		this.__buildStep();
 	}
 

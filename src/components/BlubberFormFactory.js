@@ -39,7 +39,11 @@ export default {
 						VGenerator = '';
 					}
 
-					if ( false === Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps ) )
+					if (
+						true === FormSchema.Form.Steps[ 0 ].hasOwnProperty( 'description' )
+					&&
+						false === Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps )
+					)
 					{
 						Description = createElement(
 							'div',
@@ -91,7 +95,11 @@ export default {
 							VGenerator = '';
 						}
 
-						if ( false === Utils.isEmpty( Step.description.domProps ) )
+						if (
+							true === Step.hasOwnProperty( 'description' )
+						&&
+							false === Utils.isEmpty( Step.description.domProps )
+						)
 						{
 							Description = createElement(
 								'div',
