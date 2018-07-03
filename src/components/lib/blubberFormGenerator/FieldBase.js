@@ -350,12 +350,7 @@ export class FieldBase {
 	_assignBoolean( FieldLabel, AssignmentLabel = '' ) {
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetBoolean' );
 	}
-
-	/* _assignObject( FieldLabel, AssignmentLabel = '' )
-	{
-		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetObject' );
-	}*/
-
+	
 	_assignAnything( FieldLabel, AssignmentLabel = '' ) {
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetAnything' );
 	}
