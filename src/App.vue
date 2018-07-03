@@ -73,4 +73,3 @@ export default {
 <style>
      @import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 </style>
-
