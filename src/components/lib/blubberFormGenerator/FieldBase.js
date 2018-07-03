@@ -71,13 +71,13 @@ export class FieldBase
 		let Self;
 		if ( true === this._Field.hasOwnProperty( 'prefix' ) )
 		{
-			if ( false === ( this._Field.prefix in this.__BindedObject ) )
+			if ( false === ( this._Field.prefix in this._BindedObject ) )
 			{
 				return null;
 			}
 			else
 			{
-				Self = this.__BindedObject[ this._Field.prefix ];
+				Self = this._BindedObject[ this._Field.prefix ];
 			}
 		}
 		else
@@ -355,12 +355,26 @@ export class FieldBase
 		}
 		else
 		{
-			if ( 'function' === typeof Label )
+			if ( this._Field.name !== Label )
 			{
-				Label = Label( this._Field.name );
-			}
+				if ( 'function' === typeof Label )
+				{
+					Label = Label( this._Field.name );
+				}
 
-			LabelValue = this._LabelGenerator( Label );
+				LabelValue = this._LabelGenerator( Label );
+			}
+			else
+			{
+				if ( false === Utils.isEmpty( this._Field.prefix ) )
+				{
+					LabelValue = this._LabelGenerator( `${ this._Field.prefix }.${ this._Field.name }` );
+				}
+				else
+				{
+					LabelValue = this._LabelGenerator( this._Field.name );
+				}
+			}
 
 			if ( true === Utils.isEmpty( LabelValue ) || Label === LabelValue )
 			{
@@ -380,12 +394,26 @@ export class FieldBase
 		}
 		else
 		{
-			if ( 'function' === typeof Label )
+			if ( null === this._Field || this._Field.name !== Label )
 			{
-				Label = Label( this._Field.name );
-			}
+				if ( 'function' === typeof Label )
+				{
+					Label = Label( this._Field.name );
+				}
 
-			LabelValue = this._LabelGenerator( Label );
+				LabelValue = this._LabelGenerator( Label );
+			}
+			else
+			{
+				if ( false === Utils.isEmpty( this._Field.prefix ) )
+				{
+					LabelValue = this._LabelGenerator( `${ this._Field.prefix }.${ this._Field.name }` );
+				}
+				else
+				{
+					LabelValue = this._LabelGenerator( this._Field.name );
+				}
+			}
 
 			if ( true === Utils.isEmpty( LabelValue ) )
 			{
@@ -404,13 +432,13 @@ export class FieldBase
 		{
 			if ( 0 < AssignmentLabel.length )
 			{
-				this._GeneratedField[ AssignmentLabel ] = this[AssignFunction](
+				this._GeneratedField[ AssignmentLabel ] = this[ AssignFunction ](
 					this._Field[ FieldLabel ]
 				);
 			}
 			else
 			{
-				this._GeneratedField[ FieldLabel ] = this[AssignFunction](
+				this._GeneratedField[ FieldLabel ] = this[ AssignFunction ](
 					this._Field[ FieldLabel ]
 				);
 			}
@@ -434,8 +462,13 @@ export class FieldBase
 
 	/* _assignObject( FieldLabel, AssignmentLabel = '' )
 	{
-	this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetObject' );
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetObject' );
 	}*/
+
+	_assignAnything( FieldLabel, AssignmentLabel = '' )
+	{
+		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetAnything' );
+	}
 
 	_assignFunction( FieldLabel, AssignmentLabel = '' )
 	{
@@ -468,19 +501,19 @@ export class FieldBase
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_getStringLabelOrPlaceholder' );
 	}
 
-	_addKeyToModel( Key, Prefix = '' )
+	_addKeyToModel( Key, UsePrefix = true )
 	{
 		let Index, Chunks;
 		let Self = this._Model;
 
+		if ( true === UsePrefix && false === Utils.isEmpty( this._Field.prefix ) )
+		{
+			Key = `${ this._Field.prefix }.${ Key }`;
+		}
+
 		if ( 0 === Key.length )
 		{
 			throw new InvalidFieldPropertyException( FieldBase.__NO_NAME__ );
-		}
-
-		if ( 0 < Prefix.length )
-		{
-			Key = `${ Prefix }.${ Key }`;
 		}
 
 		if ( null === Self )
@@ -497,7 +530,7 @@ export class FieldBase
 		{
 			Chunks = Key.split( '.' );
 			this.__ModelKey = Chunks;
-			for ( Index in Chunks )
+			for ( Index = 0; Index < Chunks.length - 1; Index++ )
 			{
 				Self[ Chunks[ Index ] ] = {};
 				Self = Self[ Chunks[ Index ] ];
@@ -516,7 +549,14 @@ export class FieldBase
 
 	_addValueToModel( Value )
 	{
-		this.__ModelPointer = Value;
+		if ( true === Array.isArray( this.__ModelKey ) )
+		{
+			this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ] = Value;
+		}
+		else
+		{
+			this.__ModelPointer[ this.__ModelKey ] = Value;
+		}
 		this.__HasDefaultValue = true;
 	}
 
@@ -524,11 +564,11 @@ export class FieldBase
 	{
 		if ( true === this.__HasDefaultValue )
 		{
-			this.__ModelPointer = [ this.__ModelPointer ];
+			this.__ModelPointer[ this.__ModelKey ] = [ this.__ModelPointer[ this.__ModelKey ] ];
 		}
 		else
 		{
-			this.__ModelPointer = [];
+			this.__ModelPointer[ this.__ModelKey ] = [];
 		}
 	}
 
@@ -589,36 +629,43 @@ export class CommonRequiredAttributes extends FieldBase
 		// common required properties
 		if ( true === this._Field.hasOwnProperty( 'prefix' ) )
 		{
-			if ( 'string' !== this._Field.prefix )
+			if ( 'string' !== typeof this._Field.prefix )
 			{
 				throw new InvalidFieldException(
 					StringHelper.format(
 						FieldBase.__UNSUPPORTED_TYPE__,
-						typeof this._Field,
+						typeof this._Field.prefix,
 						this._Field.name,
-						'at prefix',
 						'string'
 					)
 				);
 			}
 			else
 			{
-				this._GeneratedField.id = `${ this._Field.prefix }_${ this._Field.name }`;
+				if ( true === Utils.isEmpty( this._Field.prefix ) )
+				{
+					this._GeneratedField.id = `${ this._Field.name }`;
+				}
+				else
+				{
+					this._GeneratedField.id = `${ this._Field.prefix }_${ this._Field.name }`;
+				}
 			}
 		}
 		else
 		{
+			this._Field.prefix = '';
 			this._GeneratedField.id = this._Field.name;
 		}
 
-        if ( true === this._Field.hasOwnProperty( 'label' ) )
-        {
-            this._assignPlaceholderOrLabelString( 'label' );
-        }
-        else
-        {
-            this._assignPlaceholderOrLabelString( 'name', 'label' );
-        }
+		if ( true === this._Field.hasOwnProperty( 'label' ) )
+		{
+			this._assignPlaceholderOrLabelString( 'label' );
+		}
+		else
+		{
+			this._assignPlaceholderOrLabelString( 'name', 'label' );
+		}
 	}
 }
 
@@ -654,31 +701,11 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	{
 		if ( true === this._Field.hasOwnProperty( 'storesIn' ) )
 		{
-			if ( true === this._Field.hasOwnProperty( 'prefix' ) )
-			{
-				this._addKeyToModel(
-					this._executeFunctionOrGetString( this._Field.storesIn ),
-					this._Field.prefix
-				);
-			}
-			else
-			{
-				this._addKeyToModel( this._executeFunctionOrGetString( this._Field.storesIn ) );
-			}
+			this._addKeyToModel( this._executeFunctionOrGetString( this._Field.storesIn, false ) );
 		}
 		else
 		{
-			if ( true === this._Field.hasOwnProperty( 'prefix' ) )
-			{
-				this._addKeyToModel(
-					this._executeFunctionOrGetString( this._Field.name ),
-					this._Field.prefix
-				);
-			}
-			else
-			{
-				this._addKeyToModel( this._executeFunctionOrGetString( this._Field.name ) );
-			}
+			this._addKeyToModel( this._executeFunctionOrGetString( this._Field.name ) );
 		}
 	}
 
@@ -692,10 +719,20 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	__addMiscellaneous()
 	{
 		this._assignBoolean( 'isRequired', 'required' );
-		this._assignString( 'defaultValue', 'default' );
-		if ( true === this._GeneratedField.hasOwnProperty( 'default' ) )
+		this._assignAnything( 'default' );
+
+		if (
+			(
+				true === this._Field.hasOwnProperty( 'default' )
+			&&
+				false === Utils.isEmpty( this._Field.default )
+			)
+
+		||
+			'boolean' !== typeof this._Field.default
+		)
 		{
-			this._Model._addValueToModel( this._GeneratedField.default );
+			this._addValueToModel( this._Field.default );
 		}
 	}
 

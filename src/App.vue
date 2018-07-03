@@ -7,7 +7,7 @@ import AvailableLanguages from './components/data/lang/availableLanguages';
 
 export default {
 	name: 'Blubber',
-	mixins: [ BlubberFormFactory, Language ],
+	mixins: [ Language, BlubberFormFactory ],
 	render: function ( createElement )
 	{
 		return this.buildApplication( createElement );
@@ -17,7 +17,7 @@ export default {
 	{
 		const Return = {};
 		Return.buildForm = false;
-		Return.blubberGeneratorSteps = {};
+		Return.blubberGeneratorSteps = [];
 		Return.blubberGeneratorFormProperties = {};
 		Return.blubberGeneratorFormStyle = {};
 		return Return;
@@ -81,8 +81,3 @@ export default {
 	}
 };
 </script>
-
-<style>
-@import "vue-form-wizard/dist/vue-form-wizard.min.css";
-
-</style>

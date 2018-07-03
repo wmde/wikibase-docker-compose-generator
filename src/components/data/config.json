@@ -31,6 +31,7 @@
                     "type": "select",
                     "default": "en",
                     "required": true,
+                    "multipleInput": true,
                     "values": [
                         {"value": "en", "label":"languageOption_english" },
                         {"value": "de", "label":"languageOption_german" }
@@ -39,6 +40,7 @@
                 {
                     "name": "downloadDefault",
                     "type": "choise",
+                    "prefix": "",
                     "default": false,
                     "values": [
                         {"value": true, "label":"choise_yes"},
@@ -72,10 +74,11 @@
                   "group": [{
                           "name": "wikibaseServiceAlias",
                           "type": "text",
-                          "default": "",
+                          "default": "test",
                           "required": false,
-                          "help": "",
-                          "hint": ""
+                          "help": "help me",
+                          "hint": "what a hint",
+                          "styleClasses":"col-xs-3"
                       },{
                           "name": "wikibasePort",
                           "type": "number",
@@ -136,7 +139,8 @@
                           "default": "",
                           "required": true,
                           "help": "",
-                          "hint": ""
+                          "hint": "",
+                          "styleClasses":"col-xs-3"
                       },{
                           "name": "wikibaseMediawikiAdminName",
                           "type": "text",
@@ -174,7 +178,16 @@
                     "help": "",
                     "hint": ""
 
-                },{
+                }, {
+                "name": "wikibaseBlazegraphEmai",
+                "type": "email",
+                "default": "",
+                "required": false,
+                "help": "",
+                "hint": "",
+                "multipleInput": true
+                }
+                ,{
                     "name": "wikibaseBlazegraphPort",
                     "type": "number",
                     "default": "",

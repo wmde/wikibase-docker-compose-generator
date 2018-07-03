@@ -3,7 +3,7 @@ import { DateTimeLocalField, DateField, MonthField, NumberField, RangeField, Tim
 import { ColorField, HiddenField, FileField, LabelField, TextBlock, ResetField, SubmitField } from './MiscellaneousBasedFields';
 import { EmailField, PasswordField, SearchField, TelField, TextField, UrlField } from './TextBasedFields';
 import { CheckListField, ChoiceField, SelectionField } from './OptionBasedFields';
-import { FieldBase, InvalidFieldException } from './FieldBase';
+import { FieldBase, InvalidFieldException, InvalidFieldPropertyException } from './FieldBase';
 import StringHelper from '../StringHelper';
 /* eslint-disable operator-linebreak */
 class BlubberFields extends FieldBase
@@ -58,30 +58,61 @@ class BlubberFields extends FieldBase
 		this.Model = {};
 	}
 
+	__addSubModel( Field )
+	{
+		let Self = this.Model;
+		let ModelValue = Field.getModel();
+		const SubModel = Field.getModelKey();
+
+		while ( 1 < SubModel.length )
+		{
+			if ( true === Self.hasOwnProperty( SubModel[ 0 ] ) )
+			{
+				if ( 'object' !== typeof Self[ SubModel[ 0 ] ] )
+				{
+					throw new InvalidFieldPropertyException(
+						StringHelper.format(
+							BlubberFields.__MODEL_ENTRY_EXISTS__,
+							Field.getModelKey().join( '' )
+						)
+					);
+				}
+
+				Self = Self[ SubModel[ 0 ] ];
+			}
+			else
+			{
+				Self[ SubModel[ 0 ] ] = {};
+				Self = Self[ SubModel[ 0 ] ];
+			}
+
+			ModelValue = ModelValue[ SubModel[ 0 ] ];
+			SubModel.shift();
+		}
+		Self[ SubModel[ 0 ] ] = ModelValue[ SubModel[ 0 ] ];
+	}
+
 	__addToModel( Field )
 	{
 		const CurrentModelKey = Field.getModelKey();
-		let Key;
 
 		if ( true === Array.isArray( CurrentModelKey ) )
 		{
-			for ( Key in CurrentModelKey )
-			{
-				if ( false === this.Model.hasOwnProperty( Key ) )
-				{
-					break;
-				}
-			}
-
-			/* throw new InvalidFieldPropertyException(
-				StringHelper.format(
-					BlubberFields.__MODEL_ENTRY_EXISTS__,
-					CurrentModelKey
-				)
-			);*/
+			this.__addSubModel( Field );
 		}
-
-		this.Model = Object.assign( {}, Field.getModel(), this.Model );
+		else
+		{
+			if ( this.Model.hasOwnProperty( CurrentModelKey ) )
+			{
+				throw new InvalidFieldPropertyException(
+					StringHelper.format(
+						BlubberFields.__MODEL_ENTRY_EXISTS__,
+						CurrentModelKey
+					)
+				);
+			}
+			this.Model = Object.assign( {}, Field.getModel(), this.Model );
+		}
 	}
 
 	__buildDynamicField( Index )
