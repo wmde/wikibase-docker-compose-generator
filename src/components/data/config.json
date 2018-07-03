@@ -7,7 +7,7 @@
           "backButtonText": "backButton",
           "finishButtonText" : "finishButton",
           "stepSize": "xs",
-          "shape": "square",
+          "shape": "tab",
           "color": "#3366cc",
           "errorColor": "#f81717",
           "transition": "fade",
@@ -818,7 +818,6 @@
               "template": ""
         },{
               "name":"mediawiki",
-              "description": "mediawiki_description",
               "icon": "settings",
               "options": {
                 "validationErrorClass": "has-error",
@@ -851,7 +850,6 @@
               "template": ""
         },{
               "name":"database",
-              "description": "database_description",
               "icon": "settings",
               "options": {
                 "validationErrorClass": "has-error",
@@ -898,7 +896,7 @@
                   "action": "showGi"
                 }}
               ],
-              "template": ""
+              "template": "mysql:\nimage: mariadb:latest\nrestart: always\nvolumes:\n- mediawiki-mysql-data:/var/lib/mysql\nenvironment:\nMYSQL_DATABASE: 'my_wiki'\nMYSQL_USER: 'wikiuser'\nMYSQL_PASSWORD: 'sqlpass'\nMYSQL_RANDOM_ROOT_PASSWORD: 'yes'\nnetworks:\ndefault:\naliases:\n- mysql.svc"
         },{
               "name":"wikibase",
               "description": "wikibase_description",
@@ -929,7 +927,7 @@
                   ]
               }
             ],
-            "template": ""
+            "template": "wikibase:\nimage: wikibase/wikibase:1.30-bundle\nlinks:\n- mysql\nports:\n- \"8181:80\"\nvolumes:\n- mediawiki-images-data:/var/www/html/images\ndepends_on:\n- mysql\n- elasticsearch\nnetworks:\ndefault:\naliases:\n- wikibase.svc\nenvironment:\n- DB_SERVER=mysql.svc:3306\n- DB_USER=wikiuser\n- DB_PASS=sqlpass\n- DB_NAME=my_wiki\n- MW_ADMIN_NAME=admin\n- MW_ADMIN_PASS=adminpass\n- MW_WG_SECRET_KEY=secretkey\n- MW_ELASTIC_HOST=elasticsearch.svc\n- MW_ELASTIC_PORT=9200"
         },{
             "name": "wikibaseBlazegraph",
             "description": "wikibaseBlazegraph_description",
@@ -956,7 +954,7 @@
                     "hint": ""
                 }
             ],
-            "template":""
+            "template":"wdqs:\nimage: wikibase/wdqs:0.3.0\nvolumes:\n- query-service-data:/wdqs/data\ncommand: /runBlazegraph.sh\nnetworks:\ndefault:\naliases:\n- wdqs.svc\nenvironment:\n- WIKIBASE_HOST=wikibase.svc\n- WDQS_HOST=wdqs.svc\n- WDQS_PORT=9999\nexpose:\n- 9999"
         },{
             "name": "wikibaseProxy",
             "description": "wikibaseProxy_description",
@@ -982,7 +980,7 @@
               "help": "",
               "hint": ""
             } ],
-            "template":""
+            "template":"wdqs-proxy:\nimage: wikibase/wdqs-proxy\nenvironment:\n- PROXY_PASS_HOST=wdqs.svc:9999\nports:\n- \"8989:80\"\ndepends_on:\n- wdqs\nnetworks:\ndefault:\naliases:\n- wdqs-proxy.svc"
         },{
           "name": "wikibaseUI",
           "description": "wikibaseUI_description",
@@ -1016,13 +1014,6 @@
             "hint": ""
 
           },{
-            "name": "wikibasePort",
-            "type": "number",
-            "default": "",
-            "required": true,
-            "help": "",
-            "hint": ""
-          },{
             "name": "wikibaseBlazegraphAlias",
             "type": "text",
             "default": "",
@@ -1030,15 +1021,8 @@
             "help": "",
             "hint": ""
 
-          },{
-            "name": "wikibaseBlazegraphPort",
-            "type": "number",
-            "default": "",
-            "required": true,
-            "help": "",
-            "hint": ""
           }],
-          "template":""
+          "template":"wdqs-frontend:\nimage: wikibase/wdqs-frontend:latest\nports:\n- \"8282:80\"\ndepends_on:\n- wdqs-proxy\nnetworks:\ndefault:\naliases:\n- wdqs-frontend.svc\nenvironment:\n- WIKIBASE_HOST=wikibase.svc\n- WDQS_HOST=wdqs-proxy.svc"
         },{
           "name": "complete",
           "description": "complete_description",

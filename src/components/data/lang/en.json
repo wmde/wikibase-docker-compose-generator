@@ -5,17 +5,12 @@
     "backButton": "Back",
     "finishButton": "Finish",
 
-
     "prolog": "Welcome",
     "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>You can run the whole setup or use directly the default settings:",
     "defaultSettings": "Give me the default yml",
 
     "generalSettings": "General Setting",
     "languageSetting": "Which language you want to use in your docker container?",
-    "stepsToUse": "Which container you want to install?",
-
-    "installLanguageSetting": "Language settings",
-    "generalSetting": "General settings",
 
     "languageOption_aa": "Afar",
     "languageOption_ab": "Abkhazian",
@@ -784,10 +779,19 @@
     "languageOption_zun": "Zuni",
     "languageOption_zza":"Zaza",
 
-    "choise_yes": "yes",
-    "choise_no": "no",
+    "stepsToUse": "Which container you want to install?",
 
-    "installLanguageSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>",
-    "generalSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>"
+    "mediawiki": "MediaWiki",
+    "mediawikiSiteName": "How would you name your MediaWiki?",
+    "mediawikiAdminName": "How would you name your MediaWiki admin account?",
+    "mediawikiAdminPassword": "Provide your admin account a password.",
+
+    "database": "MediaWiki database",
+    "wikibaseDatabaseHost": "Under which host address your database is supposed to run?",
+    "wikibaseDatabasePort": "Which port should use this service?",
+    "wikibaseDatabaseName": "What is the name of your database?",
+    "wikibaseDatabaseUser": "What is the name of your database user?",
+    "wikibaseDatabaseUserPassword": "Provide your database user a password."
+
 
 }
