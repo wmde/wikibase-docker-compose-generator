@@ -59,16 +59,7 @@ export class FieldBase {
 	__lookForPropertyAtVueObject( IsTypeOrFunction ) {
 		let Index;
 		const Chunks = IsTypeOrFunction.split( '.' );
-		let Self;
-		if ( this._Field.hasOwnProperty( 'prefix' ) === true ) {
-			if ( ( this._Field.prefix in this._BindedObject ) === false ) {
-				return null;
-			} else {
-				Self = this._BindedObject[ this._Field.prefix ];
-			}
-		} else {
-			Self = this._BindedObject;
-		}
+		let Self = this._BindedObject;
 
 		if ( Self === null ) {
 			return null;
@@ -300,11 +291,7 @@ export class FieldBase {
 
 				LabelValue = this._LabelGenerator( Label );
 			} else {
-				if ( Utils.isEmpty( this._Field.prefix ) === false ) {
-					LabelValue = this._LabelGenerator( `${ this._Field.prefix }.${ this._Field.name }` );
-				} else {
-					LabelValue = this._LabelGenerator( this._Field.name );
-				}
+				LabelValue = this._LabelGenerator( this._Field.name );
 			}
 
 			if ( Utils.isEmpty( LabelValue ) === true || Label === LabelValue ) {
@@ -327,11 +314,7 @@ export class FieldBase {
 
 				LabelValue = this._LabelGenerator( Label );
 			} else {
-				if ( Utils.isEmpty( this._Field.prefix ) === false ) {
-					LabelValue = this._LabelGenerator( `${ this._Field.prefix }.${ this._Field.name }` );
-				} else {
-					LabelValue = this._LabelGenerator( this._Field.name );
-				}
+				LabelValue = this._LabelGenerator( this._Field.name );
 			}
 
 			if ( Utils.isEmpty( LabelValue ) === true ) {
@@ -401,13 +384,9 @@ export class FieldBase {
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_getStringLabelOrPlaceholder' );
 	}
 
-	_addKeyToModel( Key, UsePrefix = true ) {
+	_addKeyToModel( Key ) {
 		let Index, Chunks;
 		let Self = this._Model;
-
-		if ( UsePrefix === true && Utils.isEmpty( this._Field.prefix ) === false ) {
-			Key = `${ this._Field.prefix }.${ Key }`;
-		}
 
 		if ( Key.length === 0 ) {
 			throw new InvalidFieldPropertyException( FieldBase.__NO_NAME__ );
@@ -450,7 +429,9 @@ export class FieldBase {
 
 	_fieldTakesMultibleValues() {
 		if ( this.__HasDefaultValue === true ) {
-			this.__ModelPointer[ this.__ModelKey ] = [ this.__ModelPointer[ this.__ModelKey ] ];
+			this.__ModelPointer[ this.__ModelKey ] = [
+				this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
+			];
 		} else {
 			this.__ModelPointer[ this.__ModelKey ] = [];
 		}
@@ -498,27 +479,8 @@ export class CommonRequiredAttributes extends FieldBase {
 		}
 
 		// common required properties
-		if ( this._Field.hasOwnProperty( 'prefix' ) === true ) {
-			if ( typeof this._Field.prefix !== 'string' ) {
-				throw new InvalidFieldException(
-					StringHelper.format(
-						FieldBase.__UNSUPPORTED_TYPE__,
-						typeof this._Field.prefix,
-						this._Field.name,
-						'string'
-					)
-				);
-			} else {
-				if ( Utils.isEmpty( this._Field.prefix ) === true ) {
-					this._GeneratedField.id = `${ this._Field.name }`;
-				} else {
-					this._GeneratedField.id = `${ this._Field.prefix }_${ this._Field.name }`;
-				}
-			}
-		} else {
-			this._Field.prefix = '';
-			this._GeneratedField.id = this._Field.name;
-		}
+		this._GeneratedField.id = this._Field.name;
+		this._GeneratedField.model = `${ this._Field.name }`;
 
 		if ( this._Field.hasOwnProperty( 'label' ) === true ) {
 			this._assignPlaceholderOrLabelString( 'label' );
@@ -565,7 +527,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	}
 
 	__addMiscellaneous() {
-		this._assignBoolean( 'isRequired', 'required' );
+		this._assignBoolean( 'required' );
 		this._assignAnything( 'default' );
 
 		if (
@@ -595,7 +557,20 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	__addEvents() {
 		this._assignFunction( 'afterChanged', 'onChanged' );
 		this._assignFunction( 'afterValidated', 'onValidated' );
-		this._assignFunction( 'validator' );
+		this.__addValidator();
+	}
+
+	__addValidator() {
+
+		if ( typeof this._BindedObject.getValidator !== 'function' ) {
+			return '';
+		}
+
+		if ( this._Field.name.includes( '.' ) === true ) {
+			this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
+		} else {
+			this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
+		}
 	}
 
 	__addClass() {

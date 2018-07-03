@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueFormGenerator from 'vue-form-generator';
 import { FormWizard, TabContent } from 'vue-form-wizard';
+import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
 import Utils from '../Utils';
 /* eslint-disable operator-linebreak */
@@ -17,7 +18,8 @@ export default {
 			const Tabs = [];
 			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 			FormSchema.build();
-
+			this.$data.blubberModel[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Model;
+			this.$data.blubberSchema[ FormSchema.Form.FormAttributes.id ] = FormSchema.Form.Schema;
 			if ( Array.isArray( FormSchema.Form.Steps[ 0 ] ) === false ) {
 				if ( FormSchema.Form.Steps[ 1 ] === true ) {
 					if ( Utils.isEmpty( FormSchema.Form.Steps[ 0 ].inner.schema ) === false ) {
@@ -32,7 +34,11 @@ export default {
 						VGenerator = '';
 					}
 
-					if ( Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps ) === false ) {
+					if (
+						FormSchema.Form.Steps[ 0 ].hasOwnProperty( 'description' ) === true
+					&&
+						Utils.isEmpty( FormSchema.Form.Steps[ 0 ].description.domProps ) === false
+					) {
 						Description = createElement(
 							'div',
 							{
@@ -65,14 +71,19 @@ export default {
 							VGenerator = createElement(
 								'vue-form-generator',
 								{
-									props: Step.inner
+									props: Step.inner,
+									ref: Step.ref
 								}
 							);
 						} else {
 							VGenerator = '';
 						}
 
-						if ( Utils.isEmpty( Step.description.domProps ) === false ) {
+						if (
+							Step.hasOwnProperty( 'description' ) === true
+						&&
+							Utils.isEmpty( Step.description.domProps ) === false
+						) {
 							Description = createElement(
 								'div',
 								{
@@ -107,15 +118,9 @@ export default {
 					Tabs
 				);
 			}
-			/*
-
-			this.$data.blubberFormSchema[ FormId ] = [];
-			this.$data.blubberModel[ FormId ] = {};
-			this.$data.currentFormId = FormId;
-		}*/
 		}
 	},
 	data: function () {
-		return { blubberModel: {}, blubberFormSchema: {} };
+		return { blubberModel: {}, blubberSchema: {} };
 	}
 };
