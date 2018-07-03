@@ -16,23 +16,7 @@
     "steps":[{
             "name":"installLanguageSetting",
             "description": "installLanguageSetting_description",
-            "icon": "settings",
-            "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-            },
-            "fields":[{
-                    "name": "installLanguage",
-                    "type": "select",
-                    "default": "en",
-                    "required": true,
-                    "values": [
-                        {"value": "en", "label":"languageOption_english" },
-                        {"value": "de", "label":"languageOption_german" }
-                    ]
-                }
-            ]
+            "icon": "settings"
         },{
             "name":"generalSetting",
             "description": "generalSetting_description",
@@ -47,6 +31,7 @@
                     "type": "select",
                     "default": "en",
                     "required": true,
+                    "multipleInput": true,
                     "values": [
                         {"value": "en", "label":"languageOption_english" },
                         {"value": "de", "label":"languageOption_german" }
@@ -55,6 +40,7 @@
                 {
                     "name": "downloadDefault",
                     "type": "choise",
+                    "prefix": "",
                     "default": false,
                     "values": [
                         {"value": true, "label":"choise_yes"},
@@ -88,10 +74,11 @@
                   "group": [{
                           "name": "wikibaseServiceAlias",
                           "type": "text",
-                          "default": "",
+                          "default": "test",
                           "required": false,
-                          "help": "",
-                          "hint": ""
+                          "help": "help me",
+                          "hint": "what a hint",
+                          "styleClasses":"col-xs-3"
                       },{
                           "name": "wikibasePort",
                           "type": "number",
@@ -152,7 +139,8 @@
                           "default": "",
                           "required": true,
                           "help": "",
-                          "hint": ""
+                          "hint": "",
+                          "styleClasses":"col-xs-3"
                       },{
                           "name": "wikibaseMediawikiAdminName",
                           "type": "text",
@@ -183,15 +171,24 @@
                 "validateAfterChanged": true
             },
             "fields":[{
-                    "name": "wikibaseBlazegraphAlias ",
+                    "name": "wikibaseBlazegraphAlias",
                     "type": "text",
                     "default": "",
                     "required": false,
                     "help": "",
                     "hint": ""
 
-                },{
-                    "name": "wikibaseBlazegraphPort ",
+                }, {
+                "name": "wikibaseBlazegraphEmai",
+                "type": "email",
+                "default": "",
+                "required": false,
+                "help": "",
+                "hint": "",
+                "multipleInput": true
+                }
+                ,{
+                    "name": "wikibaseBlazegraphPort",
                     "type": "number",
                     "default": "",
                     "required": true,

@@ -155,7 +155,8 @@ class Utils
 
 		while ( Start <= End )
 		{
-			Mid = ( ( Start + End ) >> 1 );
+			// I prefer bitwise -> it's better for the cpu
+			Mid = Math.trunc( ( Start + End ) / 2 );
 			if ( What > Where[ Mid ] )
 			{
 				Start = Mid + 1;
@@ -187,7 +188,7 @@ class Utils
 
 		while ( Start <= End )
 		{
-			Mid = ( ( Start + End ) >> 1 );
+			Mid = Math.trunc( ( Start + End ) / 2 );
 			if ( What > Where[ Mid ] )
 			{
 				Start = Mid + 1;
