@@ -350,7 +350,7 @@ export class FieldBase {
 	_assignBoolean( FieldLabel, AssignmentLabel = '' ) {
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetBoolean' );
 	}
-	
+
 	_assignAnything( FieldLabel, AssignmentLabel = '' ) {
 		this.__assignGeneric( FieldLabel, AssignmentLabel, '_executeFunctionOrGetAnything' );
 	}
@@ -419,16 +419,25 @@ export class FieldBase {
 		} else {
 			this.__ModelPointer[ this.__ModelKey ] = Value;
 		}
-		this.__HasDefaultValue = true;
+
+		if ( Utils.isEmpty( Value ) === false ) {
+			this.__HasDefaultValue = true;
+		}
 	}
 
 	_fieldTakesMultibleValues() {
 		if ( this.__HasDefaultValue === true ) {
-			this.__ModelPointer[ this.__ModelKey ] = [
-				this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
-			];
+			if ( Array.isArray( this.__ModelKey ) === true ) {
+				this._addValueToModel(
+					this.__ModelPointer[
+						this.__ModelKey[ this.__ModelKey.length - 1 ]
+					]
+				);
+			} else {
+				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
+			}
 		} else {
-			this.__ModelPointer[ this.__ModelKey ] = [];
+			this._addValueToModel( [] );
 		}
 	}
 
@@ -556,7 +565,6 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	}
 
 	__addValidator() {
-
 		if ( typeof this._BindedObject.getValidator !== 'function' ) {
 			return '';
 		}
