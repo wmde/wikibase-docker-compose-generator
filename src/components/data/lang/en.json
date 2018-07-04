@@ -789,7 +789,7 @@
     "languageOption_zun": "Zuni",
     "languageOption_zza":"Zaza",
 
-    "stepsToUse": "Which container you want to install?",
+    "steps": "Which container you want to install?",
 
     "mediawiki": "MediaWiki",
     "mediawikiSiteName": "How would you like to name your MediaWiki?",
@@ -797,9 +797,9 @@
     "mediawikiAdminPassword": "Provide your admin account a password.",
 
     "database": "MediaWiki database",
-    "databaseHost": "Under which host address your database is supposed to run?",
+    "databaseAlias": "How you like to name the Wikibase container localy?",
     "databasePort": "Which port the database should use?",
-    "databaseName": "How you like to name the database container localy?",
+    "databaseName": "How you like to name the database?",
     "databaseUser": "What is the name of your database user?",
     "databaseUserPassword": "Provide your database user a password.",
 

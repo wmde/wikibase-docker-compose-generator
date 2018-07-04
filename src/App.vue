@@ -21,7 +21,7 @@ export default {
 		Return.blubberGeneratorSteps = [];
 		Return.blubberGeneratorFormProperties = {};
 		Return.blubberGeneratorFormStyle = {};
-		Return.blubberPasswordSwitch = {};
+		Return.forReadOnly = {};
 		return Return;
 	},
 	mounted: function ()
@@ -61,16 +61,17 @@ export default {
 			else
 			{
 				let I18n = null;
+				let Return;
 
 				if ( 'undefined' !== typeof this.$data.i18n )
 				{
 					I18n = this.getI18nStrings;
-                    Validator.InvalidPort_No_Integer = this.getI18nStrings( 'invalid_port_integer' );
-                    Validator.InvalidPort_Well_Known = this.getI18nStrings( 'is_well_known_port' );
-                    Validator.InvalidPort_In_Use = this.getI18nStrings( 'port_is_in_use' );
-                    Validator.InvalidString = this.getI18nStrings( 'invalid_string' );
-                    Validator.InvalidArray = this.getI18nStrings( 'invalid_step' );
-                }
+					Validator.InvalidPortNoInteger = this.getI18nStrings( 'invalid_port_integer' );
+					Validator.InvalidPortWellKnown = this.getI18nStrings( 'is_well_known_port' );
+					Validator.InvalidPortInUse = this.getI18nStrings( 'port_is_in_use' );
+					Validator.InvalidString = this.getI18nStrings( 'invalid_string' );
+					Validator.InvalidArray = this.getI18nStrings( 'invalid_step' );
+				}
 
 				const Element = this.buildBlubberForm(
 					createElement,
@@ -81,46 +82,52 @@ export default {
 					},
 					I18n
 				);
-				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
+				// eslint-disable-next-line
+				Return = createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
+				this.$data.blubberModel.secretKey = this.randomString(
+					42,
+					33,
+					126,
+					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
+				);
+				return Return;
 			}
 		},
 		getValidator( FieldId )
 		{
-			let Validators = {
-                steps: Validator.steps,
-                mediawikiAdminName: Validator.string,
-                mediawikiAdminPassword: Validator.string,
-                databaseHost: Validator.string,
-                databaseName: Validator.string,
-                databaseUser: Validator.string,
-                databaseUserPassword: Validator.string,
-                wikibaseAlias: Validator.string,
-                wikibaseQuickstatementsAlias: Validator.string,
-                wikibaseQuickstatementsNamespaceItem: Validator.string,
-                wikibaseQuickstatementsNamespaceProperty: Validator.string,
-                wikibaseQuickstatementsPrefixProperty: Validator.string,
-                wikibaseQuickstatementsPrefixItem: Validator.string,
-                wikibaseBlazegraphAlias: Validator.string,
-                wikibaseUIAlias: Validator.string,
-                databasePort: Validator.ports,
-                wikibasePort: Validator.ports,
-                wikibaseQuickstatementsPort: Validator.ports,
-                wikibasePort: Validator.ports,
-                wikibaseBlazegraphPort: Validator.ports,
-                wikibaseUIPort: Validator.ports,
-                wikibaseBlazegraphPort: Validator.ports
-            };
+			const Validators = {
+				steps: Validator.steps,
+				mediawikiAdminName: Validator.string,
+				mediawikiAdminPassword: Validator.string,
+				databaseHost: Validator.string,
+				databaseName: Validator.string,
+				databaseUser: Validator.string,
+				databaseUserPassword: Validator.string,
+				wikibaseAlias: Validator.string,
+				wikibaseQuickstatementsAlias: Validator.string,
+				wikibaseQuickstatementsNamespaceItem: Validator.string,
+				wikibaseQuickstatementsNamespaceProperty: Validator.string,
+				wikibaseQuickstatementsPrefixProperty: Validator.string,
+				wikibaseQuickstatementsPrefixItem: Validator.string,
+				wikibaseBlazegraphAlias: Validator.string,
+				wikibaseUIAlias: Validator.string,
+				databasePort: Validator.ports,
+				wikibasePort: Validator.ports,
+				wikibaseQuickstatementsPort: Validator.ports,
+				wikibaseBlazegraphPort: Validator.ports,
+				wikibaseUIPort: Validator.ports
+			};
 
-            FieldId = FieldId[ 0 ];
+			FieldId = FieldId[ 0 ];
 
-            if( false === Validators.hasOwnProperty( FieldId ) )
-            {
-                return '';
-            }
-            else
-            {
-                return Validators[ FieldId ];
-            }
+			if ( false === Validators.hasOwnProperty( FieldId ) )
+			{
+				return '';
+			}
+			else
+			{
+				return Validators[ FieldId ];
+			}
 		},
 		showPasswords: function ( Id, Offset )
 		{
@@ -226,6 +233,63 @@ export default {
 		generateDBAdminPassword: function ()
 		{
 			this.generateAPassword( 'databaseUserPassword' );
+		},
+		validateMediaWiki: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.mediawiki.validate();
+		},
+		validateDatabase: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.database.validate();
+		},
+		validateUpdater: function ()
+		{
+			const Return = this.$refs[ 'wdqs-updater' ].validate();
+			this.$forceUpdate();
+			return Return;
+		},
+		validateWikibase: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.wikibase.validate();
+		},
+		validateWikibaseBlazegraph: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.wikibaseBlazegraph.validate();
+		},
+		validateWikibaseProxy: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.wikibaseProxy.validate();
+		},
+		validateWikibaseQuickstatements: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.wikibaseQuickstatements.validate();
+		},
+		validateWikibaseUI: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.wikibaseUI.validate();
+		},
+		isWikibseAliasSet()
+		{
+			return true;
+		},
+		isWikibasePortSet()
+		{
+			return true;
+		},
+		isWikibaseBlazegraphAliasSet()
+		{
+			return true;
+		},
+		isWikibaseBlazegraphPortSet()
+		{
+			return true;
 		},
 		done()
 		{
