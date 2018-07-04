@@ -27,6 +27,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 		super( null, BindedObject, Generator );
 		this.__Form = Form;
 		this.Form = {
+			JustField: false,
 			FormEvents: {},
 			FormProperties: {},
 			FormAttributes: {},
@@ -112,12 +113,16 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 				groups: Generated.Groups
 			};
 
+			this.Form.JustField = true;
 			this.Form.Model = Generated.Model;
 			this.Form.Steps = Generated.NodeSchema;
+			this.Form.Steps[ 0 ].inner.schema = this.Form.Schema;
+			this.Form.Steps[ 0 ].inner.model = this.Form.Model;
 		}
 		else if ( true === this.__Form.hasOwnProperty( 'steps' ) && true === Array.isArray( this.__Form.steps ) )
 		{
 			this.Form.Schema = [];
+			this.Form.JustField = false;
 			for ( Index in this.__Form.steps )
 			{
 				Generated = new BlubberStep(
@@ -129,7 +134,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 				Generated.build();
 
 				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
-				if ( true === Generated.getCondition() )
+				if ( false === Generated.getCondition() )
 				{
 					continue;
 				}
@@ -145,12 +150,29 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 			for ( Index in this.Form.Steps )
 			{
 				this.Form.Steps[ Index ][ 0 ].inner.model = this.Form.Model;
+				this.Form.Steps[ Index ][ 0 ].inner.schema = this.Form.Schema[ Index ];
 			}
-			console.log( this );
 		}
 		else
 		{
 			throw new InvalidFormException();
+		}
+	}
+
+	refresh( Model )
+	{
+		let Index;
+		this.Form.Model = Model;
+		if ( true === this.Form.JustField )
+		{
+			this.Form.Steps[ 0 ].inner.model = Model;
+		}
+		else
+		{
+			for ( Index in this.Form.Steps )
+			{
+				this.Form.Steps[ Index ][ 0 ].inner.model = this.Form.Model;
+			}
 		}
 	}
 }

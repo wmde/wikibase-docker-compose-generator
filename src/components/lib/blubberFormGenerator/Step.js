@@ -243,8 +243,8 @@ class BlubberFields extends FieldBase
 				this.__buildGroup( FieldIndex );
 				if (
 					true === this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' )
-					&&
-					true === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
+				&&
+					false === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
 				)
 				{
 					this.Groups.pop();
@@ -278,8 +278,8 @@ class BlubberFields extends FieldBase
 
 			if (
 				true === this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' )
-				&&
-				true === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
+			&&
+				false === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
 			)
 			{
 				continue;
@@ -308,7 +308,7 @@ export default class BlubberStep extends BlubberFields
 		}
 		else
 		{
-			this.__Condition = false;
+			this.__Condition = true;
 		}
 	}
 
@@ -430,7 +430,7 @@ export default class BlubberStep extends BlubberFields
 			// eslint-disable-next-line
 			BeforeChange = this._executeFunctionOrGetAnything( this.__Template.beforeChange, true );
 			this.NodeSchema.inner = {
-				schema: Schema,
+				// schema: Schema,
 				options: Options,
 				multiple: Multiple,
 				isNewModel: IsNewModel,
@@ -445,7 +445,7 @@ export default class BlubberStep extends BlubberFields
 		else
 		{
 			this.NodeSchema.inner = {
-				schema: Schema,
+				// schema: Schema,
 				options: Options,
 				multiple: Multiple,
 				isNewModel: IsNewModel,

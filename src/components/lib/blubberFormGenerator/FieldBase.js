@@ -663,7 +663,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	__addMiscellaneous()
 	{
 		this._assignBoolean( 'required' );
-		this._assignAnything( 'default' );
+		// this._assignAnything( 'default' );
 
 		if (
 			(
@@ -676,7 +676,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 			'boolean' !== typeof this._Field.default
 		)
 		{
-			this._addValueToModel( this._Field.default );
+			this._addValueToModel( this._executeFunctionOrGetAnything( this._Field.default ) );
 		}
 	}
 
@@ -759,7 +759,6 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	{
 		let Mutable;
 		const GeneratedButton = {};
-
 		if ( true === Button.hasOwnProperty( 'class' ) )
 		{
 			GeneratedButton.classes = this._executeFunctionOrGetString( Button.class );
@@ -786,7 +785,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addInsideButton()
 	{
-		let Index, GeneratedButton, InsideButtons;
+		let Index, InsideButtons;
 		const Buttons = [];
 
 		if ( false === this._Field.hasOwnProperty( 'buttons' ) )
@@ -796,19 +795,34 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		// eslint-disable-next-line
 		InsideButtons = this._executeFunctionOrGetAnything(this._Field['buttons']);
 
-		if ( 'object' === typeof InsideButtons )
+		if ( 'object' === typeof InsideButtons && false === Array.isArray( InsideButtons ) )
 		{
+			if (
+				true === InsideButtons.hasOwnProperty( 'condition' )
+			&&
+                false === this._executeFunctionOrGetBoolean( InsideButtons.condition )
+			)
+			{
+				return;
+			}
 			Buttons.push( this.__wrapInsideButton( InsideButtons ) );
 		}
 		else if ( true === Array.isArray( InsideButtons ) )
 		{
 			for ( Index in InsideButtons )
 			{
-				GeneratedButton = {};
+				if (
+					true === InsideButtons[ Index ].hasOwnProperty( 'condition' )
+                &&
+                    false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition )
+				)
+				{
+					continue;
+				}
+
 				if ( 'object' === typeof InsideButtons[ Index ] )
 				{
-					GeneratedButton = this.__wrapInsideButton( InsideButtons[ Index ] );
-					Buttons.push( GeneratedButton );
+					Buttons.push( this.__wrapInsideButton( InsideButtons[ Index ] ) );
 				}
 				else
 				{

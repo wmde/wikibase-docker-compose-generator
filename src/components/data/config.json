@@ -1,7 +1,7 @@
 {
     "name": "BlubberForm",
     "form": {
-          "title":"Blubber",
+          "title":"title",
           "subtitle": "subtitle",
           "nextButtonText": "nextButton",
           "backButtonText": "backButton",
@@ -64,7 +64,17 @@
                   "default": "adminpass",
                   "required": true,
                   "help": "",
-                  "hint": ""
+                  "hint": "",
+                  "buttons": [
+                      {
+                        "label": "showPassword",
+                        "action": "showMWAdminPassword"
+                      },
+                      {
+                        "label": "generatePassword",
+                        "action": "generateMWAdminPassword"
+                      }
+                  ]
               }],
               "template": ""
         },{
@@ -76,45 +86,51 @@
                 "validateAfterChanged": true
               },
               "fields":[{
-                "name": "wikibaseDatabaseHost",
+                "name": "databaseHost",
                 "type": "text",
                 "default": "mysql",
                 "required": true,
                 "help": "",
                 "hint": ""
               },{
-                "name": "wikibaseDatabasePort",
+                "name": "databasePort",
                 "type": "number",
                 "default": "8282",
                 "required": true,
                 "help": "",
                 "hint": ""
               },{
-                "name": "wikibaseDatabaseName",
+                "name": "databaseName",
                 "type": "text",
                 "default": "my_wiki",
                 "required": true,
                 "help": "",
                 "hint": ""
               },{
-                "name": "wikibaseDatabaseUser",
+                "name": "databaseUser",
                 "type": "text",
                 "default": "wikiuser",
                 "required": true,
                 "help": "",
                 "hint": ""
               },{
-                "name": "wikibaseDatabaseUserPassword",
-                "type": "password",
-                "default": "sqlpass",
-                "required": true,
-                "help": "",
-                "hint": "",
-                "buttons": {
-                  "label": "showPassword",
-                  "action": "showGi"
-                }}
-              ],
+                  "name": "databaseUserPassword",
+                  "type": "password",
+                  "default": "sqlpass",
+                  "required": true,
+                  "help": "",
+                  "hint": "",
+                  "buttons": [
+                    {
+                      "label": "showPassword",
+                      "action": "showDBPassword"
+                    },
+                    {
+                      "label": "generatePassword",
+                      "action": "generateDBAdminPassword"
+                    }
+                  ]
+              }],
               "template": "mysql:\nimage: mariadb:latest\nrestart: always\nvolumes:\n- mediawiki-mysql-data:/var/lib/mysql\nenvironment:\nMYSQL_DATABASE: 'my_wiki'\nMYSQL_USER: 'wikiuser'\nMYSQL_PASSWORD: 'sqlpass'\nMYSQL_RANDOM_ROOT_PASSWORD: 'yes'\nnetworks:\ndefault:\naliases:\n- mysql.svc"
         },{
               "name":"wikibase",

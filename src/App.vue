@@ -20,6 +20,7 @@ export default {
 		Return.blubberGeneratorSteps = [];
 		Return.blubberGeneratorFormProperties = {};
 		Return.blubberGeneratorFormStyle = {};
+		Return.blubberPasswordSwitch = {};
 		return Return;
 	},
 	mounted: function ()
@@ -82,13 +83,114 @@ export default {
 				return [];
 			};
 		},
-		showGi: function ()
+		showPasswords: function ( Id, Offset )
 		{
+			let Scroll;
+			let Node = document.getElementById( Id );
+			let GetHideLabel = true;
+			if ( 'text' === Node.getAttribute( 'type' ) )
+			{
+				Node.setAttribute( 'type', 'password' );
+				GetHideLabel = false;
+			}
+			else
+			{
+				Node.setAttribute( 'type', 'text' );
+			}
 
+			Node = Node.parentNode.nextSibling.firstChild;
+			for ( Scroll = 0; Scroll <= Offset; Scroll++ )
+			{
+				Node = Node.nextSibling;
+			}
+
+			if ( true === GetHideLabel )
+			{
+				Node.innerText = this.getI18nStrings( 'hidePassword' );
+			}
+			else
+			{
+				Node.innerText = this.getI18nStrings( 'showPassword' );
+			}
+		},
+		randomString( Length, Min, Max, Exclude = [] )
+		{
+			const GeneratedString = [];
+			let Char, Index;
+			if ( 0 > Length )
+			{
+				return '';
+			}
+
+			Exclude = Exclude.sort();
+			for ( Index = 0; Index < Exclude.length; Index++ )
+			{
+				if ( 'string' === typeof Exclude[ Index ] )
+				{
+					Exclude[ Index ] = Exclude[ Index ].charCodeAt( 0 );
+				}
+			}
+
+			do
+			{
+				Char = Math.round( Math.random() * 100 + Math.random() * 100 );
+				if ( 0 < Min && Char < Min )
+				{
+					continue;
+				}
+
+				if ( 0 < Max && Char > Max )
+				{
+					continue;
+				}
+
+				if ( -1 !== Utils.binarySearch( Exclude, Char ) )
+				{
+					continue;
+				}
+
+				Char = String.fromCharCode( Char );
+				Length--;
+				GeneratedString[ Length ] = Char;
+			}
+			while ( 0 < Length );
+
+			return GeneratedString.join( '' );
+		},
+		generateAPassword( Key )
+		{
+			const RandomString = this.randomString(
+				42,
+				33,
+				126,
+				[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
+			);
+
+			this.$data.blubberModel[
+				this.$data.blubberGeneratorFormProperties.id
+			][ Key ] = RandomString;
+
+			this.$forceUpdate();
+		},
+		showMWAdminPassword: function ()
+		{
+			this.showPasswords( 'mediawikiAdminPassword' );
+		},
+		generateMWAdminPassword: function ()
+		{
+			this.generateAPassword( 'mediawikiAdminPassword' );
+		},
+		showDBPassword: function ()
+		{
+			this.showPasswords( 'databaseUserPassword' );
+		},
+		generateDBAdminPassword: function ()
+		{
+			this.generateAPassword( 'databaseUserPassword' );
 		},
 		done()
 		{
-			console.log( this.$data );
+
 		}
 	}
 };
