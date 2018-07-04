@@ -429,9 +429,7 @@ export class FieldBase {
 		if ( this.__HasDefaultValue === true ) {
 			if ( Array.isArray( this.__ModelKey ) === true ) {
 				this._addValueToModel(
-					this.__ModelPointer[
-						this.__ModelKey[ this.__ModelKey.length - 1 ]
-					]
+					this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
 				);
 			} else {
 				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
@@ -532,7 +530,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addMiscellaneous() {
 		this._assignBoolean( 'required' );
-		this._assignAnything( 'default' );
+		// this._assignAnything( 'default' );
 
 		if (
 			(
@@ -544,7 +542,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		||
 			typeof this._Field.default !== 'boolean'
 		) {
-			this._addValueToModel( this._Field.default );
+			this._addValueToModel( this._executeFunctionOrGetAnything( this._Field.default ) );
 		}
 	}
 
@@ -611,7 +609,6 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	__wrapInsideButton( Button ) {
 		let Mutable;
 		const GeneratedButton = {};
-
 		if ( Button.hasOwnProperty( 'class' ) === true ) {
 			GeneratedButton.classes = this._executeFunctionOrGetString( Button.class );
 		}
@@ -633,7 +630,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	}
 
 	__addInsideButton() {
-		let Index, GeneratedButton, InsideButtons;
+		let Index, InsideButtons;
 		const Buttons = [];
 
 		if ( this._Field.hasOwnProperty( 'buttons' ) === false ) {
@@ -642,14 +639,27 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 		// eslint-disable-next-line
 		InsideButtons = this._executeFunctionOrGetAnything(this._Field['buttons']);
 
-		if ( typeof InsideButtons === 'object' ) {
+		if ( typeof InsideButtons === 'object' && Array.isArray( InsideButtons ) === false ) {
+			if (
+				InsideButtons.hasOwnProperty( 'condition' ) === true
+			&&
+                this._executeFunctionOrGetBoolean( InsideButtons.condition ) === false
+			) {
+				return;
+			}
 			Buttons.push( this.__wrapInsideButton( InsideButtons ) );
 		} else if ( Array.isArray( InsideButtons ) === true ) {
 			for ( Index in InsideButtons ) {
-				GeneratedButton = {};
+				if (
+					InsideButtons[ Index ].hasOwnProperty( 'condition' ) === true
+                &&
+                    this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition ) === false
+				) {
+					continue;
+				}
+
 				if ( typeof InsideButtons[ Index ] === 'object' ) {
-					GeneratedButton = this.__wrapInsideButton( InsideButtons[ Index ] );
-					Buttons.push( GeneratedButton );
+					Buttons.push( this.__wrapInsideButton( InsideButtons[ Index ] ) );
 				} else {
 					throw new InvalidFieldPropertyException(
 						StringHelper.format(
