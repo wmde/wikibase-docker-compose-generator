@@ -5,13 +5,19 @@
     "nextButton": "Next",
     "backButton": "Back",
     "finishButton": "Finish",
-    "showPassword": "Show me the password.",
+    "showPassword": "Show me the password",
     "generatePassword": "Generate me a password",
-    "hidePassword": "Hide the password.",
+    "hidePassword": "Hide the password",
 
     "prolog": "Welcome",
     "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a href=\"https://docs.docker.com/compose/\">here</a>.</p><p>You can run the whole setup or use directly the default settings:</p>",
     "defaultSettings": "Give me the default yml",
+
+    "invalid_port_integer": "The given portnumber is not a valid integer",
+    "is_well_known_port": "The given port is a well known port",
+    "port_is_in_use": "The given port is allready in use",
+    "invalid_string": "Only non empty strings are allowed",
+    "invalid_step": "You have to use at least one container",
 
     "generalSettings": "General Setting",
     "languageSetting": "Which language you want to use in your docker container?",

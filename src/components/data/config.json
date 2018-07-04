@@ -36,7 +36,7 @@
                     "validateAfterChanged": true
             },
             "fields":[ {
-                "name": "stepsToUse",
+                "name": "steps",
                 "type": "pick",
                 "required": true,
                 "default": [ "Wikibase", "Quickstatements", "Query service", "WDQS-Proxy", "WDQS-UI", "WDQS-Updater" ],

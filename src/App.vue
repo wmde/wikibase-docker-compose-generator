@@ -4,6 +4,7 @@ import Utils from './Utils';
 import Language from './components/Language';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
+import Validator from './components/lib/Validators';
 
 export default {
 	name: 'Blubber',
@@ -60,10 +61,17 @@ export default {
 			else
 			{
 				let I18n = null;
+
 				if ( 'undefined' !== typeof this.$data.i18n )
 				{
 					I18n = this.getI18nStrings;
-				}
+                    Validator.InvalidPort_No_Integer = this.getI18nStrings( 'invalid_port_integer' );
+                    Validator.InvalidPort_Well_Known = this.getI18nStrings( 'is_well_known_port' );
+                    Validator.InvalidPort_In_Use = this.getI18nStrings( 'port_is_in_use' );
+                    Validator.InvalidString = this.getI18nStrings( 'invalid_string' );
+                    Validator.InvalidArray = this.getI18nStrings( 'invalid_step' );
+                }
+
 				const Element = this.buildBlubberForm(
 					createElement,
 					{
@@ -78,10 +86,41 @@ export default {
 		},
 		getValidator( FieldId )
 		{
-			return function ( value, schema, model )
-			{
-				return [];
-			};
+			let Validators = {
+                steps: Validator.steps,
+                mediawikiAdminName: Validator.string,
+                mediawikiAdminPassword: Validator.string,
+                databaseHost: Validator.string,
+                databaseName: Validator.string,
+                databaseUser: Validator.string,
+                databaseUserPassword: Validator.string,
+                wikibaseAlias: Validator.string,
+                wikibaseQuickstatementsAlias: Validator.string,
+                wikibaseQuickstatementsNamespaceItem: Validator.string,
+                wikibaseQuickstatementsNamespaceProperty: Validator.string,
+                wikibaseQuickstatementsPrefixProperty: Validator.string,
+                wikibaseQuickstatementsPrefixItem: Validator.string,
+                wikibaseBlazegraphAlias: Validator.string,
+                wikibaseUIAlias: Validator.string,
+                databasePort: Validator.ports,
+                wikibasePort: Validator.ports,
+                wikibaseQuickstatementsPort: Validator.ports,
+                wikibasePort: Validator.ports,
+                wikibaseBlazegraphPort: Validator.ports,
+                wikibaseUIPort: Validator.ports,
+                wikibaseBlazegraphPort: Validator.ports
+            };
+
+            FieldId = FieldId[ 0 ];
+
+            if( false === Validators.hasOwnProperty( FieldId ) )
+            {
+                return '';
+            }
+            else
+            {
+                return Validators[ FieldId ];
+            }
 		},
 		showPasswords: function ( Id, Offset )
 		{
