@@ -518,18 +518,29 @@ export class FieldBase
 		{
 			this.__ModelPointer[ this.__ModelKey ] = Value;
 		}
-		this.__HasDefaultValue = true;
+
+		if ( false === Utils.isEmpty( Value ) )
+		{
+			this.__HasDefaultValue = true;
+		}
 	}
 
 	_fieldTakesMultibleValues()
 	{
 		if ( true === this.__HasDefaultValue )
 		{
-			this.__ModelPointer[ this.__ModelKey ] = [ this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ] ];
+			if ( true === Array.isArray( this.__ModelKey ) )
+			{
+				this._addValueToModel( this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ] );
+			}
+			else
+			{
+				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
+			}
 		}
 		else
 		{
-			this.__ModelPointer[ this.__ModelKey ] = [];
+			this._addValueToModel( [] );
 		}
 	}
 

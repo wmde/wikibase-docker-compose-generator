@@ -6,7 +6,7 @@
     "finishButton": "Finish",
 
     "prolog": "Welcome",
-    "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>You can run the whole setup or use directly the default settings:",
+    "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a href=\"https://docs.docker.com/compose/\">here</a>.</p><p>You can run the whole setup or use directly the default settings:</p>",
     "defaultSettings": "Give me the default yml",
 
     "generalSettings": "General Setting",
@@ -782,16 +782,47 @@
     "stepsToUse": "Which container you want to install?",
 
     "mediawiki": "MediaWiki",
-    "mediawikiSiteName": "How would you name your MediaWiki?",
-    "mediawikiAdminName": "How would you name your MediaWiki admin account?",
+    "mediawikiSiteName": "How would you like to name your MediaWiki?",
+    "mediawikiAdminName": "How would you like to name your MediaWiki admin account?",
     "mediawikiAdminPassword": "Provide your admin account a password.",
 
     "database": "MediaWiki database",
     "wikibaseDatabaseHost": "Under which host address your database is supposed to run?",
-    "wikibaseDatabasePort": "Which port should use this service?",
-    "wikibaseDatabaseName": "What is the name of your database?",
+    "wikibaseDatabasePort": "Which port the database should use?",
+    "wikibaseDatabaseName": "How you like to name the database container localy?",
     "wikibaseDatabaseUser": "What is the name of your database user?",
-    "wikibaseDatabaseUserPassword": "Provide your database user a password."
+    "wikibaseDatabaseUserPassword": "Provide your database user a password.",
+    "showPassword":"Show me the password.",
 
+    "wikibase": "Wikibase",
+    "wikibaseAlias":"How you like to name the Wikibase container localy?",
+    "wikibasePort": "Which port Wikibase should use?",
+
+    "wikibaseQuickstatements": "Quickstatements",
+    "wikibaseQuickstatements_description": "<p>QuickStatements is a tool to batch-edit Wikidata. You can take a look <a href=\"https://tools.wmflabs.org/quickstatements/#/\">here</a>.</p>",
+    "wikibaseQuickstatementsAlias": "How you like to name the Quickstatements container localy?",
+    "wikibaseQuickstatementsPort": "Which port quickstatements should use?",
+    "wikibaseQuickstatementsNamespaceProperty": "Which namespace you want to use for properties in Wikibase?",
+    "wikibaseQuickstatementsNamespaceItem": "Which namespace you want to use for items in Wikibase?",
+    "wikibaseQuickstatementsPrefixProperty": "Which prefix you want to use for properties in Wikibase?",
+    "wikibaseQuickstatementsPrefixItem": "Which prefix you want to use for items in Wikibase?",
+
+    "wikibaseBlazegraph": "SPARQL query service",
+    "wikibaseBlazegraph_description": "Blazegraph is the backend for the SPARQL query service (WDQS).",
+    "wikibaseBlazegraphAlias": "How you like to name the SPARQL query service (WDQS) container localy?",
+    "wikibaseBlazegraphPort": "Which port SPARQL query service should use?",
+
+    "wikibaseProxy": "WDQS-Proxy",
+    "wikibaseProxy_description": "<p>The Proxy is supposed to make the query service READONLY. Also he should enforce query timeouts.</p>",
+
+    "wikibaseUI": "User Interface for WDQS",
+    "wikibaseUI_description": "<p>The User Interface for WDQS is a frontend for the  SPARQL query service.</p>",
+    "wikibaseUIAlias": "How you like to name the User Interface for WDQS container localy?",
+    "wikibaseUIPort": "Which port User Interface for WDQS should use?",
+
+    "wdqs-updater": "Query serivce updater",
+
+    "complete": "Complete!",
+    "complete_description": "<p>You can download the generated yml file by clicking on download.</p><p>The following content was generated:</p><div id=\"yml\"></div>"
 
 }

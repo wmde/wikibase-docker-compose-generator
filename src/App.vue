@@ -88,7 +88,7 @@ export default {
 		},
 		done()
 		{
-
+			console.log( this.$data );
 		}
 	}
 };

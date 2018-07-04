@@ -146,6 +146,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 			{
 				this.Form.Steps[ Index ][ 0 ].inner.model = this.Form.Model;
 			}
+			console.log( this );
 		}
 		else
 		{
