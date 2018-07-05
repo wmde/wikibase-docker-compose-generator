@@ -5,6 +5,7 @@ import Language from './components/Language';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
 import Validator from './components/lib/Validators';
+import StringHelper from "./components/lib/StringHelper";
 
 export default {
 	name: 'Blubber',
@@ -83,14 +84,7 @@ export default {
 					I18n
 				);
 				// eslint-disable-next-line
-				Return = createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
-				this.$data.blubberModel.secretKey = this.randomString(
-					42,
-					33,
-					126,
-					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
-				);
-				return Return;
+				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
 		getValidator( FieldId )
@@ -291,9 +285,100 @@ export default {
 		{
 			return true;
 		},
+        jumpToTheEnd()
+        {
+            this.$refs[ this.$data.blubberGeneratorFormProperties.id ].changeTab(
+                0,
+                this.$data.blubberSchema[ this.$data.blubberGeneratorFormProperties.id ].length - 1
+            );
+        },
+        showYmlFile()
+        {
+            let Index;
+            let ToPrint = [];
+            let Place = document.getElementById( 'yml' ).firstChild;
+
+            if( false === this.$data.blubberModel[
+                this.$data.blubberGeneratorFormProperties.id
+                ].hasOwnProperty( 'secretkey' ) )
+            {
+                this.$data.blubberModel[
+                    this.$data.blubberGeneratorFormProperties.id
+                    ].secretkey = this.randomString(
+                    42,
+                    33,
+                    126,
+                    [':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%']
+                );
+            }
+            for ( Index = 0; Index < this.$data.blubberGeneratorSteps.length - 1; Index++ )
+            {
+                if(
+                    false === this.$data.blubberGeneratorSteps[Index].hasOwnProperty( 'template' )
+                ||
+                    true === Utils.isEmpty( this.$data.blubberGeneratorSteps[Index].template )
+                )
+                {
+                    continue;
+                }
+                ToPrint.push( StringHelper.format(
+                    this.$data.blubberGeneratorSteps[Index].template,
+                    this.$data.blubberModel[ this.$data.blubberGeneratorFormProperties.id ]
+                ) );
+            }
+
+            ToPrint.splice(
+                0,
+                0,
+                this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[0]
+            );
+
+            ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[1] );
+            ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[2] );
+            Place.innerHTML = ToPrint.join("\n");
+        },
 		done()
 		{
+            let Index;
+            let ToPrint = [];
 
+            if( false === this.$data.blubberModel[
+                this.$data.blubberGeneratorFormProperties.id
+                ].hasOwnProperty( 'secretKey' ) )
+            {
+                this.$data.blubberModel[
+                    this.$data.blubberGeneratorFormProperties.id
+                    ].secretKey = this.randomString(
+                    42,
+                    33,
+                    126,
+                    [':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%']
+                );
+            }
+            for ( Index = 0; Index < this.$data.blubberGeneratorSteps.length - 1; Index++ )
+            {
+                if(
+                    false === this.$data.blubberGeneratorSteps[Index].hasOwnProperty( 'template' )
+                    ||
+                    true === Utils.isEmpty( this.$data.blubberGeneratorSteps[Index].template )
+                )
+                {
+                    continue;
+                }
+                ToPrint.push( StringHelper.format(
+                    this.$data.blubberGeneratorSteps[Index].template,
+                    this.$data.blubberModel[ this.$data.blubberGeneratorFormProperties.id ]
+                ) );
+            }
+
+            ToPrint.splice(
+                0,
+                0,
+                this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[0]
+            );
+
+            ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[1] );
+            ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[2] );
 		}
 	}
 };

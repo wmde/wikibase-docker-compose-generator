@@ -819,19 +819,22 @@
     "wikibaseBlazegraph": "SPARQL query service",
     "wikibaseBlazegraph_description": "Blazegraph is the backend for the SPARQL query service (WDQS).",
     "wikibaseBlazegraphAlias": "How you like to name the SPARQL query service (WDQS) container localy?",
-    "wikibaseBlazegraphPort": "Which port SPARQL query service should use?",
+    "wikibaseBlazegraphPort": "Which port the SPARQL query service should use?",
 
     "wikibaseProxy": "WDQS-Proxy",
     "wikibaseProxy_description": "<p>The Proxy is supposed to make the query service READONLY. Also he should enforce query timeouts.</p>",
+    "wikibaseProxyAlias": "How you like to name the proxy service?",
+    "wikibaseProxyPort": "Which port the proxy service should use?",
 
     "wikibaseUI": "User Interface for WDQS",
     "wikibaseUI_description": "<p>The User Interface for WDQS is a frontend for the  SPARQL query service.</p>",
     "wikibaseUIAlias": "How you like to name the User Interface for WDQS container localy?",
-    "wikibaseUIPort": "Which port User Interface for WDQS should use?",
+    "wikibaseUIPort": "Which port the User Interface for WDQS should use?",
 
     "wdqs-updater": "Query serivce updater",
+    "wikibaseUpdaterAlias": "How you like to name the update service?",
 
     "complete": "Complete!",
-    "complete_description": "<p>You can download the generated yml file by clicking on download.</p><p>The following content was generated:</p><div id=\"yml\"></div>"
-
+    "complete_description": "<p>You can download the generated yml file by clicking on download.</p><div id=\"yml\"><pre></pre></div>",
+    "showBeforeDownloadYml": "Show me the generated yml file"
 }

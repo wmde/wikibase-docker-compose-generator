@@ -25,7 +25,8 @@
             },
             "fields":[{
               "name": "defaultSettings",
-              "type": "submit"
+              "type": "submit",
+              "onSubmit": "jumpToTheEnd"
             }]
             },{
             "name":"generalSettings",
@@ -76,8 +77,7 @@
                         "action": "generateMWAdminPassword"
                       }
                   ]
-              }],
-              "template": ""
+              }]
         },{
               "name":"database",
               "icon": "settings",
@@ -125,7 +125,7 @@
                     }
                   ]
               }],
-              "template": "mysql:\nimage: mariadb:latest\nrestart: always\nvolumes:\n- mediawiki-mysql-data:/var/lib/mysql\nenvironment:\nMYSQL_DATABASE: {databaseHost}\nMYSQL_USER: {databaseUser}\nMYSQL_PASSWORD: {databaseUserPassword}\nMYSQL_RANDOM_ROOT_PASSWORD: 'yes'\nnetworks:\ndefault:\naliases:\n- mysql.svc"
+              "template": "mysql:\nimage: mariadb:latest\nrestart: always\nvolumes:\n- mediawiki-mysql-data:/var/lib/mysql\nenvironment:\nMYSQL_DATABASE: {databaseName}\nMYSQL_USER: {databaseUser}\nMYSQL_PASSWORD: {databaseUserPassword}\nMYSQL_RANDOM_ROOT_PASSWORD: 'yes'\nnetworks:\ndefault:\naliases:\n- {databaseAlias}.svc"
         },{
               "name":"wikibase",
               "icon": "settings",
@@ -150,7 +150,7 @@
                           "required": true
                       }
               ],
-              "template": "wikibase:\nimage: wikibase/wikibase:1.30-bundle\nbuild:\ncontext: ./wikibase/1.30/bundle\ndockerfile: Dockerfile\nlinks:\n- mysql\nports:\n- \"8181:80\"\nvolumes:\n- mediawiki-images-data:/var/www/html/images\ndepends_on:\n- mysql\n- elasticsearch\nnetworks:\ndefault:\naliases:\n- wikibase.svc\nenvironment:\n- DB_SERVER=mysql.svc:3306\n- DB_USER=wikiuser\n- DB_PASS=sqlpass\n- DB_NAME=my_wiki\n- MW_ADMIN_NAME={mediawikiAdminName}\n- MW_ADMIN_PASS=adminpass\n- MW_WG_SECRET_KEY=secretkey\n- MW_ELASTIC_HOST=elasticsearch.svc\n- MW_ELASTIC_PORT=9200"
+              "template": "wikibase:\nimage: wikibase/wikibase:1.30-bundle\nbuild:\ncontext: ./wikibase/1.30/bundle\ndockerfile: Dockerfile\nlinks:\n- mysql\nports:\n- \"{wikibasePort}:80\"\nvolumes:\n- mediawiki-images-data:/var/www/html/images\ndepends_on:\n- mysql\n- elasticsearch\nnetworks:\ndefault:\naliases:\n- {wikibaseAlias}.svc\nenvironment:\n- DB_SERVER={databaseAlias}.svc:3306\n- DB_USER={databaseUser}\n- DB_PASS={databaseUserPassword}\n- DB_NAME={databaseName}\n- MW_ADMIN_NAME={mediawikiAdminName}\n- MW_ADMIN_PASS={mediawikiAdminPassword}\n- MW_WG_SECRET_KEY={secretkey}\n- MW_ELASTIC_HOST=elasticsearch.svc\n- MW_ELASTIC_PORT=9200"
         },{
               "name": "wikibaseQuickstatements",
               "beforeChange": "validateWikibaseQuickstatements",
@@ -193,14 +193,6 @@
                     "hint": "",
                     "required": true
                   },{
-                    "name": "wikibaseQuickstatementsNamespaceItem",
-                    "type": "text",
-                    "default": "120",
-                    "required": false,
-                    "help": "help me",
-                    "hint": "what a hint",
-                    "styleClasses":"col-xs-3"
-                  },{
                       "name": "wikibaseQuickstatementsNamespaceProperty",
                       "type": "text",
                       "default": "122",
@@ -215,6 +207,14 @@
                     "hint": "",
                     "required": true
                   },{
+                    "name": "wikibaseQuickstatementsNamespaceItem",
+                    "type": "text",
+                    "default": "120",
+                    "required": false,
+                    "help": "help me",
+                    "hint": "what a hint",
+                    "styleClasses":"col-xs-3"
+                  },{
                     "name": "wikibaseQuickstatementsPrefixItem",
                     "type": "text",
                     "default": "Item",
@@ -223,7 +223,7 @@
                     "required": true
                   }
               ],
-            "template":"quickstatements:\nimage: wikibase/quickstatements:latest\nbuild:\ncontext: ./quickstatements/latest\ndockerfile: Dockerfile\nports:\n- \"9191:80\"\ndepends_on:\n- wikibase\nnetworks:\ndefault:\naliases:\n- quickstatements.svc\nenvironment:\n- OAUTH_CONSUMER_KEY=559fcf1da153c5ec4b2fbefa7c3c395b\n- OAUTH_CONSUMER_SECRET=57cad33da0015dce1e94a597908e19848714a6af\n- QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:9191\n- WB_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:8181\n- WIKIBASE_SCHEME_AND_HOST=http://wikibase.svc\n- WB_PROPERTY_NAMESPACE=122\n- \"WB_PROPERTY_PREFIX=Property:\"\n- WB_ITEM_NAMESPACE=120\n- \"WB_ITEM_PREFIX=Item:\""
+            "template":"quickstatements:\nimage: wikibase/quickstatements:latest\nbuild:\ncontext: ./quickstatements/latest\ndockerfile: Dockerfile\nports:\n- \"{wikibaseQuickstatementsPort}:80\"\ndepends_on:\n- wikibase\nnetworks:\ndefault:\naliases:\n- {wikibaseQuickstatementsAlias}.svc\nenvironment:\n- OAUTH_CONSUMER_KEY=559fcf1da153c5ec4b2fbefa7c3c395b\n- OAUTH_CONSUMER_SECRET=57cad33da0015dce1e94a597908e19848714a6af\n- QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibaseQuickstatementsPort}\n- WB_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibasePort}\n- WIKIBASE_SCHEME_AND_HOST=http://{wikibaseAlias}.svc\n- WB_PROPERTY_NAMESPACE={wikibaseQuickstatementsNamespaceProperty}\n- \"WB_PROPERTY_PREFIX={wikibaseQuickstatementsPrefixProperty}:\"\n- WB_ITEM_NAMESPACE={wikibaseQuickstatementsNamespaceItem}\n- \"WB_ITEM_PREFIX={wikibaseQuickstatementsPrefixItem}:\""
         },{
             "name": "wikibaseBlazegraph",
             "beforeChange": "validateWikibaseBlazegraph",
@@ -249,9 +249,18 @@
                     "required": true,
                     "help": "",
                     "hint": ""
+                },{
+                    "name": "wikibaseAlias",
+                    "condition": "isWikibseAliasSet",
+                    "type": "text",
+                    "default": "wikibase",
+                    "required": true,
+                    "help": "help me",
+                    "hint": "what a hint",
+                    "styleClasses":"col-xs-3"
                 }
             ],
-            "template":"wdqs:\nimage: wikibase/wdqs:0.3.0\nbuild:\ncontext: ./wdqs/0.3.0\ndockerfile: Dockerfile\nvolumes:\n- query-service-data:/wdqs/data\ncommand: /runBlazegraph.sh\nnetworks:\ndefault:\naliases:\n- wdqs.svc\nenvironment:\n- WIKIBASE_HOST=wikibase.svc\n- WDQS_HOST=wdqs.svc\n- WDQS_PORT=9999\nexpose:\n- 9999"
+            "template":"wdqs:\nimage: wikibase/wdqs:0.3.0\nbuild:\ncontext: ./wdqs/0.3.0\ndockerfile: Dockerfile\nvolumes:\n- query-service-data:/wdqs/data\ncommand: /runBlazegraph.sh\nnetworks:\ndefault:\naliases:\n- {wikibaseBlazegraphAlias}.svc\nenvironment:\n- WIKIBASE_HOST={wikibaseAlias}.svc\n- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n- WDQS_PORT={wikibaseBlazegraphPort}\nexpose:\n- {wikibaseBlazegraphPort}"
         },{
             "name": "wikibaseProxy",
             "beforeChange": "validateWikibaseProxy",
@@ -263,6 +272,21 @@
               "validateAfterChanged": true
             },
             "fields":[{
+              "name": "wikibaseProxyAlias",
+              "type": "text",
+              "default": "wdqs-proxy",
+              "required": false,
+              "help": "",
+              "hint": ""
+
+            },{
+              "name": "wikibaseProxyPort",
+              "type": "number",
+              "default": "8989",
+              "required": true,
+              "help": "",
+              "hint": ""
+            },{
               "name": "wikibaseBlazegraphAlias",
               "default": "wdqs",
               "type": "text",
@@ -278,7 +302,7 @@
               "help": "",
               "hint": ""
             }],
-            "template":"wdqs-proxy:\nimage: wikibase/wdqs-proxy\nbuild:\ncontext: ./wdqs-proxy/latest\ndockerfile: Dockerfile\nenvironment:\n- PROXY_PASS_HOST=wdqs.svc:9999\nports:\n- \"8989:80\"\ndepends_on:\n- wdqs\nnetworks:\ndefault:\naliases:\n- wdqs-proxy.svc"
+            "template":"wdqs-proxy:\nimage: wikibase/wdqs-proxy\nbuild:\ncontext: ./wdqs-proxy/latest\ndockerfile: Dockerfile\nenvironment:\n- PROXY_PASS_HOST={wikibaseBlazegraphAlias}.svc:{wikibaseBlazegraphPort}\nports:\n- \"{wikibaseProxyPort}:80\"\ndepends_on:\n- wdqs\nnetworks:\ndefault:\naliases:\n- {wikibaseProxyAlias}.svc"
         },{
           "name": "wikibaseUI",
           "beforeChange": "validateWikibaseUI",
@@ -314,15 +338,15 @@
             "hint": "what a hint",
             "styleClasses":"col-xs-3"
           },{
-            "name": "wikibaseBlazegraphAlias",
+            "name": "wikibaseProxyAlias",
             "type": "text",
-            "default": "wdqs",
+            "default": "wdqs-proxy",
             "required": false,
             "help": "",
             "hint": ""
 
           }],
-          "template":"wdqs-frontend:\nimage: wikibase/wdqs-frontend:latest\nbuild:\ncontext: ./wdqs-frontend/latest\ndockerfile: Dockerfile\nports:\n- \"8282:80\"\ndepends_on:\n- wdqs-proxy\nnetworks:\ndefault:\naliases:\n- wdqs-frontend.svc\nenvironment:\n- WIKIBASE_HOST=wikibase.svc\n- WDQS_HOST=wdqs-proxy.svc"
+          "template":"wdqs-frontend:\nimage: wikibase/wdqs-frontend:latest\nbuild:\ncontext: ./wdqs-frontend/latest\ndockerfile: Dockerfile\nports:\n- \"{wikibaseUIPort}:80\"\ndepends_on:\n- wdqs-proxy\nnetworks:\ndefault:\naliases:\n- {wikibaseUIAlias}.svc\nenvironment:\n- WIKIBASE_HOST={wikibaseAlias}.svc\n- WDQS_HOST={wikibaseProxyAlias}.svc"
         },{
           "name": "wdqs-updater",
           "beforeChange": "validateUpdater",
@@ -334,6 +358,14 @@
             "validateAfterChanged": true
           },
           "fields":[{
+            "name": "wikibaseUpdaterAlias",
+            "type": "text",
+            "default": "wdqs-updater",
+            "required": true,
+            "help": "help me",
+            "hint": "what a hint",
+            "styleClasses":"col-xs-3"
+          },{
             "name": "wikibaseAlias",
             "condition": "isWikibseAliasSet",
             "type": "text",
@@ -358,11 +390,16 @@
             "help": "",
             "hint": ""
           }],
-          "template":"wdqs-updater:\nimage: wikibase/wdqs:0.3.0\nbuild:\ncontext: ./wdqs/0.3.0\ndockerfile: Dockerfile\ncommand: /runUpdate.sh\ndepends_on:\n- wdqs\n- wikibase\nnetworks:\ndefault:\naliases:\n- wdqs-updater.svc\nenvironment:\n- WIKIBASE_HOST=wikibase.svc\n- WDQS_HOST=wdqs.svc\n- WDQS_PORT=9999"
+          "template":"wdqs-updater:\nimage: wikibase/wdqs:0.3.0\nbuild:\ncontext: ./wdqs/0.3.0\ndockerfile: Dockerfile\ncommand: /runUpdate.sh\ndepends_on:\n- {wikibaseAlias}\n- wikibase\nnetworks:\ndefault:\naliases:\n- {wikibaseAlias}.svc\nenvironment:\n- WIKIBASE_HOST={wikibaseAlias}.svc\n- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n- WDQS_PORT={wikibaseBlazegraphPort}"
     },{
           "name": "complete",
           "description": "complete_description",
           "icon": "settings",
+          "fields": [{
+            "name": "showBeforeDownloadYml",
+            "type": "submit",
+            "onSubmit": "showYmlFile"
+          }],
           "template": [
             "version: 3",
             "elasticsearch:\nimage: elasticsearch@sha256:f1dbf2019dc9a4ca5dd458635bfb31f9a601e4905e1d6ca1d65a3958d428f497\nnetworks:\ndefault:\naliases:\n- elasticsearch.svc\nenvironment:\ndiscovery.type: single-node\n",

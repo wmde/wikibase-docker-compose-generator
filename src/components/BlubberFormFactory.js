@@ -59,7 +59,8 @@ export default {
 						{
 							attrs: Schema.FormAttributes,
 							props: Schema.FormProperties,
-							on: Schema.FormEvents
+							on: Schema.FormEvents,
+                            ref: Schema.FormRef
 						},
 						[ Description, VGenerator ]
 					);
@@ -77,7 +78,11 @@ export default {
 
 					if ( true === Schema.Steps[ Index ][ 1 ] )
 					{
-						if ( false === Utils.isEmpty( Step.inner.schema ) )
+						if (
+                            0 < Step.inner.schema.fields.length
+						||
+							0 < Step.inner.schema.groups.length
+						)
 						{
 							VGenerator = createElement(
 								'vue-form-generator',
@@ -94,7 +99,7 @@ export default {
 
 						if (
 							true === Step.hasOwnProperty( 'description' )
-                            &&
+                        &&
                             false === Utils.isEmpty( Step.description.domProps )
 						)
 						{
@@ -129,7 +134,8 @@ export default {
 					{
 						attrs: Schema.FormAttributes,
 						props: Schema.FormProperties,
-						on: Schema.FormEvents
+						on: Schema.FormEvents,
+						ref: Schema.FormRef
 					},
 					Tabs
 				);
