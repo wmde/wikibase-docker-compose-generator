@@ -1,5 +1,6 @@
 import VueFormGenerator from 'vue-form-generator';
 import { FormWizard, TabContent } from 'vue-form-wizard';
+import { IdRegister } from './lib/blubberFormGenerator/FieldBase';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
@@ -144,13 +145,17 @@ export default {
 		buildBlubberForm: function ( createElement, Form, LabelGenerator, ForceReload = false )
 		{
 			let FormSchema;
-			if ( false === Form.formAttributes.hasOwnProperty( 'id' ) )
+			if (
+				false === Form.formAttributes.hasOwnProperty( 'id' )
+            ||
+                true === IdRegister.containsId( Form.formAttributes.id )
+			)
 			{
 				return;
 			}
 
 			if (
-				this.$data.blubberRaw.hasOwnProperty( Form.formAttributes.id )
+				true === this.$data.blubberRaw.hasOwnProperty( Form.formAttributes.id )
 			&&
 				false === Utils.isEmpty( this.$data.blubberRaw[ Form.formAttributes.id ] )
 			&&

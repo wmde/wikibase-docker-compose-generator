@@ -27,6 +27,29 @@ export class InvalidFieldPropertyException extends BaseException
 	}
 }
 
+export class IdRegister
+{
+	static __IdStore = [];
+
+	static containsId( Id )
+	{
+		return -1 !== IdRegister.__IdStore.indexOf( Id );
+	}
+
+	static addId( Id )
+	{
+		if ( false === IdRegister.containsId( Id ) )
+		{
+			IdRegister.__IdStore.push( Id );
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
 export class FieldBase
 {
 	/* ErrorStrings*/
@@ -587,6 +610,7 @@ export class CommonRequiredAttributes extends FieldBase
 
 	__addNeccesaryAttributes()
 	{
+		let Id;
 		if ( 'class' in this._Field )
 		{
 			this._Field.styleClasses = this._Field.class;
@@ -598,8 +622,26 @@ export class CommonRequiredAttributes extends FieldBase
 			throw new InvalidFieldException( FieldBase.__NO_NAME__ );
 		}
 
+		if ( true === this._Field.hasOwnProperty( 'id' ) )
+		{
+			Id = this._executeFunctionOrGetString( this._Field.id );
+		}
+		else
+		{
+			Id = this._Field.name;
+		}
+
 		// common required properties
-		this._GeneratedField.id = this._Field.name;
+		if ( false === IdRegister.containsId( Id ) )
+		{
+			this._GeneratedField.id = this._executeFunctionOrGetString( Id );
+			IdRegister.addId( Id );
+		}
+		else
+		{
+			this._GeneratedField.id = 'ivalidId';
+		}
+
 		this._GeneratedField.model = `${ this._Field.name }`;
 
 		if ( true === this._Field.hasOwnProperty( 'label' ) )
@@ -663,7 +705,6 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 	__addMiscellaneous()
 	{
 		this._assignBoolean( 'required' );
-		// this._assignAnything( 'default' );
 
 		if (
 			(
@@ -800,7 +841,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 			if (
 				true === InsideButtons.hasOwnProperty( 'condition' )
 			&&
-                false === this._executeFunctionOrGetBoolean( InsideButtons.condition )
+				false === this._executeFunctionOrGetBoolean( InsideButtons.condition )
 			)
 			{
 				return;
@@ -813,8 +854,8 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 			{
 				if (
 					true === InsideButtons[ Index ].hasOwnProperty( 'condition' )
-                &&
-                    false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition )
+				&&
+					false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition )
 				)
 				{
 					continue;

@@ -378,7 +378,7 @@ export default {
 
 			ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 1 ] );
 			ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 2 ] );
-            // eslint-disable-next-line
+			// eslint-disable-next-line
 			Download = new File( [ ToPrint.join( '\n' ) ], 'docker-composer.yml', { type: 'text/plain;charset=utf-8' } );
 			saveAs( Download );
 		}
@@ -387,4 +387,45 @@ export default {
 </script>
 <style>
 @import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+.vue-form-generator div div
+{
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+h1,h2,h3,h4,h5,h6,p,ul, button
+{
+    font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
+    text-align: left;
+}
+
+h4.wizard-title
+{
+    font-weight: 600 !important;
+    font-size: 1.2em;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+p
+{
+    margin: 0px 0px 0px 0px;
+    margin-bottom:1em;
+    font-size: 1em;
+    font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
+}
+
+input:focus
+{
+    outline:none;
+}
+
+input
+{
+    border-radius: 2px;
+    border-style:solid;
+    border-width: 1px;
+    border-color: #2e5b01;
+    padding-left: 5px;
+}
 </style>

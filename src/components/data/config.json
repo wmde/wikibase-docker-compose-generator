@@ -57,16 +57,12 @@
                   "name": "mediawikiAdminName",
                   "type": "text",
                   "default": "admin",
-                  "required": true,
-                  "help": "",
-                  "hint": ""
+                  "required": true
                 },{
                   "name": "mediawikiAdminPassword",
                   "type": "password",
                   "default": "adminpass",
                   "required": true,
-                  "help": "",
-                  "hint": "",
                   "buttons": [
                       {
                         "label": "showPassword",
@@ -91,29 +87,22 @@
                 "name": "databaseAlias",
                 "type": "text",
                 "default": "mysql",
-                "required": true,
-                "help": ""
+                "required": true
               },{
                 "name": "databaseName",
                 "type": "text",
                 "default": "my_wiki",
-                "required": true,
-                "help": "",
-                "hint": ""
+                "required": true
               },{
                 "name": "databaseUser",
                 "type": "text",
                 "default": "wikiuser",
-                "required": true,
-                "help": "",
-                "hint": ""
+                "required": true
               },{
                   "name": "databaseUserPassword",
                   "type": "password",
                   "default": "sqlpass",
                   "required": true,
-                  "help": "",
-                  "hint": "",
                   "buttons": [
                     {
                       "label": "showPassword",
@@ -139,14 +128,11 @@
                           "name": "wikibaseAlias",
                           "type": "text",
                           "default": "wikibase",
-                          "required": true,
-                          "help": ""
+                          "required": true
                       },{
                           "name": "wikibasePort",
                           "type": "number",
                           "default": "8181",
-                          "help": "",
-                          "hint": "",
                           "required": true
                       }
               ],
@@ -165,17 +151,11 @@
                     "name": "wikibaseQuickstatementsAlias",
                     "type": "text",
                     "default": "quickstatements",
-                    "required": false,
-                    "help": "help me",
-                    "hint": "what a hint",
-                    "styleClasses":"col-xs-3"
+                    "required": false
                   },{
                     "name": "wikibaseQuickstatementsPort",
                     "type": "number",
-                    "default": "9191",
-                    "help": "",
-                    "hint": "",
-                    "required": true
+                    "default": "9191"
                   },{
                     "name": "wikibaseAlias",
                     "condition": "isWikibseAliasSet",
@@ -183,43 +163,32 @@
                     "default": "wikibase",
                     "required": true,
                     "help": "help me",
-                    "hint": "what a hint",
                     "styleClasses":"col-xs-3"
                   },{
                     "name": "wikibasePort",
                     "type": "number",
                     "default": "8181",
-                    "help": "",
-                    "hint": "",
                     "required": true
                   },{
                       "name": "wikibaseQuickstatementsNamespaceProperty",
                       "type": "text",
                       "default": "122",
-                      "help": "",
-                      "hint": "",
                       "required": true
                     },{
                     "name": "wikibaseQuickstatementsPrefixProperty",
                     "type": "text",
                     "default": "Property",
-                    "help": "",
-                    "hint": "",
                     "required": true
                   },{
                     "name": "wikibaseQuickstatementsNamespaceItem",
                     "type": "text",
                     "default": "120",
                     "required": false,
-                    "help": "help me",
-                    "hint": "what a hint",
                     "styleClasses":"col-xs-3"
                   },{
                     "name": "wikibaseQuickstatementsPrefixItem",
                     "type": "text",
                     "default": "Item",
-                    "help": "",
-                    "hint": "",
                     "required": true
                   }
               ],
@@ -238,25 +207,18 @@
                     "name": "wikibaseBlazegraphAlias",
                     "type": "text",
                     "default": "wdqs",
-                    "required": false,
-                    "help": "",
-                    "hint": ""
-
+                    "required": false
                 },{
                     "name": "wikibaseBlazegraphPort",
                     "type": "number",
                     "default": "9999",
-                    "required": true,
-                    "help": "",
-                    "hint": ""
+                    "required": true
                 },{
                     "name": "wikibaseAlias",
                     "condition": "isWikibseAliasSet",
                     "type": "text",
                     "default": "wikibase",
                     "required": true,
-                    "help": "help me",
-                    "hint": "what a hint",
                     "styleClasses":"col-xs-3"
                 }
             ],
@@ -275,32 +237,22 @@
               "name": "wikibaseProxyAlias",
               "type": "text",
               "default": "wdqs-proxy",
-              "required": false,
-              "help": "",
-              "hint": ""
-
+              "required": false
             },{
               "name": "wikibaseProxyPort",
               "type": "number",
               "default": "8989",
-              "required": true,
-              "help": "",
-              "hint": ""
+              "required": true
             },{
               "name": "wikibaseBlazegraphAlias",
               "default": "wdqs",
               "type": "text",
-              "required": false,
-              "help": "",
-              "hint": ""
-
+              "required": false
             },{
               "name": "wikibaseBlazegraphPort",
               "type": "number",
               "default": "9999",
-              "required": true,
-              "help": "",
-              "hint": ""
+              "required": true
             }],
             "template":"wdqs-proxy:\nimage: wikibase/wdqs-proxy\nbuild:\ncontext: ./wdqs-proxy/latest\ndockerfile: Dockerfile\nenvironment:\n- PROXY_PASS_HOST={wikibaseBlazegraphAlias}.svc:{wikibaseBlazegraphPort}\nports:\n- \"{wikibaseProxyPort}:80\"\ndepends_on:\n- wdqs\nnetworks:\ndefault:\naliases:\n- {wikibaseProxyAlias}.svc"
         },{
@@ -317,34 +269,24 @@
             "name": "wikibaseUIAlias",
             "default": "wdqs-frontend",
             "type": "text",
-            "required": false,
-            "help": "",
-            "hint": ""
-
+            "required": false
           },{
             "name": "wikibaseUIPort",
             "type": "number",
             "default": "8282",
-            "required": true,
-            "help": "",
-            "hint": ""
+            "required": true
           },{
             "name": "wikibaseAlias",
             "condition": "isWikibseAliasSet",
             "type": "text",
             "default": "wikibase",
             "required": true,
-            "help": "help me",
-            "hint": "what a hint",
             "styleClasses":"col-xs-3"
           },{
             "name": "wikibaseProxyAlias",
             "type": "text",
             "default": "wdqs-proxy",
-            "required": false,
-            "help": "",
-            "hint": ""
-
+            "required": false
           }],
           "template":"wdqs-frontend:\nimage: wikibase/wdqs-frontend:latest\nbuild:\ncontext: ./wdqs-frontend/latest\ndockerfile: Dockerfile\nports:\n- \"{wikibaseUIPort}:80\"\ndepends_on:\n- wdqs-proxy\nnetworks:\ndefault:\naliases:\n- {wikibaseUIAlias}.svc\nenvironment:\n- WIKIBASE_HOST={wikibaseAlias}.svc\n- WDQS_HOST={wikibaseProxyAlias}.svc"
         },{
@@ -362,8 +304,6 @@
             "type": "text",
             "default": "wdqs-updater",
             "required": true,
-            "help": "help me",
-            "hint": "what a hint",
             "styleClasses":"col-xs-3"
           },{
             "name": "wikibaseAlias",
@@ -371,24 +311,17 @@
             "type": "text",
             "default": "wikibase",
             "required": true,
-            "help": "help me",
-            "hint": "what a hint",
             "styleClasses":"col-xs-3"
           },{
             "name": "wikibaseBlazegraphAlias",
             "type": "text",
             "default": "wdqs",
-            "required": false,
-            "help": "",
-            "hint": ""
-
+            "required": false
           },{
             "name": "wikibaseBlazegraphPort",
             "type": "number",
             "default": "9999",
-            "required": true,
-            "help": "",
-            "hint": ""
+            "required": true
           }],
           "template":"wdqs-updater:\nimage: wikibase/wdqs:0.3.0\nbuild:\ncontext: ./wdqs/0.3.0\ndockerfile: Dockerfile\ncommand: /runUpdate.sh\ndepends_on:\n- {wikibaseAlias}\n- wikibase\nnetworks:\ndefault:\naliases:\n- {wikibaseAlias}.svc\nenvironment:\n- WIKIBASE_HOST={wikibaseAlias}.svc\n- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n- WDQS_PORT={wikibaseBlazegraphPort}"
     },{
