@@ -21,6 +21,23 @@ export class InvalidFieldPropertyException extends BaseException {
 	}
 }
 
+export class IdRegister {
+	static __IdStore = [];
+
+	static containsId( Id ) {
+		return IdRegister.__IdStore.indexOf( Id ) !== -1;
+	}
+
+	static addId( Id ) {
+		if ( IdRegister.containsId( Id ) === false ) {
+			IdRegister.__IdStore.push( Id );
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
 export class FieldBase {
 	/* ErrorStrings*/
 	static __UNSUPPORTED_TYPE__ = 'Unsupported type {} in field {}. Expected {}.';
@@ -125,7 +142,8 @@ export class FieldBase {
 					}
 
 					Value = Self( this._Field.name );
-					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
+					ValueType = Utils.binarySearch(
+						FieldBase.__ALLOWED_TYPES__,
 						( typeof Value )
 					);
 				}
@@ -471,6 +489,7 @@ export class CommonRequiredAttributes extends FieldBase {
 	}
 
 	__addNeccesaryAttributes() {
+		let Id;
 		if ( 'class' in this._Field ) {
 			this._Field.styleClasses = this._Field.class;
 			delete this._Field.class;
@@ -480,8 +499,20 @@ export class CommonRequiredAttributes extends FieldBase {
 			throw new InvalidFieldException( FieldBase.__NO_NAME__ );
 		}
 
+		if ( this._Field.hasOwnProperty( 'id' ) === true ) {
+			Id = this._executeFunctionOrGetString( this._Field.id );
+		} else {
+			Id = this._Field.name;
+		}
+
 		// common required properties
-		this._GeneratedField.id = this._Field.name;
+		if ( IdRegister.containsId( Id ) === false ) {
+			this._GeneratedField.id = this._executeFunctionOrGetString( Id );
+			IdRegister.addId( Id );
+		} else {
+			this._GeneratedField.id = 'invalidId';
+		}
+
 		this._GeneratedField.model = `${ this._Field.name }`;
 
 		if ( this._Field.hasOwnProperty( 'label' ) === true ) {
@@ -530,7 +561,6 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 
 	__addMiscellaneous() {
 		this._assignBoolean( 'required' );
-		// this._assignAnything( 'default' );
 
 		if (
 			(
@@ -643,7 +673,7 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 			if (
 				InsideButtons.hasOwnProperty( 'condition' ) === true
 			&&
-                this._executeFunctionOrGetBoolean( InsideButtons.condition ) === false
+				this._executeFunctionOrGetBoolean( InsideButtons.condition ) === false
 			) {
 				return;
 			}
@@ -652,8 +682,8 @@ export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 			for ( Index in InsideButtons ) {
 				if (
 					InsideButtons[ Index ].hasOwnProperty( 'condition' ) === true
-                &&
-                    this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition ) === false
+				&&
+					this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition ) === false
 				) {
 					continue;
 				}
