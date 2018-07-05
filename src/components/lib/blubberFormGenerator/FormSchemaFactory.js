@@ -56,7 +56,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 	__setFormPropterties()
 	{
 		let Label, AssigmentLabel;
-        this.Form.FormRef = this.__Form.formAttributes.id;
+		this.Form.FormRef = this.__Form.formAttributes.id;
 		for ( Label in this.__Form.formAttributes )
 		{
 			if ( -1 !== BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) )

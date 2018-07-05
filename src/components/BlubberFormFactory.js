@@ -60,7 +60,7 @@ export default {
 							attrs: Schema.FormAttributes,
 							props: Schema.FormProperties,
 							on: Schema.FormEvents,
-                            ref: Schema.FormRef
+							ref: Schema.FormRef
 						},
 						[ Description, VGenerator ]
 					);
@@ -79,7 +79,7 @@ export default {
 					if ( true === Schema.Steps[ Index ][ 1 ] )
 					{
 						if (
-                            0 < Step.inner.schema.fields.length
+							0 < Step.inner.schema.fields.length
 						||
 							0 < Step.inner.schema.groups.length
 						)

@@ -4,7 +4,7 @@
     "subtitle": "A yml builder for wikibase-docker",
     "nextButton": "Next",
     "backButton": "Back",
-    "finishButton": "Finish",
+    "finishButton": "Download",
     "showPassword": "Show me the password",
     "generatePassword": "Generate me a password",
     "hidePassword": "Hide the password",
