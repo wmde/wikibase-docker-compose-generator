@@ -60,12 +60,12 @@
     "wikibaseProxyAlias": "How you like to name the proxy service?",
     "wikibaseProxyPort": "Which port the proxy service should use?",
 
-    "wikibaseUI": "User Interface for WDQS",
+    "wikibaseFrontend": "User Interface for WDQS",
     "wikibaseUI_description": "<p>The User Interface for WDQS is a frontend for the  SPARQL query service.</p>",
     "wikibaseUIAlias": "How you like to name the User Interface for WDQS container localy?",
     "wikibaseUIPort": "Which port the User Interface for WDQS should use?",
 
-    "wdqs-updater": "WDQS updater",
+    "wdqsUpdater": "WDQS updater",
     "wikibaseUpdaterAlias": "How you like to name the update service?",
 
     "complete": "Complete!",
