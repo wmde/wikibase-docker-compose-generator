@@ -1,6 +1,6 @@
 import Utils from '../../../Utils';
 import { DateTimeLocalField, DateField, MonthField, NumberField, RangeField, TimeField, WeekField } from './NumericBasedFields';
-import { ColorField, HiddenField, FileField, LabelField, TextBlock, ResetField, SubmitField } from './MiscellaneousBasedFields';
+import { CheckBoxField, ColorField, HiddenField, FileField, LabelField, TextBlock, ResetField, SubmitField } from './MiscellaneousBasedFields';
 import { EmailField, PasswordField, SearchField, TelField, TextField, UrlField } from './TextBasedFields';
 import { CheckListField, ChoiceField, SelectionField } from './OptionBasedFields';
 import { FieldBase, InvalidFieldException, InvalidFieldPropertyException } from './FieldBase';
@@ -14,7 +14,7 @@ class BlubberFields extends FieldBase {
 	static __INVALID__SUB_MODEL__ = 'The generated model of field {} does not work.';
 	/* Class Constant*/
 	static __FIELDTYPES__ = {
-		checkbox: CheckListField,
+		checkbox: CheckBoxField,
 		checklist: CheckListField,
 		choise: ChoiceField,
 		color: ColorField,
