@@ -807,6 +807,9 @@
     "wikibaseAlias":"How you like to name the Wikibase container localy?",
     "wikibasePort": "Which port Wikibase should use?",
 
+    "elasticsearch": "Elasticsearch",
+    "elasticsearch_description": "<p>Elasticsearch is vectorspace-model based search engine, which is used by wikibase. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Elasticsearch\">here</a>.</p>",
+
     "wikibaseQuickstatements": "Quickstatements",
     "wikibaseQuickstatements_description": "<p>QuickStatements is a tool to batch-edit Wikidata. You can take a look <a href=\"https://tools.wmflabs.org/quickstatements/#/\">here</a>.</p>",
     "wikibaseQuickstatementsAlias": "How you like to name the Quickstatements container localy?",

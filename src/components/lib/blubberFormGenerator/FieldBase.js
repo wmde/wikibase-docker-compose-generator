@@ -124,7 +124,7 @@ export class FieldBase
 
 		if ( null === this._Field )
 		{
-			this._Field = { name: 'not set' };
+			this._Field = { name: '"not set"' };
 		}
 
 		if ( -1 === ValueType && FieldBase.__IS_ANY__ !== Type )
@@ -638,8 +638,9 @@ export class CommonRequiredAttributes extends FieldBase
 			IdRegister.addId( Id );
 		}
 		else
+
 		{
-			this._GeneratedField.id = 'ivalidId';
+			this._GeneratedField.id = 'invalidId';
 		}
 
 		this._GeneratedField.model = `${ this._Field.name }`;

@@ -124,6 +124,12 @@ export default {
 				return Validators[ FieldId ];
 			}
 		},
+        lockSteps: function( Value )
+        {
+            console.log( Value );
+            console.log(this.$data.blubberModel);
+            return true;
+        },
 		showPasswords: function ( Id, Offset )
 		{
 			let Scroll;
@@ -241,15 +247,19 @@ export default {
 		},
 		validateUpdater: function ()
 		{
-			const Return = this.$refs[ 'wdqs-updater' ].validate();
 			this.$forceUpdate();
-			return Return;
+			return this.$refs[ 'wdqs-updater' ].validate();;
 		},
 		validateWikibase: function ()
 		{
 			this.$forceUpdate();
 			return this.$refs.wikibase.validate();
 		},
+        validateElasticSearch: function()
+        {
+            this.$forceUpdate();
+            return this.$refs.elasticsearch.validate();
+        },
 		validateWikibaseBlazegraph: function ()
 		{
 			this.$forceUpdate();
