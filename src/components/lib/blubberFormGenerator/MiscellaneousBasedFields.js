@@ -116,3 +116,13 @@ export class LabelField extends CommonOptionalAttributesAndMethods
 		this._GeneratedField.type = 'label';
 	}
 }
+
+export class CheckBoxField extends CommonOptionalAttributesAndMethods
+{
+    constructor( Field, BindedObject, Generator )
+	{
+        super( Field, BindedObject, Generator );
+        this._GeneratedField.type = 'checkbox';
+        this._setAutocomplete();
+    }
+}

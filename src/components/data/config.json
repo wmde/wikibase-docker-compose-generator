@@ -44,9 +44,9 @@
     "dependencies": {
       "Elasticsearch": [],
       "Quickstatements": [],
-      "Query service": {},
-      "WDQS-Proxy": [ "Query service (WDQS)" ],
-      "WDQS-Frontend" : [ "WDQS-Proxy (WDQS)" ],
+      "wdqs": [],
+      "WDQS-Proxy": [ "wdqs" ],
+      "WDQS-Frontend" : [ "wdqs-proxy" ],
       "WDQS-Updater": [ "Query service" ]
     },
     "steps":[ {
@@ -65,6 +65,7 @@
             }]
             },{
             "name":"generalSettings",
+            "description": "generalSettings_description",
             "icon": "settings",
             "beforeChange": "lockSteps",
             "options": {
@@ -73,13 +74,42 @@
                     "validateAfterChanged": true
             },
             "fields":[ {
-                "name": "steps",
-                "type": "pick",
+                "name": "elasticsearchStep",
+                "label": "elasticsearch",
+                "type": "checkbox",
                 "required": true,
-                "default": [ "Elasticsearch", "Quickstatements", "Query service (WDQS)", "WDQS-Proxy", "WDQS-Frontend", "WDQS-Updater" ],
-                "values": [ "Elasticsearch", "Quickstatements", "Query service (WDQS)", "WDQS-Proxy", "WDQS-Frontend", "WDQS-Updater" ]
-              }
-            ]
+                "default": true
+              },{
+              "name": "quickstatementsStep",
+              "label": "wikibaseQuickstatements",
+              "type": "checkbox",
+              "required": true,
+              "default": true
+            },{
+              "name": "wdqsStep",
+              "label": "wikibaseBlazegraph",
+              "type": "checkbox",
+              "required": true,
+              "default": true
+            },{
+              "name": "wdqsProxyStep",
+              "label": "wikibaseProxy",
+              "type": "checkbox",
+              "required": true,
+              "default": true
+            },{
+              "name": "wdqsFrontendStep",
+              "label": "wikibaseUI",
+              "type": "checkbox",
+              "required": true,
+              "default": true
+            },{
+              "name": "wdqsUpdaterStep",
+              "label": "wdqs-updater",
+              "type": "checkbox",
+              "required": true,
+              "default": true
+            }]
         },{
               "name":"mediawiki",
               "icon": "settings",
