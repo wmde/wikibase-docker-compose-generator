@@ -15,7 +15,7 @@ class BlubberFields extends FieldBase
 	static __INVALID__SUB_MODEL__ = 'The generated model of field {} does not work.';
 	/* Class Constant*/
 	static __FIELDTYPES__ = {
-        checkbox: CheckBoxField,
+		checkbox: CheckBoxField,
 		checklist: CheckListField,
 		choise: ChoiceField,
 		color: ColorField,

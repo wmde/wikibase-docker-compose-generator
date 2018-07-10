@@ -40,6 +40,7 @@
 
     "elasticsearch": "Elasticsearch",
     "elasticsearch_description": "<p>Elasticsearch is vectorspace-model based search engine, which is used by wikibase. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Elasticsearch\">here</a>.</p>",
+    "elasticsearchAlias": "How you like to name the Elasticsearch container localy?",
 
     "wikibaseQuickstatements": "Quickstatements",
     "wikibaseQuickstatements_description": "<p>QuickStatements is a tool to batch-edit Wikidata. You can take a look <a href=\"https://tools.wmflabs.org/quickstatements/#/\">here</a>.</p>",
@@ -61,11 +62,11 @@
     "wikibaseProxyPort": "Which port the proxy service should use?",
 
     "wikibaseFrontend": "User Interface for WDQS",
-    "wikibaseUI_description": "<p>The User Interface for WDQS is a frontend for the  SPARQL query service.</p>",
-    "wikibaseUIAlias": "How you like to name the User Interface for WDQS container localy?",
-    "wikibaseUIPort": "Which port the User Interface for WDQS should use?",
+    "wikibaseFrontend_description": "<p>The User Interface for WDQS is a frontend for the  SPARQL query service.</p>",
+    "wikibaseFrontendAlias": "How you like to name the User Interface for WDQS container localy?",
+    "wikibaseFrontendPort": "Which port the User Interface for WDQS should use?",
 
-    "wdqsUpdater": "WDQS updater",
+    "wikibaseUpdater": "Wikibase Updater",
     "wikibaseUpdaterAlias": "How you like to name the update service?",
 
     "complete": "Complete!",

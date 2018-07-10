@@ -49,7 +49,7 @@ export default {
 			this.$data.blubberGeneratorFormProperties = Configuration.form;
 			this.$data.blubberGeneratorFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
-            this.$data.blubberDependencies = Configuration.dependencies;
+			this.$data.blubberDependencies = Configuration.dependencies;
 			this.$forceUpdate();
 		},
 		getI18nStrings: function ( Key, LanguageCode )
@@ -125,17 +125,21 @@ export default {
 				return Validators[ FieldId ];
 			}
 		},
-        lockSteps: function()
-        {
-            console.log(this.$data.blubberModel);
-            return true;
-        },
-        changeDependcies: function( Model )
-        {
-            console.log(this.$data.blubberDependencies);
-            console.log( this.$data.blubberSchema );
-            console.log( Model );
-        },
+		lockSteps: function ()
+		{
+			console.log( this.$data.blubberModel );
+			return true;
+		},
+		changeDependcies: function ( Model )
+		{
+			console.log( this.$data.blubberDependencies );
+			console.log( this.$data.blubberSchema );
+			console.log( Model );
+		},
+		useElasticsearch: function ()
+		{
+			return true;
+		},
 		showPasswords: function ( Id, Offset )
 		{
 			let Scroll;
@@ -256,11 +260,11 @@ export default {
 			this.$forceUpdate();
 			return this.$refs.wikibase.validate();
 		},
-        validateElasticSearch: function()
-        {
-            this.$forceUpdate();
-            return this.$refs.elasticsearch.validate();
-        },
+		validateElasticSearch: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.elasticsearch.validate();
+		},
 		validateWikibaseBlazegraph: function ()
 		{
 			this.$forceUpdate();
@@ -281,11 +285,11 @@ export default {
 			this.$forceUpdate();
 			return this.$refs.wikibaseFrontend.validate();
 		},
-        validateWikibaseUpdater: function ()
-        {
-            this.$forceUpdate();
-            return this.$refs.wikibaseUpdater.validate();
-        },
+		validateWikibaseUpdater: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.wikibaseUpdater.validate();
+		},
 		isWikibseAliasSet()
 		{
 			return true;

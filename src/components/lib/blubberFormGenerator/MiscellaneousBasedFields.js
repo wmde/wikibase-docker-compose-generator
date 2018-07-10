@@ -119,10 +119,10 @@ export class LabelField extends CommonOptionalAttributesAndMethods
 
 export class CheckBoxField extends CommonOptionalAttributesAndMethods
 {
-    constructor( Field, BindedObject, Generator )
+	constructor( Field, BindedObject, Generator )
 	{
-        super( Field, BindedObject, Generator );
-        this._GeneratedField.type = 'checkbox';
-        this._setAutocomplete();
-    }
+		super( Field, BindedObject, Generator );
+		this._GeneratedField.type = 'checkbox';
+		this._setAutocomplete();
+	}
 }

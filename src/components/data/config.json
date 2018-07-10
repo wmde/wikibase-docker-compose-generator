@@ -100,13 +100,13 @@
               "default": true
             },{
               "name": "wdqsFrontendStep",
-              "label": "wikibaseUI",
+              "label": "wikibaseFrontend",
               "type": "checkbox",
               "required": true,
               "default": true
             },{
-              "name": "wdqsUpdaterStep",
-              "label": "wdqs-updater",
+              "name": "wikibaseUpdaterStep",
+              "label": "wikibaseUpdater",
               "type": "checkbox",
               "required": true,
               "default": true
@@ -207,6 +207,7 @@
         },{
               "name":"elasticsearch",
               "description": "elasticsearch_description",
+              "condition": "useElasticsearch",
               "icon": "settings",
               "beforeChange": "validateElasticSearch",
               "options": {
@@ -347,7 +348,7 @@
             "required": true,
             "styleClasses":"col-xs-3"
           }],
-          "template":"\twdqs-updater:\n\t\timage: wikibase/wdqs:0.3.0\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tcommand: /runUpdate.sh\n\t\tdepends_on:\n\t\t\t- {wikibaseAlias}\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}"
+          "template":"\twdqs-updater:\n\t\timage: wikibase/wdqs:0.3.0\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tcommand: /runUpdate.sh\n\t\tdepends_on:\n\t\t\t- wdqs\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}"
     },{
           "name": "complete",
           "description": "complete_description",
