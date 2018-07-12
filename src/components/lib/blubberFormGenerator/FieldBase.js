@@ -447,7 +447,9 @@ export class FieldBase {
 			if ( Array.isArray( this.__ModelKey ) === true ) {
 				this._addValueToModel(
 					this.__ModelPointer[
-						this.__ModelKey[ this.__ModelKey.length - 1 ]
+						this.__ModelKey[
+							this.__ModelKey.length - 1
+						]
 					]
 				);
 			} else {
