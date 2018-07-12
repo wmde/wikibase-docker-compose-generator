@@ -23,7 +23,6 @@
       "wikibaseFrontend" : [ "wikibaseProxy" ],
       "wikibaseUpdater": [ "wikibaseBlazegraph" ]
     },
-    "validationIndicesOffset": 1,
     "steps":[ {
             "name":"prolog",
             "description": "prolog_description",
@@ -32,13 +31,8 @@
               "validationErrorClass": "has-error",
               "validationSuccessClass": "has-success",
               "validateAfterChanged": true
-            },
-            "fields":[{
-              "name": "defaultSettings",
-              "type": "submit",
-              "onSubmit": "jumpToTheEnd"
-            }]
-            },{
+            }
+        },{
             "name":"generalSettings",
             "icon": "settings",
             "beforeChange": "lockSteps",
@@ -50,46 +44,67 @@
             "fields":[ {
                   "name": "generalSettings_question",
                   "type": "label"
-            },{
+                },{
                   "name": "elasticsearchStep",
                   "label": "elasticsearch",
                   "type": "checkbox",
                   "required": true,
                   "default": true
-            },{
+                },{
                   "name": "quickstatementsStep",
                   "label": "wikibaseQuickstatements",
                   "type": "checkbox",
                   "afterChanged": "changeDependcies",
                   "required": true,
                   "default": true
-            },{
+                },{
                   "name": "wikibaseBlazegraphStep",
                   "label": "wikibaseBlazegraph",
                   "type": "checkbox",
                   "required": true,
                   "default": true
-            },{
+                },{
                   "name": "wikibaseProxyStep",
                   "label": "wikibaseProxy",
                   "type": "checkbox",
                   "required": true,
                   "default": true
-            },{
+                },{
                   "name": "wikibaseFrontendStep",
                   "label": "wikibaseFrontend",
                   "type": "checkbox",
                   "required": true,
                   "default": true
-            },{
+                },{
                   "name": "wikibaseUpdaterStep",
                   "label": "wikibaseUpdater",
                   "type": "checkbox",
                   "required": true,
                   "default": true
-            }]
+                }
+            ]
+        },{
+              "name":"expert",
+              "icon": "settings",
+              "options": {
+                    "validationErrorClass": "has-error",
+                    "validationSuccessClass": "has-success",
+                    "validateAfterChanged": true
+              },
+              "fields":[ {
+                  "name":"expertMode",
+                  "type": "choice",
+                  "default": true,
+                  "required": true,
+                  "values": [
+                      { "value": false, "label":"no" },
+                      { "value": true, "label":"yes" }
+                    ]
+                }              
+              ]             
         },{
               "name":"mediawiki",
+              "condition": "isExpert",
               "icon": "settings",
               "beforeChange": "validateStep",
               "options": {
@@ -120,6 +135,7 @@
               }]
         },{
               "name":"database",
+              "condition": "isExpert",
               "icon": "settings",
               "beforeChange": "validateStep",
               "options": {
@@ -161,6 +177,7 @@
               "template": "\tmysql:\n\t\timage: mariadb:latest\n\t\tvolumes:\n\t\t\t- mediawiki-mysql-data:/var/lib/mysql\n\t\tenvironment:\n\t\t\tMYSQL_DATABASE: {databaseName}\n\t\t\tMYSQL_USER: {databaseUser}\n\t\t\tMYSQL_PASSWORD: {databaseUserPassword}\n\t\t\tMYSQL_RANDOM_ROOT_PASSWORD: 'yes'\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {databaseAlias}.svc"
         },{
               "name":"wikibase",
+              "condition": "isExpert",
               "icon": "settings",
               "beforeChange": "validateStep",
               "options": {

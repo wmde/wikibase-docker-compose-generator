@@ -18,9 +18,14 @@
     "port_is_in_use": "The given port is allready in use",
     "invalid_string": "Only non empty strings are allowed",
     "invalid_step": "You have to use at least one container",
+    "yes":"yes",
+    "no":"no",
 
     "generalSettings": "General Setting",
     "generalSettings_question": "Which containers you want to install?",
+
+   "expert": "Customizing",
+   "expertMode": "Do you want to take the default settings?",
 
     "mediawiki": "MediaWiki",
     "mediawikiSiteName": "How would you like to name your MediaWiki?",

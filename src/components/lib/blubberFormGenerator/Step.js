@@ -17,7 +17,7 @@ class BlubberFields extends FieldBase
 	static __FIELDTYPES__ = {
 		checkbox: CheckBoxField,
 		checklist: CheckListField,
-		choise: ChoiceField,
+		choice: ChoiceField,
 		color: ColorField,
 		date: DateField,
 		'datetime-local': DateTimeLocalField,

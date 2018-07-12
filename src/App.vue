@@ -26,7 +26,6 @@ export default {
 		Return.forReadOnly = {};
 		Return.blubberGeneratedYML = '';
 		Return.blubberCurrentStep = 0;
-		Return.blubberValidationOffset = 0;
 		Return.blubberStepNames = [];
 		return Return;
 	},
@@ -63,9 +62,9 @@ export default {
 			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$data.blubberDependencies = Configuration.dependencies;
-			this.$data.blubberValidationOffset = Configuration.validationIndicesOffset;
 			this.getStepNames();
 			this.$forceUpdate();
+            console.log( this.$data.blubberRaw );
 		},
 		getI18nStrings: function ( Key, LanguageCode )
 		{
@@ -140,6 +139,31 @@ export default {
 				return Validators[ FieldId ];
 			}
 		},
+        isExpert: function()
+        {
+                
+            console.log( ObjectHelper.copyObj( this.$data.blubberSchema ) )
+            if( 'undefined' === typeof this.$data.blubberModel[ this.$data.blubberGeneratedFormProperties.id ] )
+            {
+                return false;
+            }
+            else
+            {
+                
+                console.log( this.$data.blubberModel[
+                    this.$data.blubberGeneratedFormProperties.id
+                ].expertMode );
+                return this.$data.blubberModel[
+                    this.$data.blubberGeneratedFormProperties.id
+                ].expertMode;
+            }
+        },
+        refreshSteps: function()
+        {
+            console.log( 'hier' );
+            this.$forceUpdate();
+            return true;
+        },
 		lockSteps: function ()
 		{
 			console.log( this.$data.blubberModel );
@@ -249,13 +273,9 @@ export default {
 		},
 		validateStep: function ()
 		{
-			if ( this.$data.blubberCurrentStep < this.$data.blubberValidationOffset )
-			{
-				return true;
-			}
 
 			this.$forceUpdate();
-
+            console.log( ObjectHelper.copyObj( this.$refs, 2 ) );
 			return this.$refs[
 				this.$data.blubberStepNames[
 					this.$data.blubberCurrentStep
