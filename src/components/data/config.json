@@ -56,7 +56,7 @@
                   "type": "checkbox",
                   "required": true,
                   "default": true
-              },{
+            },{
                   "name": "quickstatementsStep",
                   "label": "wikibaseQuickstatements",
                   "type": "checkbox",
@@ -64,29 +64,29 @@
                   "required": true,
                   "default": true
             },{
-              "name": "wikibaseBlazegraphStep",
-              "label": "wikibaseBlazegraph",
-              "type": "checkbox",
-              "required": true,
-              "default": true
+                  "name": "wikibaseBlazegraphStep",
+                  "label": "wikibaseBlazegraph",
+                  "type": "checkbox",
+                  "required": true,
+                  "default": true
             },{
-              "name": "wikibaseProxyStep",
-              "label": "wikibaseProxy",
-              "type": "checkbox",
-              "required": true,
-              "default": true
+                  "name": "wikibaseProxyStep",
+                  "label": "wikibaseProxy",
+                  "type": "checkbox",
+                  "required": true,
+                  "default": true
             },{
-              "name": "wikibaseFrontendStep",
-              "label": "wikibaseFrontend",
-              "type": "checkbox",
-              "required": true,
-              "default": true
+                  "name": "wikibaseFrontendStep",
+                  "label": "wikibaseFrontend",
+                  "type": "checkbox",
+                  "required": true,
+                  "default": true
             },{
-              "name": "wikibaseUpdaterStep",
-              "label": "wikibaseUpdater",
-              "type": "checkbox",
-              "required": true,
-              "default": true
+                  "name": "wikibaseUpdaterStep",
+                  "label": "wikibaseUpdater",
+                  "type": "checkbox",
+                  "required": true,
+                  "default": true
             }]
         },{
               "name":"mediawiki",

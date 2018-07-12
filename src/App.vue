@@ -26,8 +26,8 @@ export default {
 		Return.forReadOnly = {};
 		Return.blubberGeneratedYML = '';
 		Return.blubberCurrentStep = 0;
-        Return.blubberValidationOffset = 0;
-        Return.blubberStepNames = [];
+		Return.blubberValidationOffset = 0;
+		Return.blubberStepNames = [];
 		return Return;
 	},
 	mounted: function ()
@@ -46,16 +46,16 @@ export default {
 		{
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
-        getStepNames: function()
-        {
-            let Index;
-            for( Index in this.$data.blubberGeneratedSteps )
-            {
-                this.$data.blubberStepNames.push(
-                    this.$data.blubberGeneratedSteps[ Index ].name
-                );
-            }
-        },
+		getStepNames: function ()
+		{
+			let Index;
+			for ( Index in this.$data.blubberGeneratedSteps )
+			{
+				this.$data.blubberStepNames.push(
+					this.$data.blubberGeneratedSteps[ Index ].name
+				);
+			}
+		},
 		evaluateConfiguration: function ( Configuration )
 		{
 			this.$data.blubberGeneratedSteps = Configuration.steps;
@@ -63,8 +63,8 @@ export default {
 			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$data.blubberDependencies = Configuration.dependencies;
-            this.$data.blubberValidationOffset = Configuration.validationIndicesOffset;
-            this.getStepNames();
+			this.$data.blubberValidationOffset = Configuration.validationIndicesOffset;
+			this.getStepNames();
 			this.$forceUpdate();
 		},
 		getI18nStrings: function ( Key, LanguageCode )
@@ -151,10 +151,10 @@ export default {
 			console.log( this.$data.blubberSchema );
 			console.log( Model );
 		},
-        isAvailable()
-        {
+		isAvailable()
+		{
 
-        },
+		},
 		useElasticsearch: function ()
 		{
 			return true;
@@ -243,25 +243,25 @@ export default {
 
 			this.$forceUpdate();
 		},
-        goOn: function()
-        {
-            this.$data.blubberCurrentStep = arguments[ 1 ];
-        },
-        validateStep: function()
-        {
-            if( this.$data.blubberCurrentStep < this.$data.blubberValidationOffset )
-            {
-                return true;
-            }
+		goOn: function ()
+		{
+			this.$data.blubberCurrentStep = arguments[ 1 ];
+		},
+		validateStep: function ()
+		{
+			if ( this.$data.blubberCurrentStep < this.$data.blubberValidationOffset )
+			{
+				return true;
+			}
 
-            this.$forceUpdate();
+			this.$forceUpdate();
 
-            return this.$refs[
-                this.$data.blubberStepNames[
-                    this.$data.blubberCurrentStep
-                    ]
-                ].validate();
-        },
+			return this.$refs[
+				this.$data.blubberStepNames[
+					this.$data.blubberCurrentStep
+				]
+			].validate();
+		},
 		jumpToTheEnd()
 		{
 			this.$refs[ this.$data.blubberGeneratedFormProperties.id ].changeTab(
@@ -331,6 +331,7 @@ export default {
 					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
 				);
 			}
+
 			for ( Index = 0; Index < this.$data.blubberGeneratedSteps.length - 1; Index++ )
 			{
 				if (
