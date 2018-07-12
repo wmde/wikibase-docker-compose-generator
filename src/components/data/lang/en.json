@@ -20,7 +20,7 @@
     "invalid_step": "You have to use at least one container",
 
     "generalSettings": "General Setting",
-    "generalSettings_description": "Which containers you want to install?",
+    "generalSettings_question": "Which containers you want to install?",
 
     "mediawiki": "MediaWiki",
     "mediawikiSiteName": "How would you like to name your MediaWiki?",

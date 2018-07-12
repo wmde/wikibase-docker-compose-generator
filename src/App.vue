@@ -20,11 +20,14 @@ export default {
 	{
 		const Return = {};
 		Return.buildForm = false;
-		Return.blubberGeneratorSteps = [];
-		Return.blubberGeneratorFormProperties = {};
-		Return.blubberGeneratorFormStyle = {};
+		Return.blubberGeneratedSteps = [];
+		Return.blubberGeneratedFormProperties = {};
+		Return.blubberGeneratedFormStyle = {};
 		Return.forReadOnly = {};
 		Return.blubberGeneratedYML = '';
+		Return.blubberCurrentStep = 0;
+        Return.blubberValidationOffset = 0;
+        Return.blubberStepNames = [];
 		return Return;
 	},
 	mounted: function ()
@@ -43,13 +46,25 @@ export default {
 		{
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
+        getStepNames: function()
+        {
+            let Index;
+            for( Index in this.$data.blubberGeneratedSteps )
+            {
+                this.$data.blubberStepNames.push(
+                    this.$data.blubberGeneratedSteps[ Index ].name
+                );
+            }
+        },
 		evaluateConfiguration: function ( Configuration )
 		{
-			this.$data.blubberGeneratorSteps = Configuration.steps;
-			this.$data.blubberGeneratorFormProperties = Configuration.form;
-			this.$data.blubberGeneratorFormProperties.id = Configuration.name;
+			this.$data.blubberGeneratedSteps = Configuration.steps;
+			this.$data.blubberGeneratedFormProperties = Configuration.form;
+			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$data.blubberDependencies = Configuration.dependencies;
+            this.$data.blubberValidationOffset = Configuration.validationIndicesOffset;
+            this.getStepNames();
 			this.$forceUpdate();
 		},
 		getI18nStrings: function ( Key, LanguageCode )
@@ -79,9 +94,9 @@ export default {
 				const Element = this.buildBlubberForm(
 					createElement,
 					{
-						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
+						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
 						formEvents: { Complete: 'done' },
-						steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
+						steps: ObjectHelper.copyObj( this.$data.blubberGeneratedSteps )
 					},
 					I18n
 				);
@@ -136,14 +151,17 @@ export default {
 			console.log( this.$data.blubberSchema );
 			console.log( Model );
 		},
+        isAvailable()
+        {
+
+        },
 		useElasticsearch: function ()
 		{
 			return true;
 		},
-		showPasswords: function ( Id, Offset )
+		showPasswords: function ()
 		{
-			let Scroll;
-			let Node = document.getElementById( Id );
+			let Node = document.getElementById( arguments[ 1 ].id );
 			let GetHideLabel = true;
 			if ( 'text' === Node.getAttribute( 'type' ) )
 			{
@@ -156,10 +174,6 @@ export default {
 			}
 
 			Node = Node.parentNode.nextSibling.firstChild;
-			for ( Scroll = 0; Scroll <= Offset; Scroll++ )
-			{
-				Node = Node.nextSibling;
-			}
 
 			if ( true === GetHideLabel )
 			{
@@ -214,7 +228,7 @@ export default {
 
 			return GeneratedString.join( '' );
 		},
-		generateAPassword( Key )
+		generateAPassword()
 		{
 			const RandomString = this.randomString(
 				42,
@@ -224,93 +238,35 @@ export default {
 			);
 
 			this.$data.blubberModel[
-				this.$data.blubberGeneratorFormProperties.id
-			][ Key ] = RandomString;
+				this.$data.blubberGeneratedFormProperties.id
+			][ arguments[ 1 ].model ] = RandomString;
 
 			this.$forceUpdate();
 		},
-		showMWAdminPassword: function ()
-		{
-			this.showPasswords( 'mediawikiAdminPassword' );
-		},
-		generateMWAdminPassword: function ()
-		{
-			this.generateAPassword( 'mediawikiAdminPassword' );
-		},
-		showDBPassword: function ()
-		{
-			this.showPasswords( 'databaseUserPassword' );
-		},
-		generateDBAdminPassword: function ()
-		{
-			this.generateAPassword( 'databaseUserPassword' );
-		},
-		validateMediaWiki: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.mediawiki.validate();
-		},
-		validateDatabase: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.database.validate();
-		},
-		validateWikibase: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.wikibase.validate();
-		},
-		validateElasticSearch: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.elasticsearch.validate();
-		},
-		validateWikibaseBlazegraph: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.wikibaseBlazegraph.validate();
-		},
-		validateWikibaseProxy: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.wikibaseProxy.validate();
-		},
-		validateWikibaseQuickstatements: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.wikibaseQuickstatements.validate();
-		},
-		validateWikibaseFrontend: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.wikibaseFrontend.validate();
-		},
-		validateWikibaseUpdater: function ()
-		{
-			this.$forceUpdate();
-			return this.$refs.wikibaseUpdater.validate();
-		},
-		isWikibseAliasSet()
-		{
-			return true;
-		},
-		isWikibasePortSet()
-		{
-			return true;
-		},
-		isWikibaseBlazegraphAliasSet()
-		{
-			return true;
-		},
-		isWikibaseBlazegraphPortSet()
-		{
-			return true;
-		},
+        goOn: function()
+        {
+            this.$data.blubberCurrentStep = arguments[ 1 ];
+        },
+        validateStep: function()
+        {
+            if( this.$data.blubberCurrentStep < this.$data.blubberValidationOffset )
+            {
+                return true;
+            }
+
+            this.$forceUpdate();
+
+            return this.$refs[
+                this.$data.blubberStepNames[
+                    this.$data.blubberCurrentStep
+                    ]
+                ].validate();
+        },
 		jumpToTheEnd()
 		{
-			this.$refs[ this.$data.blubberGeneratorFormProperties.id ].changeTab(
+			this.$refs[ this.$data.blubberGeneratedFormProperties.id ].changeTab(
 				0,
-				this.$data.blubberSchema[ this.$data.blubberGeneratorFormProperties.id ].length - 1
+				this.$data.blubberSchema[ this.$data.blubberGeneratedFormProperties.id ].length - 1
 			);
 		},
 		showYmlFile()
@@ -320,11 +276,11 @@ export default {
 			const Place = document.getElementById( 'yml' ).firstChild;
 
 			if ( false === this.$data.blubberModel[
-				this.$data.blubberGeneratorFormProperties.id
+				this.$data.blubberGeneratedFormProperties.id
 			].hasOwnProperty( 'secretkey' ) )
 			{
 				this.$data.blubberModel[
-					this.$data.blubberGeneratorFormProperties.id
+					this.$data.blubberGeneratedFormProperties.id
 				].secretkey = this.randomString(
 					42,
 					33,
@@ -332,29 +288,29 @@ export default {
 					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
 				);
 			}
-			for ( Index = 0; Index < this.$data.blubberGeneratorSteps.length - 1; Index++ )
+			for ( Index = 0; Index < this.$data.blubberGeneratedSteps.length - 1; Index++ )
 			{
 				if (
-					false === this.$data.blubberGeneratorSteps[ Index ].hasOwnProperty( 'template' ) ||
-                    true === Utils.isEmpty( this.$data.blubberGeneratorSteps[ Index ].template )
+					false === this.$data.blubberGeneratedSteps[ Index ].hasOwnProperty( 'template' ) ||
+                    true === Utils.isEmpty( this.$data.blubberGeneratedSteps[ Index ].template )
 				)
 				{
 					continue;
 				}
 				ToPrint.push( StringHelper.format(
-					this.$data.blubberGeneratorSteps[ Index ].template,
-					this.$data.blubberModel[ this.$data.blubberGeneratorFormProperties.id ]
+					this.$data.blubberGeneratedSteps[ Index ].template,
+					this.$data.blubberModel[ this.$data.blubberGeneratedFormProperties.id ]
 				) );
 			}
 
 			ToPrint.splice(
 				0,
 				0,
-				this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 0 ]
+				this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 0 ]
 			);
 
-			ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 1 ] );
-			ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 2 ] );
+			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 1 ] );
+			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 2 ] );
 			Place.innerHTML = ToPrint.join( '\n' );
 		},
 		done()
@@ -363,11 +319,11 @@ export default {
 			const ToPrint = [];
 
 			if ( false === this.$data.blubberModel[
-				this.$data.blubberGeneratorFormProperties.id
+				this.$data.blubberGeneratedFormProperties.id
 			].hasOwnProperty( 'secretKey' ) )
 			{
 				this.$data.blubberModel[
-					this.$data.blubberGeneratorFormProperties.id
+					this.$data.blubberGeneratedFormProperties.id
 				].secretkey = this.randomString(
 					42,
 					33,
@@ -375,29 +331,29 @@ export default {
 					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
 				);
 			}
-			for ( Index = 0; Index < this.$data.blubberGeneratorSteps.length - 1; Index++ )
+			for ( Index = 0; Index < this.$data.blubberGeneratedSteps.length - 1; Index++ )
 			{
 				if (
-					false === this.$data.blubberGeneratorSteps[ Index ].hasOwnProperty( 'template' ) ||
-                    true === Utils.isEmpty( this.$data.blubberGeneratorSteps[ Index ].template )
+					false === this.$data.blubberGeneratedSteps[ Index ].hasOwnProperty( 'template' ) ||
+                    true === Utils.isEmpty( this.$data.blubberGeneratedSteps[ Index ].template )
 				)
 				{
 					continue;
 				}
 				ToPrint.push( StringHelper.format(
-					this.$data.blubberGeneratorSteps[ Index ].template,
-					this.$data.blubberModel[ this.$data.blubberGeneratorFormProperties.id ]
+					this.$data.blubberGeneratedSteps[ Index ].template,
+					this.$data.blubberModel[ this.$data.blubberGeneratedFormProperties.id ]
 				) );
 			}
 
 			ToPrint.splice(
 				0,
 				0,
-				this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 0 ]
+				this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 0 ]
 			);
 
-			ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 1 ] );
-			ToPrint.push( this.$data.blubberGeneratorSteps[ this.$data.blubberGeneratorSteps.length - 1 ].template[ 2 ] );
+			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 1 ] );
+			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 2 ] );
 			// eslint-disable-next-line
 			Download = new File( [ ToPrint.join( '\n' ) ], 'docker-composer.yml', { type: 'text/plain;charset=utf-8' } );
 			saveAs( Download );

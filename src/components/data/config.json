@@ -12,43 +12,18 @@
           "errorColor": "#f81717",
           "transition": "fade",
           "startIndex": 0,
-          "onComplete": "done"
-    },
-    "firstOccurence":{
-      "wikibaseAlias": [
-        "wikibase",
-        "wikibaseQuickstatements",
-        "wikibaseBlazegraph",
-        "wikibaseUI",
-        "wdqs-updater"
-      ],
-      "wikibasePort": [
-        "wikibase",
-        "wikibaseQuickstatements"
-      ],
-      "wikibaseBlazegraphAlias": [
-        "wikibaseBlazegraph",
-        "wikibaseProxy",
-        "wdqs-updater"
-      ],
-      "wikibaseBlazegraphPort": [
-        "wikibaseBlazegraph",
-        "wikibaseProxy",
-        "wdqs-updater"
-      ],
-      "wikibaseProxyAlias": [
-        "wikibaseProxy",
-        "wikibaseUI"
-      ]
+          "onComplete": "done",
+          "onChange": "goOn"
     },
     "dependencies": {
       "Elasticsearch": [],
       "Quickstatements": [],
-      "wdqs": [],
-      "WDQS-Proxy": [ "wdqs" ],
-      "WDQS-Frontend" : [ "wdqs-proxy" ],
-      "WDQS-Updater": [ "Query service" ]
+      "wikibaseBlazegraph": [],
+      "wikibaseProxy": [ "wikibaseBlazegraph" ],
+      "wikibaseFrontend" : [ "wikibaseProxy" ],
+      "wikibaseUpdater": [ "wikibaseBlazegraph" ]
     },
+    "validationIndicesOffset": 1,
     "steps":[ {
             "name":"prolog",
             "description": "prolog_description",
@@ -65,7 +40,6 @@
             }]
             },{
             "name":"generalSettings",
-            "description": "generalSettings_description",
             "icon": "settings",
             "beforeChange": "lockSteps",
             "options": {
@@ -74,6 +48,9 @@
                     "validateAfterChanged": true
             },
             "fields":[ {
+                  "name": "generalSettings_question",
+                  "type": "label"
+            },{
                   "name": "elasticsearchStep",
                   "label": "elasticsearch",
                   "type": "checkbox",
@@ -87,19 +64,19 @@
                   "required": true,
                   "default": true
             },{
-              "name": "wdqsStep",
+              "name": "wikibaseBlazegraphStep",
               "label": "wikibaseBlazegraph",
               "type": "checkbox",
               "required": true,
               "default": true
             },{
-              "name": "wdqsProxyStep",
+              "name": "wikibaseProxyStep",
               "label": "wikibaseProxy",
               "type": "checkbox",
               "required": true,
               "default": true
             },{
-              "name": "wdqsFrontendStep",
+              "name": "wikibaseFrontendStep",
               "label": "wikibaseFrontend",
               "type": "checkbox",
               "required": true,
@@ -114,7 +91,7 @@
         },{
               "name":"mediawiki",
               "icon": "settings",
-              "beforeChange": "validateMediaWiki",
+              "beforeChange": "validateStep",
               "options": {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
@@ -133,18 +110,18 @@
                   "buttons": [
                       {
                         "label": "showPassword",
-                        "action": "showMWAdminPassword"
+                        "action": "showPasswords"
                       },
                       {
                         "label": "generatePassword",
-                        "action": "generateMWAdminPassword"
+                        "action": "generateAPassword"
                       }
                   ]
               }]
         },{
               "name":"database",
               "icon": "settings",
-              "beforeChange": "validateDatabase",
+              "beforeChange": "validateStep",
               "options": {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
@@ -173,11 +150,11 @@
                   "buttons": [
                     {
                       "label": "showPassword",
-                      "action": "showDBPassword"
+                      "action": "showPasswords"
                     },
                     {
                       "label": "generatePassword",
-                      "action": "generateDBAdminPassword"
+                      "action": "generateAPassword"
                     }
                   ]
               }],
@@ -185,7 +162,7 @@
         },{
               "name":"wikibase",
               "icon": "settings",
-              "beforeChange": "validateWikibase",
+              "beforeChange": "validateStep",
               "options": {
                   "validationErrorClass": "has-error",
                   "validationSuccessClass": "has-success",
@@ -209,7 +186,7 @@
               "description": "elasticsearch_description",
               "condition": "useElasticsearch",
               "icon": "settings",
-              "beforeChange": "validateElasticSearch",
+              "beforeChange": "validateStep",
               "options": {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
@@ -224,7 +201,7 @@
               "template": "\telasticsearch:\n\t\timage: elasticsearch@sha256:f1dbf2019dc9a4ca5dd458635bfb31f9a601e4905e1d6ca1d65a3958d428f497\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {elasticsearchAlias}.svc\n\t\tenvironment:\n\t\t\tdiscovery.type: single-node\n"
         },{
               "name": "wikibaseQuickstatements",
-              "beforeChange": "validateWikibaseQuickstatements",
+              "beforeChange": "validateStep",
               "description": "wikibaseQuickstatements_description",
               "icon": "settings",
               "options": {
@@ -267,7 +244,7 @@
             "template":"\tquickstatements:\n\t\timage: wikibase/quickstatements:latest\n\t\tbuild:\n\t\t\tcontext: ./quickstatements/latest\n\t\t\tdockerfile: Dockerfile\n\t\tports:\n\t\t\t- \"{wikibaseQuickstatementsPort}:80\"\n\t\tdepends_on:\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseQuickstatementsAlias}.svc\n\t\tenvironment:\n\t\t\t- OAUTH_CONSUMER_KEY=559fcf1da153c5ec4b2fbefa7c3c395b\n\t\t\t- OAUTH_CONSUMER_SECRET=57cad33da0015dce1e94a597908e19848714a6af\n\t\t\t- QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibaseQuickstatementsPort}\n\t\t\t- WB_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibasePort}\n\t\t\t- WIKIBASE_SCHEME_AND_HOST=http://{wikibaseAlias}.svc\n\t\t\t- WB_PROPERTY_NAMESPACE={wikibaseQuickstatementsNamespaceProperty}\n\t\t\t- \"WB_PROPERTY_PREFIX={wikibaseQuickstatementsPrefixProperty}:\"\n\t\t\t- WB_ITEM_NAMESPACE={wikibaseQuickstatementsNamespaceItem}\n\t\t\t- \"WB_ITEM_PREFIX={wikibaseQuickstatementsPrefixItem}:\""
         },{
             "name": "wikibaseBlazegraph",
-            "beforeChange": "validateWikibaseBlazegraph",
+            "beforeChange": "validateStep",
             "description": "wikibaseBlazegraph_description",
             "icon": "settings",
             "options": {
@@ -290,7 +267,7 @@
             "template":"\twdqs:\n\t\timage: wikibase/wdqs:0.3.0\n\t\trestart: always\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tvolumes:\n\t\t\t- query-service-data:/wdqs/data\n\t\tcommand: /runBlazegraph.sh\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseBlazegraphAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}\n\t\texpose:\n\t\t\t- {wikibaseBlazegraphPort}"
         },{
             "name": "wikibaseProxy",
-            "beforeChange": "validateWikibaseProxy",
+            "beforeChange": "validateStep",
             "description": "wikibaseProxy_description",
             "icon": "settings",
             "options": {
@@ -312,7 +289,7 @@
             "template":"\twdqs-proxy:\n\t\timage: wikibase/wdqs-proxy\n\t\tbuild:\n\t\t\tcontext: ./wdqs-proxy/latest\n\t\t\tdockerfile: Dockerfile\n\t\tenvironment:\n\t\t\t- PROXY_PASS_HOST={wikibaseBlazegraphAlias}.svc:{wikibaseBlazegraphPort}\n\t\tports:\n\t\t\t- \"{wikibaseProxyPort}:80\"\n\t\tdepends_on:\n\t\t\t- wdqs\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseProxyAlias}.svc"
         },{
           "name": "wikibaseFrontend",
-           "beforeChange": "validateWikibaseFrontend",
+           "beforeChange": "validateStep",
           "description": "wikibaseFrontend_description",
           "icon": "settings",
           "options": {
@@ -334,7 +311,7 @@
           "template":"\twdqs-frontend:\n\t\timage: wikibase/wdqs-frontend:latest\n\t\tbuild:\n\t\t\tcontext: ./wdqs-frontend/latest\n\t\t\tdockerfile: Dockerfile\n\t\tports:\n\t\t\t- \"{wikibaseFrontendPort}:80\"\n\t\tdepends_on:\n\t\t\t- wdqs-proxy\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseFrontendAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseProxyAlias}.svc"
         },{
           "name": "wikibaseUpdater",
-          "beforeChange": "validateWikibaseUpdater",
+          "beforeChange": "validateStep",
           "icon": "settings",
           "options": {
             "validationErrorClass": "has-error",
