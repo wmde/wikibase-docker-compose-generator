@@ -102,7 +102,7 @@ export class FieldBase {
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
 
 		if ( this._Field === null ) {
-			this._Field = { name: 'not set' };
+			this._Field = { name: '"not set"' };
 		}
 
 		if ( ValueType === -1 && FieldBase.__IS_ANY__ !== Type ) {
@@ -142,8 +142,7 @@ export class FieldBase {
 					}
 
 					Value = Self( this._Field.name );
-					ValueType = Utils.binarySearch(
-						FieldBase.__ALLOWED_TYPES__,
+					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
 						( typeof Value )
 					);
 				}
@@ -447,7 +446,9 @@ export class FieldBase {
 		if ( this.__HasDefaultValue === true ) {
 			if ( Array.isArray( this.__ModelKey ) === true ) {
 				this._addValueToModel(
-					this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
+					this.__ModelPointer[
+						this.__ModelKey[ this.__ModelKey.length - 1 ]
+					]
 				);
 			} else {
 				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
