@@ -252,6 +252,17 @@ class BlubberFields extends FieldBase
 				continue;
 			}
 
+			if( 'undefined' === typeof this.__Fields[ FieldIndex ].type )
+			{
+                throw new InvalidFieldException(
+                    StringHelper.format(
+                        BlubberFields.__UNKNOWN__FIELDTYPE__,
+                        'undefined',
+                        this.__Fields[ FieldIndex ].name
+                    )
+                );
+			}
+
 			this.__Fields[ FieldIndex ].type = this.__Fields[ FieldIndex ].type.toLowerCase();
 
 			if (
