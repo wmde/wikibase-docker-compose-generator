@@ -16,8 +16,8 @@
 
     "languageOption_english": "English",
     "languageOption_german": "Deutsch",
-    "choise_yes": "yes",
-    "choise_no": "no",
+    "choice_yes": "yes",
+    "choice_no": "no",
 
     "installLanguageSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>",
     "generalSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>"

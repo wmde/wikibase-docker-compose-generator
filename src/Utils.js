@@ -1,7 +1,8 @@
 import Axios from 'axios';
 import Path from 'path';
 import ObjectHelper from './components/lib/ObjectHelper';
-import { ValueErrorException, TypeErrorException } from './components/lib/BaseExceptions';
+import TypeErrorException from './components/lib/Exceptions/TypeErrorException';
+import ValueErrorException from './components/lib/Exceptions/ValueErrorException';
 
 class Utils {
 	static async _evaluateRequest( Response, ResponseError, Hook ) {

@@ -1,20 +1,15 @@
 import BlubberStep from './Step';
-import { TypeErrorException, BaseException } from '../BaseExceptions';
+import TypeErrorException from '../Exceptions/TypeErrorException';
 import Utils from '../../../Utils';
-import { FieldBase } from './FieldBase';
-
-class InvalidFormException extends BaseException {
-	constructor() {
-		super( 'InvalidFormException', 'The given form is invalid.' );
-	}
-}
+import FieldBase from './FieldBase';
+import InvalidFormException from './Exceptions/InvalidFormException';
 
 export default class BlubberFormSchemaConstructor extends FieldBase {
-	static __FORM_LABELED_PROPERTIES__ = [ 'backButtonText', 'finishButtonText', 'nextButtonText', 'subtitle', 'title' ];
-	static __FORM_ATTRIBUTES__ = [ 'class', 'id' ];
-	static __FORM_EVENTS__ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
-	static __BOOLEAN_PROPERTIES__ = [ 'validateOnBack' ];
-	static __NUMERIC_PROPERTIES__ = [ 'startIndex' ];
+	static _FORM_PROPERTIES_ = [ 'backButtonText', 'finishButtonText', 'nextButtonText', 'subtitle', 'title' ];
+	static _FORM_ATTRIBUTES_ = [ 'class', 'id' ];
+	static _FORM_EVENTS_ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
+	static _BOOLEAN_PROPERTIES_ = [ 'validateOnBack' ];
+	static _NUMERIC_PROPERTIES_ = [ 'startIndex' ];
 
 	__Form;
 	Form;
@@ -50,25 +45,25 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 		let Label, AssigmentLabel;
 		this.Form.FormRef = this.__Form.formAttributes.id;
 		for ( Label in this.__Form.formAttributes ) {
-			if ( BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) !== -1 ) {
+			if ( BlubberFormSchemaConstructor._FORM_EVENTS_.indexOf( Label ) !== -1 ) {
 				AssigmentLabel = `on-${ Label.substring( 2 ).toLowerCase() }`;
 				this.Form.FormEvents[ AssigmentLabel ] = this._executeFunctionOrGetAnything(
 					this.__Form.formAttributes[ Label ],
 					true
 				);
-			} else if ( BlubberFormSchemaConstructor.__FORM_ATTRIBUTES__.indexOf( Label ) !== -1 ) {
+			} else if ( BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label ) !== -1 ) {
 				this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
 			} else if (
-				BlubberFormSchemaConstructor.__FORM_LABELED_PROPERTIES__.indexOf( Label ) !== -1
+				BlubberFormSchemaConstructor._FORM_PROPERTIES_.indexOf( Label ) !== -1
 			) {
 				this.Form.FormProperties[ Label ] = this._getStringLabelOrPlaceholder(
 					this.__Form.formAttributes[ Label ]
 				);
-			} else if ( BlubberFormSchemaConstructor.__BOOLEAN_PROPERTIES__.indexOf( Label ) !== -1 ) {
+			} else if ( BlubberFormSchemaConstructor._BOOLEAN_PROPERTIES_.indexOf( Label ) !== -1 ) {
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetBoolean(
 					this.__Form.formAttributes[ Label ]
 				);
-			} else if ( BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) !== -1 ) {
+			} else if ( BlubberFormSchemaConstructor._NUMERIC_PROPERTIES_.indexOf( Label ) !== -1 ) {
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetNumber(
 					parseInt( this.__Form.formAttributes[ Label ] )
 				);

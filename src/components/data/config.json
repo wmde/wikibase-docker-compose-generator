@@ -39,22 +39,22 @@
                 },
                 {
                     "name": "downloadDefault",
-                    "type": "choise",
+                    "type": "choice",
                     "prefix": "",
                     "default": false,
                     "values": [
-                        {"value": true, "label":"choise_yes"},
-                        {"value": false, "label":"choise_no"}
+                        {"value": true, "label":"choice_yes"},
+                        {"value": false, "label":"choice_no"}
                     ],
                     "required" : true
                 },
                 {
                     "name": "expertMode",
-                    "type": "choise",
+                    "type": "choice",
                     "default": false,
                     "values": [
-                        {"value": true, "label":"choise_yes"},
-                        {"value": false, "label":"choise_no"}
+                        {"value": true, "label":"choice_yes"},
+                        {"value": false, "label":"choice_no"}
                     ],
                     "required": true
                 }],
