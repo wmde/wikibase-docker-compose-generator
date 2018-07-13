@@ -1,23 +1,16 @@
 import BlubberStep from './Step';
-import { TypeErrorException, BaseException } from '../BaseExceptions';
+import TypeErrorException from '../Exceptions/TypeErrorException';
 import Utils from '../../../Utils';
-import { FieldBase } from './FieldBase';
-
-class InvalidFormException extends BaseException
-{
-	constructor()
-	{
-		super( 'InvalidFormException', 'The given form is invalid.' );
-	}
-}
+import FieldBase from './FieldBase';
+import InvalidFormException from './Exceptions/InvalidFormException';
 
 export default class BlubberFormSchemaConstructor extends FieldBase
 {
-	static __FORM_LABELED_PROPERTIES__ = [ 'backButtonText', 'finishButtonText', 'nextButtonText', 'subtitle', 'title' ];
-	static __FORM_ATTRIBUTES__ = [ 'class', 'id' ];
-	static __FORM_EVENTS__ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
-	static __BOOLEAN_PROPERTIES__ = [ 'validateOnBack' ];
-	static __NUMERIC_PROPERTIES__ = [ 'startIndex' ];
+	static _FORM_PROPERTIES_ = [ 'backButtonText', 'finishButtonText', 'nextButtonText', 'subtitle', 'title' ];
+	static _FORM_ATTRIBUTES_ = [ 'class', 'id' ];
+	static _FORM_EVENTS_ = [ 'onComplete', 'onLoading', 'onValidate', 'onError', 'onChange' ];
+	static _BOOLEAN_PROPERTIES_ = [ 'validateOnBack' ];
+	static _NUMERIC_PROPERTIES_ = [ 'startIndex' ];
 
 	__Form;
 	Form;
@@ -59,7 +52,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 		this.Form.FormRef = this.__Form.formAttributes.id;
 		for ( Label in this.__Form.formAttributes )
 		{
-			if ( -1 !== BlubberFormSchemaConstructor.__FORM_EVENTS__.indexOf( Label ) )
+			if ( -1 !== BlubberFormSchemaConstructor._FORM_EVENTS_.indexOf( Label ) )
 			{
 				AssigmentLabel = `on-${ Label.substring( 2 ).toLowerCase() }`;
 				this.Form.FormEvents[ AssigmentLabel ] = this._executeFunctionOrGetAnything(
@@ -67,25 +60,25 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 					true
 				);
 			}
-			else if ( -1 !== BlubberFormSchemaConstructor.__FORM_ATTRIBUTES__.indexOf( Label ) )
+			else if ( -1 !== BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label ) )
 			{
 				this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
 			}
 			else if (
-				-1 !== BlubberFormSchemaConstructor.__FORM_LABELED_PROPERTIES__.indexOf( Label )
+				-1 !== BlubberFormSchemaConstructor._FORM_PROPERTIES_.indexOf( Label )
 			)
 			{
 				this.Form.FormProperties[ Label ] = this._getStringLabelOrPlaceholder(
 					this.__Form.formAttributes[ Label ]
 				);
 			}
-			else if ( -1 !== BlubberFormSchemaConstructor.__BOOLEAN_PROPERTIES__.indexOf( Label ) )
+			else if ( -1 !== BlubberFormSchemaConstructor._BOOLEAN_PROPERTIES_.indexOf( Label ) )
 			{
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetBoolean(
 					this.__Form.formAttributes[ Label ]
 				);
 			}
-			else if ( -1 !== BlubberFormSchemaConstructor.__NUMERIC_PROPERTIES__.indexOf( Label ) )
+			else if ( -1 !== BlubberFormSchemaConstructor._NUMERIC_PROPERTIES_.indexOf( Label ) )
 			{
 				this.Form.FormProperties[ Label ] = this._executeFunctionOrGetNumber(
 					parseInt( this.__Form.formAttributes[ Label ] )

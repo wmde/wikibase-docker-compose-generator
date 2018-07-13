@@ -1,6 +1,6 @@
 import VueFormGenerator from 'vue-form-generator';
 import { FormWizard, TabContent } from 'vue-form-wizard';
-import { IdRegister } from './lib/blubberFormGenerator/FieldBase';
+import IdRegister from './lib/blubberFormGenerator/IdRegister';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';

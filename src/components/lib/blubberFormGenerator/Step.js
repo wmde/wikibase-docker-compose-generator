@@ -1,20 +1,47 @@
-import Utils from '../../../Utils';
-import { DateTimeLocalField, DateField, MonthField, NumberField, RangeField, TimeField, WeekField } from './NumericBasedFields';
-import { CheckBoxField, ColorField, HiddenField, FileField, LabelField, TextBlock, ResetField, SubmitField } from './MiscellaneousBasedFields';
-import { EmailField, PasswordField, SearchField, TelField, TextField, UrlField } from './TextBasedFields';
-import { CheckListField, ChoiceField, SelectionField } from './OptionBasedFields';
-import { FieldBase, InvalidFieldException, InvalidFieldPropertyException } from './FieldBase';
 import StringHelper from '../StringHelper';
+import Utils from '../../../Utils';
+import InvalidFieldException from './Exceptions/InvalidFieldException';
+import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
+import FieldBase from './FieldBase';
+import ButtonField from './Fields/ButtonField';
+import CheckBoxField from './Fields/CheckBoxField';
+import CheckListField from './Fields/CheckListField';
+import ChoiceField from './Fields/ChoiceField';
+import ColorField from './Fields/ColorField';
+import DateField from './Fields/DateField';
+import DateTimeLocalField from './Fields/DateTimeLocalField';
+import EmailField from './Fields/EmailField';
+import FileUploadField from './Fields/FileUploadField';
+import HiddenField from './Fields/HiddenField';
+import ImageField from './Fields/ImageButtonField';
+import LabelField from './Fields/LabelField';
+import MonthField from './Fields/MonthField';
+import NumberField from './Fields/NumberField';
+import PasswordField from './Fields/PasswordField';
+import RangeField from './Fields/RangeField';
+import ResetField from './Fields/ResetField';
+import SearchField from './Fields/SearchField';
+import SelectionField from './Fields/SelectionField';
+import SubmitField from './Fields/SubmitField';
+import SubmitButtonField from './Fields/SubmitButtonField';
+import TelField from './Fields/TelField';
+import TextArea from './Fields/TextArea';
+import TextField from './Fields/TextField';
+import TimeField from './Fields/TimeField';
+import UrlField from './Fields/UrlField';
+import WeekField from './Fields/WeekField';
+
 /* eslint-disable operator-linebreak */
 class BlubberFields extends FieldBase
 {
 	/* ErrorStrings*/
-	static __MODEL_ENTRY_EXISTS__ = 'The given model entry of {} is allready defined.';
-	static __UNKNOWN__FIELDTYPE__ = 'The given fieldtype {} of {} is unknown.';
-	static __INVALID__DYNAMIC_FIED__ = 'The given field {} does not work.';
-	static __INVALID__SUB_MODEL__ = 'The generated model of field {} does not work.';
+	static _MODEL_EXISTS_ = 'The given model entry of {} is allready defined.';
+	static _UNKNOWN_FIELDTYPE__ = 'The given fieldtype {} of {} is unknown.';
+	static _INVALID_DYNAMIC_FIED__ = 'The given field {} does not work.';
+	static _INVALID_SUB_MODEL__ = 'The generated model of field {} does not work.';
 	/* Class Constant*/
-	static __FIELDTYPES__ = {
+	static _FIELDTYPES_ = {
+		button: ButtonField,
 		checkbox: CheckBoxField,
 		checklist: CheckListField,
 		choice: ChoiceField,
@@ -22,8 +49,9 @@ class BlubberFields extends FieldBase
 		date: DateField,
 		'datetime-local': DateTimeLocalField,
 		email: EmailField,
-		file: FileField,
+		file: FileUploadField,
 		hidden: HiddenField,
+		image: ImageField,
 		label: LabelField,
 		month: MonthField,
 		number: NumberField,
@@ -35,11 +63,13 @@ class BlubberFields extends FieldBase
 		search: SearchField,
 		select: SelectionField,
 		submit: SubmitField,
+		submitButton: SubmitButtonField,
 		tel: TelField,
 		text: TextField,
-		textarea: TextBlock,
-		textblock: TextBlock,
+		textarea: TextArea,
+		textblock: TextArea,
 		time: TimeField,
+		upload: FileUploadField,
 		url: UrlField,
 		week: WeekField
 	};
@@ -72,7 +102,7 @@ class BlubberFields extends FieldBase
 				{
 					throw new InvalidFieldPropertyException(
 						StringHelper.format(
-							BlubberFields.__MODEL_ENTRY_EXISTS__,
+							BlubberFields._MODEL_EXISTS_,
 							Field.getModelKey().join( '' )
 						)
 					);
@@ -106,7 +136,7 @@ class BlubberFields extends FieldBase
 			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
-						BlubberFields.__MODEL_ENTRY_EXISTS__,
+						BlubberFields._MODEL_EXISTS_,
 						CurrentModelKey
 					)
 				);
@@ -130,7 +160,7 @@ class BlubberFields extends FieldBase
 		{
 			throw new InvalidFieldException(
 				StringHelper.format(
-					BlubberFields.__INVALID__DYNAMIC_FIED__,
+					BlubberFields._INVALID_DYNAMIC_FIED__,
 					this.__Fields[ Index ].bind
 				)
 			);
@@ -149,7 +179,7 @@ class BlubberFields extends FieldBase
 			{
 				throw new InvalidFieldException(
 					StringHelper.format(
-						BlubberFields.__INVALID__SUB_MODEL__,
+						BlubberFields._INVALID_SUB_MODEL__,
 						this.__Fields[ Index ].bind
 					)
 				);
@@ -188,7 +218,7 @@ class BlubberFields extends FieldBase
 		}
 		else
 		{
-			throw new InvalidFieldException( FieldBase.__NO_NAME__ );
+			throw new InvalidFieldException( FieldBase._NO_NAME_ );
 		}
 		// eslint-disable-next-line
 		Generated = new BlubberFields(
@@ -202,7 +232,7 @@ class BlubberFields extends FieldBase
 		{
 			throw new InvalidFieldException(
 				StringHelper.format(
-					BlubberFields.__INVALID__SUB_MODEL__,
+					BlubberFields._INVALID_SUB_MODEL__,
 					this.__Fields[ Index ].name
 				)
 			);
@@ -256,7 +286,7 @@ class BlubberFields extends FieldBase
 			{
 				throw new InvalidFieldException(
 					StringHelper.format(
-						BlubberFields.__UNKNOWN__FIELDTYPE__,
+						BlubberFields._UNKNOWN_FIELDTYPE__,
 						'undefined',
 						this.__Fields[ FieldIndex ].name
 					)
@@ -266,20 +296,20 @@ class BlubberFields extends FieldBase
 			this.__Fields[ FieldIndex ].type = this.__Fields[ FieldIndex ].type.toLowerCase();
 
 			if (
-				false === BlubberFields.__FIELDTYPES__.hasOwnProperty(
+				false === BlubberFields._FIELDTYPES_.hasOwnProperty(
 					this.__Fields[ FieldIndex ].type
 				) )
 			{
 				throw new InvalidFieldException(
 					StringHelper.format(
-						BlubberFields.__UNKNOWN__FIELDTYPE__,
+						BlubberFields._UNKNOWN_FIELDTYPE__,
 						this.__Fields[ FieldIndex ].type,
 						this.__Fields[ FieldIndex ].name
 					)
 				);
 			}
 
-			Field = new BlubberFields.__FIELDTYPES__[ this.__Fields[ FieldIndex ].type ](
+			Field = new BlubberFields._FIELDTYPES_[ this.__Fields[ FieldIndex ].type ](
 				this.__Fields[ FieldIndex ],
 				this._BindedObject,
 				this._LabelGenerator
@@ -300,9 +330,10 @@ class BlubberFields extends FieldBase
 		}
 	}
 }
+
 export default class BlubberStep extends BlubberFields
 {
-	static __NO_NAME__ = 'The given fieldset has no identifier (name).';
+	static _NO_NAME_ = 'The given fieldset has no identifier (name).';
 	__Template;
 	NodeSchema;
 	__Condition;
@@ -419,7 +450,7 @@ export default class BlubberStep extends BlubberFields
 
 		if ( false === this.__Template.hasOwnProperty( 'name' ) )
 		{
-			throw new InvalidFieldException( BlubberStep.__NO_NAME__ );
+			throw new InvalidFieldException( BlubberStep._NO_NAME_ );
 		}
 
 		this.Model = GeneratedStep.Model;

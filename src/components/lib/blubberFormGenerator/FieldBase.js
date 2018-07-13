@@ -1,62 +1,17 @@
 import StringHelper from '../StringHelper';
-import { BaseException } from '../BaseExceptions';
+import InvalidFieldException from './Exceptions/InvalidFieldException';
+import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
+import InvalidFieldValueException from './Exceptions/InvalidFieldValueException';
 import Utils from '../../../Utils';
 
 /* eslint-disable operator-linebreak */
-export class InvalidFieldException extends BaseException
-{
-	constructor( Message )
-	{
-		super( 'InvalidFieldException', Message );
-	}
-}
-
-export class InvalidFieldValueException extends BaseException
-{
-	constructor( Message )
-	{
-		super( 'InvalidFieldValueException', Message );
-	}
-}
-
-export class InvalidFieldPropertyException extends BaseException
-{
-	constructor( Message )
-	{
-		super( 'InvalidFieldPropertyException', Message );
-	}
-}
-
-export class IdRegister
-{
-	static __IdStore = [];
-
-	static containsId( Id )
-	{
-		return -1 !== IdRegister.__IdStore.indexOf( Id );
-	}
-
-	static addId( Id )
-	{
-		if ( false === IdRegister.containsId( Id ) )
-		{
-			IdRegister.__IdStore.push( Id );
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-}
-
-export class FieldBase
+export default class FieldBase
 {
 	/* ErrorStrings*/
-	static __UNSUPPORTED_TYPE__ = 'Unsupported type {} in field {}. Expected {}.';
-	static __UNKNOWN_METHOD__ = 'Unknown method {} of field {} .';
-	static __NO_NAME__ = 'A given field has no name property';
-	static __NO_BINDED_OBJECT__ = 'The given Field {} has is no pairing.';
+	static _UNSUPPORTED_TYPE_ = 'Unsupported type {} in field {}. Expected {}.';
+	static _UNKNOWN_METHOD_ = 'Unknown method {} of field {} .';
+	static _NO_NAME_ = 'A given field has no name property';
+	static _NO_OBJECT_ = 'The given Field {} has is no pairing.';
 	/* Class Constant*/
 	static __IS_ANY__ = 0x0;
 	static __IS_BOOLEAN__ = 0x1;
@@ -131,7 +86,7 @@ export class FieldBase
 		{
 			throw new InvalidFieldValueException(
 				StringHelper.format(
-					FieldBase.__UNSUPPORTED_TYPE__,
+					FieldBase._UNSUPPORTED_TYPE_,
 					typeof Value,
 					this._Field.name,
 					FieldBase.__ALLOWED_TYPES__[ Type ]
@@ -185,7 +140,7 @@ export class FieldBase
 			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
-						FieldBase.__UNKNOWN_METHOD__,
+						FieldBase._UNKNOWN_METHOD_,
 						Value,
 						this._Field.name
 					)
@@ -200,7 +155,7 @@ export class FieldBase
 
 		throw new InvalidFieldValueException(
 			StringHelper.format(
-				FieldBase.__UNSUPPORTED_TYPE__,
+				FieldBase._UNSUPPORTED_TYPE_,
 				typeof Value,
 				this._Field.name,
 				FieldBase.__ALLOWED_TYPES__[ Type ]
@@ -279,7 +234,7 @@ export class FieldBase
 		{
 			throw new InvalidFieldException(
 				StringHelper.format(
-					FieldBase.__UNSUPPORTED_TYPE__,
+					FieldBase._UNSUPPORTED_TYPE_,
 					ValueType,
 					this._Field.name,
 					'',
@@ -329,7 +284,7 @@ export class FieldBase
 			{
 				throw new InvalidFieldPropertyException(
 					StringHelper.format(
-						FieldBase.__UNKNOWN_METHOD__,
+						FieldBase._UNKNOWN_METHOD_,
 						Value,
 						this._Field.name
 					)
@@ -344,7 +299,7 @@ export class FieldBase
 
 		throw new InvalidFieldException(
 			StringHelper.format(
-				FieldBase.__UNSUPPORTED_TYPE__,
+				FieldBase._UNSUPPORTED_TYPE_,
 				ValueType,
 				this._Field.name,
 				'',
@@ -497,14 +452,14 @@ export class FieldBase
 
 		if ( 0 === Key.length )
 		{
-			throw new InvalidFieldPropertyException( FieldBase.__NO_NAME__ );
+			throw new InvalidFieldPropertyException( FieldBase._NO_NAME_ );
 		}
 
 		if ( null === Self )
 		{
 			throw new InvalidFieldException(
 				StringHelper.format(
-					FieldBase.__NO_BINDED_OBJECT__,
+					FieldBase._NO_OBJECT_,
 					this._Field.name
 				)
 			);
@@ -597,313 +552,5 @@ export class FieldBase
 	getGeneratedField()
 	{
 		return this._GeneratedField;
-	}
-}
-
-export class CommonRequiredAttributes extends FieldBase
-{
-	constructor( Field, BindedObject, Generator )
-	{
-		super( Field, BindedObject, Generator );
-		this.__addNeccesaryAttributes();
-	}
-
-	__addNeccesaryAttributes()
-	{
-		let Id;
-		if ( 'class' in this._Field )
-		{
-			this._Field.styleClasses = this._Field.class;
-			delete this._Field.class;
-		}
-
-		if ( false === this._Field.hasOwnProperty( 'name' ) )
-		{
-			throw new InvalidFieldException( FieldBase.__NO_NAME__ );
-		}
-
-		if ( true === this._Field.hasOwnProperty( 'id' ) )
-		{
-			Id = this._executeFunctionOrGetString( this._Field.id );
-		}
-		else
-		{
-			Id = this._Field.name;
-		}
-
-		// common required properties
-		if ( false === IdRegister.containsId( Id ) )
-		{
-			this._GeneratedField.id = this._executeFunctionOrGetString( Id );
-			IdRegister.addId( Id );
-		}
-		else
-
-		{
-			this._GeneratedField.id = 'invalidId';
-		}
-
-		this._GeneratedField.model = `${ this._Field.name }`;
-
-		if ( true === this._Field.hasOwnProperty( 'label' ) )
-		{
-			this._assignPlaceholderOrLabelString( 'label' );
-		}
-		else
-		{
-			this._assignPlaceholderOrLabelString( 'name', 'label' );
-		}
-	}
-}
-
-export class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
-{
-	/* ERRORS*/
-	static __NO_LABEL_INSIDE_BUTTON__ = 'A insidebutton of field {} has no label.';
-
-	constructor( Field, BindedObject, Generator )
-	{
-		super( Field, BindedObject, Generator );
-		this.__addStore();
-		this.__addCommonOptionalProperties();
-	}
-
-	_setAutocomplete()
-	{
-		if (
-			true === this._Field.hasOwnProperty( 'autocomplete' )
-		&&
-			false === this._Field.autocomplete
-		)
-		{
-			this._GeneratedField.autocomplete = 'off';
-		}
-		else
-		{
-			this._GeneratedField.autocomplete = 'on';
-		}
-	}
-
-	__addStore()
-	{
-		if ( true === this._Field.hasOwnProperty( 'storesIn' ) )
-		{
-			this._addKeyToModel( this._executeFunctionOrGetString( this._Field.storesIn, false ) );
-		}
-		else
-		{
-			this._addKeyToModel( this._executeFunctionOrGetString( this._Field.name ) );
-		}
-	}
-
-	__addVisibilityType()
-	{
-		this._assignBoolean( 'isVisible', 'visible' );
-		this._assignBoolean( 'isDisabled', 'disabled' );
-		this._assignBoolean( 'isFeatured', 'featured' );
-	}
-
-	__addMiscellaneous()
-	{
-		this._assignBoolean( 'required' );
-
-		if (
-			(
-				true === this._Field.hasOwnProperty( 'default' )
-			&&
-				false === Utils.isEmpty( this._Field.default )
-			)
-
-		||
-			'boolean' !== typeof this._Field.default
-		)
-		{
-			this._addValueToModel( this._executeFunctionOrGetAnything( this._Field.default ) );
-		}
-	}
-
-	__addStringBasedAttributes()
-	{
-		this._assignPlaceholderOrLabelString( 'help' );
-		this._assignPlaceholderOrLabelString( 'hint' );
-	}
-
-	__addMethods()
-	{
-		this._assignFunction( 'setFormatter', 'set' );
-		this._assignFunction( 'getFormatter', 'get' );
-	}
-
-	__addEvents()
-	{
-		this._assignFunction( 'afterChanged', 'onChanged' );
-		this._assignFunction( 'afterValidated', 'onValidated' );
-		this.__addValidator();
-	}
-
-	__addValidator()
-	{
-		if ( 'function' !== typeof this._BindedObject.getValidator )
-		{
-			return '';
-		}
-
-		if ( true === this._Field.name.includes( '.' ) )
-		{
-			this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
-		}
-		else
-		{
-			this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
-		}
-	}
-
-	__addClass()
-	{
-		let Miscellaneous;
-		if ( this._Field.hasOwnProperty( 'styleClasses' ) )
-		{
-			if ( false === Array.isArray( this._Field.styleClasses ) && 'string' !== typeof this._Field.styleClasses )
-			{
-				throw new InvalidFieldPropertyException(
-					StringHelper.format(
-						FieldBase.__UNSUPPORTED_TYPE__,
-						typeof this._Field.styleClasses,
-						this._Field.name,
-						' at styleClasses property',
-						'array of strings or string'
-					)
-				);
-
-			}
-			else if ( true === Array.isArray( this._Field.styleClasses ) )
-			{
-				for ( Miscellaneous in this._Field.styleClasses )
-				{
-					if ( 'string' !== typeof this._Field.styleClasses[ Miscellaneous ] )
-					{
-						throw new InvalidFieldPropertyException(
-							StringHelper.format(
-								FieldBase.__UNSUPPORTED_TYPE__,
-								typeof this._Field.styleClasses[ Miscellaneous ],
-								this._Field.name,
-								` at styleClasses property at Index ${Miscellaneous}`,
-								'string'
-							)
-						);
-					}
-				}
-			}
-		}
-	}
-
-	__wrapInsideButton( Button )
-	{
-		let Mutable;
-		const GeneratedButton = {};
-		if ( true === Button.hasOwnProperty( 'class' ) )
-		{
-			GeneratedButton.classes = this._executeFunctionOrGetString( Button.class );
-		}
-
-		if ( true === Button.hasOwnProperty( 'label' ) )
-		{
-			Mutable = this._executeFunctionOrGetString( Button.label );
-			GeneratedButton.label = this._getStringLabelOrPlaceholder( Mutable );
-		}
-		else
-		{
-			throw new InvalidFieldPropertyException(
-				StringHelper.format(
-					CommonOptionalAttributesAndMethods.__NO_LABEL_INSIDE_BUTTON__,
-					this._Field.name
-				)
-			);
-		}
-
-		GeneratedButton.onclick = this._executeFunctionOrGetAnything( Button.action, true );
-		return GeneratedButton;
-	}
-
-	__addInsideButton()
-	{
-		let Index, InsideButtons;
-		const Buttons = [];
-
-		if ( false === this._Field.hasOwnProperty( 'buttons' ) )
-		{
-			return;
-		}
-		// eslint-disable-next-line
-		InsideButtons = this._executeFunctionOrGetAnything(this._Field['buttons']);
-
-		if ( 'object' === typeof InsideButtons && false === Array.isArray( InsideButtons ) )
-		{
-			if (
-				true === InsideButtons.hasOwnProperty( 'condition' )
-			&&
-				false === this._executeFunctionOrGetBoolean( InsideButtons.condition )
-			)
-			{
-				return;
-			}
-			Buttons.push( this.__wrapInsideButton( InsideButtons ) );
-		}
-		else if ( true === Array.isArray( InsideButtons ) )
-		{
-			for ( Index in InsideButtons )
-			{
-				if (
-					true === InsideButtons[ Index ].hasOwnProperty( 'condition' )
-				&&
-					false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition )
-				)
-				{
-					continue;
-				}
-
-				if ( 'object' === typeof InsideButtons[ Index ] )
-				{
-					Buttons.push( this.__wrapInsideButton( InsideButtons[ Index ] ) );
-				}
-				else
-				{
-					throw new InvalidFieldPropertyException(
-						StringHelper.format(
-							FieldBase.__UNSUPPORTED_TYPE__,
-							typeof InsideButtons[ Index ],
-							this._Field.name,
-							'at insideButtons',
-							'array of objects or object'
-						)
-					);
-				}
-			}
-		}
-		else
-		{
-			throw new InvalidFieldPropertyException(
-				StringHelper.format(
-					FieldBase.__UNSUPPORTED_TYPE__,
-					typeof InsideButtons,
-					this._Field.name,
-					'at insideButtons',
-					'array of objects or object'
-				)
-			);
-		}
-
-		this._GeneratedField.buttons = Buttons;
-	}
-
-	__addCommonOptionalProperties()
-	{
-		this.__addClass();
-		this.__addVisibilityType();
-		this.__addMiscellaneous();
-		this.__addInsideButton();
-		this.__addStringBasedAttributes();
-		this.__addMethods();
-		this.__addEvents();
 	}
 }

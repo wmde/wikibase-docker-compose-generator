@@ -1,4 +1,5 @@
-import { ValueErrorException, TypeErrorException } from './BaseExceptions';
+import TypeErrorException from './Exceptions/TypeErrorException';
+import ValueErrorException from './Exceptions/ValueErrorException';
 
 class StringHelper
 {
