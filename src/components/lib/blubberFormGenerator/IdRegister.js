@@ -1,17 +1,17 @@
 export default class IdRegister
 {
-	static __IdStore = [];
+	__IdStore = [];
 
-	static containsId( Id )
+	containsId( Id )
 	{
-		return -1 !== IdRegister.__IdStore.indexOf( Id );
+		return -1 !== this.__IdStore.indexOf( Id );
 	}
 
-	static addId( Id )
+	addId( Id )
 	{
-		if ( false === IdRegister.containsId( Id ) )
+		if ( false === this.containsId( Id ) )
 		{
-			IdRegister.__IdStore.push( Id );
+			this.__IdStore.push( Id );
 			return true;
 		}
 		else

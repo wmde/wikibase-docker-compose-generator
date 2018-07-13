@@ -80,8 +80,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 
 	__addEvents()
 	{
-		this._assignFunction( 'afterChanged', 'onChanged' );
-		this._assignFunction( 'afterValidated', 'onValidated' );
+		this._assignFunction( 'onChanged' );
+		this._assignFunction( 'onValidated' );
 		this.__addValidator();
 	}
 

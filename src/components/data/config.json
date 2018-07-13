@@ -100,8 +100,8 @@
                       { "value": false, "label":"no" },
                       { "value": true, "label":"yes" }
                     ]
-                }              
-              ]             
+                }
+              ]
         },{
               "name":"mediawiki",
               "condition": "isExpert",
@@ -118,7 +118,7 @@
                   "default": "admin",
                   "required": true
                 },{
-                  "name": "mediawikiAdminPassword",
+                  "name": "mediawikiAdminName",
                   "type": "password",
                   "default": "adminpass",
                   "required": true,

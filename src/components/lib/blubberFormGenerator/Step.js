@@ -2,6 +2,7 @@ import StringHelper from '../StringHelper';
 import Utils from '../../../Utils';
 import InvalidFieldException from './Exceptions/InvalidFieldException';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
+import InvalidFieldPropertyWarning from './Exceptions/InvalidFieldPropertyWarning';
 import FieldBase from './FieldBase';
 import ButtonField from './Fields/ButtonField';
 import CheckBoxField from './Fields/CheckBoxField';
@@ -134,7 +135,7 @@ class BlubberFields extends FieldBase
 		{
 			if ( this.Model.hasOwnProperty( CurrentModelKey ) )
 			{
-				throw new InvalidFieldPropertyException(
+				new InvalidFieldPropertyWarning(// eslint-disable-line
 					StringHelper.format(
 						BlubberFields._MODEL_EXISTS_,
 						CurrentModelKey

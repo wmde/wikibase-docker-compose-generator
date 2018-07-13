@@ -1,9 +1,9 @@
 import VueFormGenerator from 'vue-form-generator';
 import { FormWizard, TabContent } from 'vue-form-wizard';
-import IdRegister from './lib/blubberFormGenerator/IdRegister';
 import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaFactory';
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
+import FieldBase from './lib/blubberFormGenerator/FieldBase';
 /* eslint-disable operator-linebreak */
 
 export default {
@@ -148,7 +148,7 @@ export default {
 			if (
 				false === Form.formAttributes.hasOwnProperty( 'id' )
             ||
-                true === IdRegister.containsId( Form.formAttributes.id )
+                true === FieldBase._IdRegistry.containsId( Form.formAttributes.id )
 			)
 			{
 				return;

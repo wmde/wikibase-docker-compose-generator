@@ -2,6 +2,7 @@ import StringHelper from '../StringHelper';
 import InvalidFieldException from './Exceptions/InvalidFieldException';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import InvalidFieldValueException from './Exceptions/InvalidFieldValueException';
+import IdRegister from './IdRegister';
 import Utils from '../../../Utils';
 
 /* eslint-disable operator-linebreak */
@@ -12,6 +13,7 @@ export default class FieldBase
 	static _UNKNOWN_METHOD_ = 'Unknown method {} of field {} .';
 	static _NO_NAME_ = 'A given field has no name property';
 	static _NO_OBJECT_ = 'The given Field {} has is no pairing.';
+	static _INVALID_ID_ = 'The given id {} is allready in use.';
 	/* Class Constant*/
 	static __IS_ANY__ = 0x0;
 	static __IS_BOOLEAN__ = 0x1;
@@ -20,6 +22,8 @@ export default class FieldBase
 	static __IS_OBJECT__ = 0x4;
 	static __IS_STRING__ = 0x5;
 	static __ALLOWED_TYPES__ = [ 'any', 'boolean', 'function', 'number', 'object', 'string' ];
+	/* Statics */
+	static _IdRegistry = new IdRegister();
 	/* Properties*/
 	_Field;
 	_BindedObject;

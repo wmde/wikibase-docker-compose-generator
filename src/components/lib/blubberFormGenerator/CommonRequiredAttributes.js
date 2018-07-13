@@ -1,6 +1,7 @@
 import FieldBase from './FieldBase';
 import InvalidFieldException from './Exceptions/InvalidFieldException';
-import IdRegister from './IdRegister';
+import InvalidIdWarning from './Exceptions/InvalidIdWarning';
+import StringHelper from '../StringHelper';
 
 export default class CommonRequiredAttributes extends FieldBase
 {
@@ -34,15 +35,14 @@ export default class CommonRequiredAttributes extends FieldBase
 		}
 
 		// common required properties
-		if ( false === IdRegister.containsId( Id ) )
+		if ( false === FieldBase._IdRegistry.containsId( Id ) )
 		{
 			this._GeneratedField.id = this._executeFunctionOrGetString( Id );
-			IdRegister.addId( Id );
+			FieldBase._IdRegistry.addId( Id );
 		}
 		else
-
 		{
-			this._GeneratedField.id = 'invalidId';
+			new InvalidIdWarning( StringHelper.format( FieldBase._INVALID_ID_, Id ) );// eslint-disable-line
 		}
 
 		this._GeneratedField.model = `${ this._Field.name }`;
