@@ -1,25 +1,25 @@
 {
     "key": "en",
-    "blub_subtitle": "A yml builder for wikidata-docker",
-    "blub_nextButton": "Next",
-    "blub_backButton": "Back",
-    "blub_finishButton": "Finish",
+    "subtitle": "A yml builder for wikidata-docker",
+    "nextButton": "Next",
+    "backButton": "Back",
+    "finishButton": "Finish",
 
-    "blub_installLanguage": "Which language setting you want to apply during the setup progress?",
-    "blub_settingLanguage": "Which language setting you want to apply to the docker images?",
-    "blub_downloadDefault": "Do you only want use the default settings?",
-    "blub_expertMode": "Do you want use the expert mode?",
-    "blub_useModules": "Which docker-images you want to use?",
+    "installLanguage": "Which language setting you want to apply during the setup progress?",
+    "settingLanguage": "Which language setting you want to apply to the docker images?",
+    "downloadDefault": "Do you only want use the default settings?",
+    "expertMode": "Do you want use the expert mode?",
+    "useModules": "Which docker-images you want to use?",
 
-    "blub_installLanguageSetting": "Language settings",
-    "blub_generalSetting": "General settings",
+    "installLanguageSetting": "Language settings",
+    "generalSetting": "General settings",
 
-    "blub_languageOption_english": "English",
-    "blub_languageOption_german": "Deutsch",
-    "blub_choise_yes": "yes",
-    "blub_choise_no": "no",
+    "languageOption_english": "English",
+    "languageOption_german": "Deutsch",
+    "choice_yes": "yes",
+    "choice_no": "no",
 
-    "blub_installLanguageSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>",
-    "blub_generalSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>"
+    "installLanguageSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>",
+    "generalSetting_description": "Lore Ipsum with <a href=\"https://en.wikipedia.org/wiki/Lorem_ipsum\">reference</a>"
 
 }

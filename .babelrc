@@ -1,5 +1,6 @@
 {
   "presets": [
+    "babel-preset-es2017",
     ["env", {
       "modules": false,
       "targets": {
@@ -11,8 +12,8 @@
   "plugins": ["transform-vue-jsx", "transform-runtime", "transform-async-to-generator"],
   "env": {
     "test": {
-      "presets": ["env"],
-      "plugins": ["dynamic-import-node"]
+      "presets": ["env", "stage-3", "babel-preset-es2017"],
+      "plugins": ["dynamic-import-node", ["transform-class-properties", { "spec": true }]]
     }
   }
 }

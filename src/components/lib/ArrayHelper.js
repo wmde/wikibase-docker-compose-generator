@@ -1,4 +1,4 @@
-import TypeErrorException from './BaseExceptions';
+import TypeErrorException from './Exceptions/TypeErrorException';
 import ObjectHelper from './ObjectHelper';
 
 class ArrayHelper {

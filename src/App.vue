@@ -1,13 +1,13 @@
 <script>
-import BlubberFormFactory from './components/BlubberFormFactory.js';
-import Utils from './components/Utils.js';
-import Language from './components/Language.js';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
-import ObjectHelper from './components/ObjectHelper';
+import BlubberFormFactory from './components/BlubberFormFactory';
+import Utils from './Utils';
+import Language from './components/Language';
+import ObjectHelper from './components/lib/ObjectHelper';
+import AvailableLanguages from './components/data/lang/availableLanguages';
 
 export default {
 	name: 'Blubber',
-	mixins: [ BlubberFormFactory, Language ],
+	mixins: [ Language, BlubberFormFactory ],
 	render: function ( createElement ) {
 		return this.buildApplication( createElement );
 	},
@@ -15,28 +15,30 @@ export default {
 	data: function () {
 		const Return = {};
 		Return.buildForm = false;
-		Return.blubberGeneratorSteps = {};
+		Return.blubberGeneratorSteps = [];
 		Return.blubberGeneratorFormProperties = {};
 		Return.blubberGeneratorFormStyle = {};
 		return Return;
 	},
 	mounted: function () {
-		this.getDefaultLanguage();
+		let Language;
+		this.initLanguages();
+		this.getClientLanguages();
+		// eslint-disable-next-line
+		Language = this.getDefaultLanguage( AvailableLanguages );
+		this.getLanguage( Language );
 		Utils.waitUntil( this._languageIsLoaded );
 		this.getConfiguration();
 	},
 	methods: {
 		getConfiguration: function () {
-			Utils.get( './data/config.json', this.evaluateConfiguration );
+			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
 		evaluateConfiguration: function ( Configuration ) {
 			this.$data.blubberGeneratorSteps = Configuration.steps;
 			this.$data.blubberGeneratorFormProperties = Configuration.form;
-			this.$data.blubberFormId = Configuration.name;
+			this.$data.blubberGeneratorFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
-			this.updateTemplate();
-		},
-		updateTemplate: function () {
 			this.$forceUpdate();
 		},
 		getI18nStrings: function ( Key, LanguageCode ) {
@@ -52,16 +54,16 @@ export default {
 				}
 				const Element = this.buildBlubberForm(
 					createElement,
-					this.$data.blubberFormId,
-					{},
-					ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
-					ObjectHelper.copyObj( this.$data.blubberGeneratorSteps ),
+					{
+						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
+						steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
+					},
 					I18n
 				);
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-		showPassword: function () {
+		showGi: function () {
 
 		}
 	}
@@ -69,6 +71,5 @@ export default {
 </script>
 
 <style>
-@import "vue-form-wizard/dist/vue-form-wizard.min.css";
-
+     @import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 </style>
