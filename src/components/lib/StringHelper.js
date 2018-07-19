@@ -1,6 +1,6 @@
 import TypeErrorException from './Exceptions/TypeErrorException';
 import ValueErrorException from './Exceptions/ValueErrorException';
-
+/* eslint-disable operator-linebreak */
 class StringHelper
 {
 	static isEmpty( Str )

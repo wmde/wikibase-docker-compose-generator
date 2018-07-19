@@ -1,6 +1,6 @@
 import TypeErrorException from './Exceptions/TypeErrorException';
-
-class ObjectHelper
+/* eslint-disable operator-linebreak */
+export default class ObjectHelper
 {
 
 	static objectSize( Obj )
@@ -58,6 +58,46 @@ class ObjectHelper
 		return Dolly;
 	}
 
+	static __mergeConditions( Merge, ToMerge, Key )
+	{
+		if ( true === Merge.hasOwnProperty( Key ) )
+		{
+			if (
+				'object' === typeof Merge[ Key ]
+			&&
+                'object' === typeof ToMerge
+			)
+			{
+				if (
+					true === Array.isArray( Merge[ Key ] ) &&
+                    true === Array.isArray( ToMerge )
+				)
+				{
+					Merge[ Key ] = Merge[ Key ].concat( ToMerge );
+				}
+				else
+				{
+					Merge[ Key ] = ObjectHelper.mergeObj( Merge[ Key ], ToMerge );
+				}
+			}
+			else
+			{
+				Merge[ Key ] = ToMerge;
+			}
+		}
+		else
+		{
+			if ( 'object' === typeof ToMerge )
+			{
+				Merge[ Key ] = ObjectHelper.copyObj( ToMerge );
+			}
+			else
+			{
+				Merge[ Key ] = ToMerge;
+			}
+		}
+	}
+
 	static mergeObj()
 	{
 		let Index, Key, ToMerge, MergedObject;
@@ -69,7 +109,7 @@ class ObjectHelper
 
 		if ( 1 === arguments.length )
 		{
-			return arguments[ 0 ];
+			return ObjectHelper.copyObj( arguments[ 0 ] );
 		}
 
 		if ( 'object' !== typeof arguments[ 0 ] || true === Array.isArray( arguments[ 0 ] ) )
@@ -79,8 +119,8 @@ class ObjectHelper
 			);
 		}
 
-		MergedObject = ObjectHelper.copyObj( arguments[ 0 ] );// eslint-disable-line
-		for ( Index = 1; arguments.length < Index; Index++ )
+		MergedObject = arguments[ 0 ];
+		for ( Index = 1; arguments.length > Index; Index++ )
 		{
 			ToMerge = arguments[ Index ];
 			if ( 'object' !== typeof ToMerge || true === Array.isArray( arguments[ Index ] ) )
@@ -92,19 +132,10 @@ class ObjectHelper
 
 			for ( Key in ToMerge )
 			{
-				if ( 'object' !== typeof ToMerge )
-				{
-					MergedObject[ Key ] = ToMerge[ Key ];
-				}
-				else
-				{
-					MergedObject[ Key ] = ObjectHelper.copyObj( ToMerge[ Key ] );
-				}
+				ObjectHelper.__mergeConditions( MergedObject, ToMerge[ Key ], Key );
 			}
 		}
 
 		return MergedObject;
 	}
 }
-
-export default ObjectHelper;

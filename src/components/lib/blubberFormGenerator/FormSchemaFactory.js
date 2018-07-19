@@ -20,17 +20,43 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 		super( null, BindedObject, Generator );
 		this.__Form = Form;
 		this.Form = {
-			JustField: false,
+			JustFields: false,
 			FormEvents: {},
 			FormProperties: {},
 			FormAttributes: {},
 			FormRef: '',
-			Schema: {},
+			Schema: [],
 			Model: {},
 			Steps: []
 		};
+
+		if ( true === this.__Form.hasOwnProperty( 'bind' ) )
+		{
+			this.__buildDynamicForm();
+		}
+
 		this.__validateProperties();
 		this.__setFormPropterties();
+	}
+
+	__buildDynamicForm()
+	{
+		let GeneratedForm;
+		const Bind = this._executeFunctionOrGetAnything(
+			this.__Form.bind,
+			true
+		);
+
+		// eslint-disable-next-line
+        GeneratedForm = Bind();
+
+		if ( null === GeneratedForm || 'object' !== typeof GeneratedForm )
+		{
+			throw new InvalidFormException();
+		}
+
+		this.__Form = Object.assign( this.__Form, GeneratedForm );
+		delete this.__Form.bind;
 	}
 
 	__validateProperties()
@@ -91,61 +117,39 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 		}
 	}
 
+	__build( Set )
+	{
+		let Generated;
+		Generated = new BlubberStep(
+			Set,
+			this._BindedObject,
+			this._LabelGenerator,
+			this.Form.Model
+		);
+		Generated.build();
+
+		Object.assign( this.Form.Model, Generated.Model );
+
+		this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
+		this.Form.Schema.push( Generated.NodeSchema.inner.schema );
+	}
+
 	build()
 	{
-		let Generated, Index;
+		let Index;
 
-		if ( true === this.__Form.hasOwnProperty( 'fields' ) )
+		if ( true === this.__Form.hasOwnProperty( 'fields' ) && true === Array.isArray( this.__Form.fields ) )
 		{
-			Generated = new BlubberStep(
-				this.__Form.fields,
-				this._BindedObject,
-				this._LabelGenerator
-			);
-			Generated.build();
-			this.Form.Schema = {
-				fields: Generated.Fields,
-				groups: Generated.Groups
-			};
-
-			this.Form.JustField = true;
-			this.Form.Model = Generated.Model;
-			this.Form.Steps = Generated.NodeSchema;
-			this.Form.Steps[ 0 ].inner.schema = this.Form.Schema;
-			this.Form.Steps[ 0 ].inner.model = this.Form.Model;
+			this.__build( this.__Form.fields );
+			this.Form.JustFields = true;
 		}
 		else if ( true === this.__Form.hasOwnProperty( 'steps' ) && true === Array.isArray( this.__Form.steps ) )
 		{
 			this.Form.Schema = [];
-			this.Form.JustField = false;
+			this.Form.JustFields = false;
 			for ( Index in this.__Form.steps )
 			{
-				Generated = new BlubberStep(
-					this.__Form.steps[ Index ],
-					this._BindedObject,
-					this._LabelGenerator
-				);
-
-				Generated.build();
-
-				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
-				if ( false === Generated.getCondition() )
-				{
-					continue;
-				}
-
-				this.Form.Schema.push( {
-					fields: Generated.Fields,
-					groups: Generated.Groups
-				} );
-
-				this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
-			}
-
-			for ( Index in this.Form.Steps )
-			{
-				this.Form.Steps[ Index ][ 0 ].inner.model = this.Form.Model;
-				this.Form.Steps[ Index ][ 0 ].inner.schema = this.Form.Schema[ Index ];
+				this.__build( this.__Form.steps[ Index ] );
 			}
 		}
 		else

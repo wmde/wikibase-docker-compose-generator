@@ -116,9 +116,10 @@
                   "name": "mediawikiAdminName",
                   "type": "text",
                   "default": "admin",
+                  "setToModel": false,
                   "required": true
                 },{
-                  "name": "mediawikiAdminName",
+                  "name": "mediawikiAdminPassword",
                   "type": "password",
                   "default": "adminpass",
                   "required": true,
@@ -133,6 +134,9 @@
                       }
                   ]
               }]
+        },{
+            "name":"dynamit",
+            "bind":"test"
         },{
               "name":"database",
               "condition": "isExpert",

@@ -13,47 +13,60 @@ export default {
 		'vue-form-generator': VueFormGenerator.component
 	},
 	methods: {
+		__generateAStep( createElement, Step )
+		{
+			let VGenerator, Description;
+
+			if (
+				0 < Step.inner.schema.fields.length
+            ||
+                0 < Step.inner.schema.groups.length
+			)
+			{
+				VGenerator = createElement(
+					'vue-form-generator',
+					{
+						props: Step.inner,
+						ref: Step.ref
+					}
+				);
+			}
+			else
+			{
+				VGenerator = '';
+			}
+
+			if (
+				true === Step.hasOwnProperty( 'description' )
+            &&
+                false === Utils.isEmpty( Step.description.domProps )
+			)
+			{
+				Description = createElement(
+					'div',
+					{
+						attr: Step.description.attr,
+						domProps: Step.description.domProps
+					}
+				);
+			}
+			else
+			{
+				Description = '';
+			}
+
+			return [ Description, VGenerator ];
+		},
 		__generateFromSchema: function ( createElement, Schema )
 		{
-			let Tab, VGenerator, Description, Step, Index;
+			let Tab, Index, Fields;
 			const Tabs = [];
-			if ( false === Array.isArray( Schema.Steps[ 0 ] ) )
+
+			if ( true === Schema.JustFields )
 			{
 				if ( true === Schema.Steps[ 1 ] )
 				{
-					if ( false === Utils.isEmpty( Schema.Steps[ 0 ].inner.schema ) )
-					{
-						VGenerator = createElement(
-							'vue-form-generator',
-							{
-								props: Schema.Steps[ 0 ].inner,
-								attr: Schema.Steps[ 0 ].attr
-							}
-						);
-					}
-					else
-					{
-						VGenerator = '';
-					}
-
-					if (
-						true === Schema.Steps[ 0 ].hasOwnProperty( 'description' )
-                    &&
-                        false === Utils.isEmpty( Schema.Steps[ 0 ].description.domProps )
-					)
-					{
-						Description = createElement(
-							'div',
-							{
-								attr: Schema.Steps[ 0 ].description.attr,
-								domProps: Schema.Steps[ 0 ].description.domProps
-							}
-						);
-					}
-					else
-					{
-						Description = '';
-					}
+					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ][ 0 ] );
 
 					return createElement(
 						'form-wizard',
@@ -63,7 +76,7 @@ export default {
 							on: Schema.FormEvents,
 							ref: Schema.FormRef
 						},
-						[ Description, VGenerator ]
+						[ Fields[ 0 ], Fields[ 1 ] ]
 					);
 				}
 				else
@@ -75,55 +88,16 @@ export default {
 			{
 				for ( Index in Schema.Steps )
 				{
-					Step = Schema.Steps[ Index ][ 0 ];
-
 					if ( true === Schema.Steps[ Index ][ 1 ] )
 					{
-						if (
-							0 < Step.inner.schema.fields.length
-						||
-							0 < Step.inner.schema.groups.length
-						)
-						{
-							VGenerator = createElement(
-								'vue-form-generator',
-								{
-									props: Step.inner,
-									ref: Step.ref
-								}
-							);
-						}
-						else
-						{
-							VGenerator = '';
-						}
-
-						if (
-							true === Step.hasOwnProperty( 'description' )
-                        &&
-                            false === Utils.isEmpty( Step.description.domProps )
-						)
-						{
-							Description = createElement(
-								'div',
-								{
-									attr: Step.description.attr,
-									domProps: Step.description.domProps
-								}
-							);
-						}
-						else
-						{
-							Description = '';
-						}
-
+						Fields = this.__generateAStep( createElement, Schema.Steps[ Index ][ 0 ] );
 						Tab = createElement(
 							'tab-content',
 							{
-								attr: Step.attr,
-								props: Step.tab
+								attr: Schema.Steps[ Index ][ 0 ].attr,
+								props: Schema.Steps[ Index ][ 0 ].tab
 							},
-							[ Description, VGenerator ]
+							[ Fields[ 0 ], Fields[ 1 ] ]
 						);
 
 						Tabs.push( Tab );

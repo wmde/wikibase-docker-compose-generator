@@ -184,8 +184,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 		if ( 'object' === typeof InsideButtons && false === Array.isArray( InsideButtons ) )
 		{
 			if (
-				true === InsideButtons.hasOwnProperty( 'condition' ) &&
-				false === this._executeFunctionOrGetBoolean( InsideButtons.condition )
+				true === InsideButtons.hasOwnProperty( 'renderCondition' ) &&
+				false === this._executeFunctionOrGetBoolean( InsideButtons.renderCondition )
 			)
 			{
 				return;
@@ -197,8 +197,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 			for ( Index in InsideButtons )
 			{
 				if (
-					true === InsideButtons[ Index ].hasOwnProperty( 'condition' ) &&
-					false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition )
+					true === InsideButtons[ Index ].hasOwnProperty( 'renderCondition' ) &&
+					false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].renderCondition )
 				)
 				{
 					continue;

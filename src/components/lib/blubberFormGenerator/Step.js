@@ -1,7 +1,6 @@
 import StringHelper from '../StringHelper';
 import Utils from '../../../Utils';
 import InvalidFieldException from './Exceptions/InvalidFieldException';
-import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import InvalidFieldPropertyWarning from './Exceptions/InvalidFieldPropertyWarning';
 import FieldBase from './FieldBase';
 import ButtonField from './Fields/ButtonField';
@@ -31,6 +30,10 @@ import TextField from './Fields/TextField';
 import TimeField from './Fields/TimeField';
 import UrlField from './Fields/UrlField';
 import WeekField from './Fields/WeekField';
+import ObjectHelper from '../ObjectHelper';
+import IdRegister from './IdRegister';
+import InvalidIdWarning from './Exceptions/InvalidIdWarning';
+import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 
 /* eslint-disable operator-linebreak */
 class BlubberFields extends FieldBase
@@ -38,8 +41,9 @@ class BlubberFields extends FieldBase
 	/* ErrorStrings*/
 	static _MODEL_EXISTS_ = 'The given model entry of {} is allready defined.';
 	static _UNKNOWN_FIELDTYPE__ = 'The given fieldtype {} of {} is unknown.';
-	static _INVALID_DYNAMIC_FIED__ = 'The given field {} does not work.';
+	static _INVALID_DYNAMIC_FIELD_ = 'The given field {} does not work.';
 	static _INVALID_SUB_MODEL__ = 'The generated model of field {} does not work.';
+	static __INVALID_STEP_ID__ = 'The given step name {} is allready in use.';
 	/* Class Constant*/
 	static _FIELDTYPES_ = {
 		button: ButtonField,
@@ -92,8 +96,8 @@ class BlubberFields extends FieldBase
 	__addSubModel( Field )
 	{
 		let Self = this.Model;
-		let ModelValue = Field.getModel();
 		const SubModel = Field.getModelKey();
+		let ModelValue = Field.getModel();
 
 		while ( 1 < SubModel.length )
 		{
@@ -101,7 +105,7 @@ class BlubberFields extends FieldBase
 			{
 				if ( 'object' !== typeof Self[ SubModel[ 0 ] ] )
 				{
-					throw new InvalidFieldPropertyException(
+                    new InvalidFieldPropertyWarning(// eslint-disable-line
 						StringHelper.format(
 							BlubberFields._MODEL_EXISTS_,
 							Field.getModelKey().join( '' )
@@ -133,7 +137,7 @@ class BlubberFields extends FieldBase
 		}
 		else
 		{
-			if ( this.Model.hasOwnProperty( CurrentModelKey ) )
+			if ( true === this.Model.hasOwnProperty( CurrentModelKey ) )
 			{
 				new InvalidFieldPropertyWarning(// eslint-disable-line
 					StringHelper.format(
@@ -149,11 +153,12 @@ class BlubberFields extends FieldBase
 	__buildDynamicField( Index )
 	{
 		let GeneratedFields;
-		let FieldExecution;
+		const FieldInsertion = [];
 		const Bind = this._executeFunctionOrGetAnything(
 			this.__Fields[ Index ].bind,
 			true
 		);
+
 		// eslint-disable-next-line
 		GeneratedFields = Bind();
 
@@ -161,7 +166,7 @@ class BlubberFields extends FieldBase
 		{
 			throw new InvalidFieldException(
 				StringHelper.format(
-					BlubberFields._INVALID_DYNAMIC_FIED__,
+					BlubberFields._INVALID_DYNAMIC_FIELD_,
 					this.__Fields[ Index ].bind
 				)
 			);
@@ -169,36 +174,13 @@ class BlubberFields extends FieldBase
 
 		if ( true === Array.isArray( GeneratedFields ) )
 		{
-			FieldExecution = new BlubberFields(
-				GeneratedFields,
-				this._BindedObject,
-				this._LabelGenerator
+			FieldInsertion.push( this.__Fields.slice( 0, Index ) );
+			FieldInsertion.push( GeneratedFields );
+			FieldInsertion.push( this.__Fields.slice( Index + 1 ) );
+			this.__Fields = FieldInsertion[ 0 ].concat(
+				FieldInsertion[ 1 ],
+				FieldInsertion[ 2 ]
 			);
-			GeneratedFields.build();
-
-			if ( true === Utils.isEmpty( FieldExecution.Model ) )
-			{
-				throw new InvalidFieldException(
-					StringHelper.format(
-						BlubberFields._INVALID_SUB_MODEL__,
-						this.__Fields[ Index ].bind
-					)
-				);
-			}
-
-			if ( 0 < FieldExecution.Fields.length )
-			{
-				this.Fields = this.Fields.concat( FieldExecution.Fields );
-			}
-
-			if ( 0 < FieldExecution.Groups.length )
-			{
-				this.Groups = this.Groups.concat( FieldExecution.Groups );
-			}
-
-			this.Model = Object.assign( {}, FieldExecution.Model, this.Model );
-
-			return true;
 		}
 		else
 		{
@@ -253,11 +235,50 @@ class BlubberFields extends FieldBase
 
 	}
 
+	_getRenderCondition( Field )
+	{
+		if ( true === Field.hasOwnProperty( 'renderCondition' ) )
+		{
+			Field.renderCondition = this._executeFunctionOrGetBoolean(
+				Field.renderCondition
+			);
+		}
+		else
+		{
+			Field.renderCondition = true;
+		}
+
+	}
+
+	_getModelCondition( Field )
+	{
+		if ( true === Field.hasOwnProperty( 'modelCondition' ) )
+		{
+			Field.modelCondition = this._executeFunctionOrGetBoolean(
+				Field.modelCondition
+			);
+		}
+		else
+		{
+			if ( false === Field.renderCondition )
+			{
+				Field.modelCondition = FieldBase.ModelRenderCondition;
+			}
+			else
+			{
+				Field.modelCondition = true;
+			}
+		}
+	}
+
 	build()
 	{
 		let FieldIndex, Field;
 		for ( FieldIndex = 0; FieldIndex < this.__Fields.length; FieldIndex++ )
 		{
+			this._getRenderCondition( this.__Fields[ FieldIndex ] );
+			this._getModelCondition( this.__Fields[ FieldIndex ] );
+
 			if ( true === this.__Fields[ FieldIndex ].hasOwnProperty( 'bind' ) )
 			{
 				if ( false === this.__buildDynamicField( FieldIndex ) )
@@ -272,14 +293,12 @@ class BlubberFields extends FieldBase
 			{
 				this.Groups.push( {} );
 				this.__buildGroup( FieldIndex );
-				if (
-					true === this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' )
-				&&
-					false === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
-				)
+
+				if ( false === this.__Fields[ FieldIndex ].renderCondition )
 				{
 					this.Groups.pop();
 				}
+
 				continue;
 			}
 
@@ -319,9 +338,9 @@ class BlubberFields extends FieldBase
 			this.__addToModel( Field );
 
 			if (
-				true === this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' )
+				true === this.__Fields[ FieldIndex ].hasOwnProperty( 'renderCondition' )
 			&&
-				false === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition )
+				false === this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].renderCondition )
 			)
 			{
 				continue;
@@ -335,24 +354,81 @@ class BlubberFields extends FieldBase
 export default class BlubberStep extends BlubberFields
 {
 	static _NO_NAME_ = 'The given fieldset has no identifier (name).';
+    static _INVALID_DYNAMIC_STEP_ = 'The return value of {} cannot be a valid step,';
 	__Template;
+	__GlobalModel;
 	NodeSchema;
-	__Condition;
 
-	constructor( Fields, BindedObject, Generator )
+	constructor( Fields, BindedObject, Generator, GlobalModelReference )
 	{
 		super( null, BindedObject, Generator );
 		this.__Template = Fields;
 		this.NodeSchema = { tab: {}, inner: {} };
 
-		if ( true === this.__Template.hasOwnProperty( 'condition' ) )
+		if ( true === this.__Template.hasOwnProperty( 'renderCondition' ) )
 		{
-			this.__Condition = this.__Template.condition;
+			this.renderCondition = this.__Template.renderCondition;
 		}
-		else
+
+		if ( true === this.__Template.hasOwnProperty( 'modelCondition' ) )
 		{
-			this.__Condition = true;
+			this.modelCondition = this.__Template.modelCondition;
 		}
+
+		this._getRenderCondition( this );
+		this._getModelCondition( this );
+
+		if (
+			true === this.__Template.hasOwnProperty( 'bind' )
+		&&
+			(
+				true === this.renderCondition
+			||
+				true === this.modelCondition
+			)
+		)
+		{
+			this.__buildDynamicStep();
+			if ( true === this.__Template.hasOwnProperty( 'renderCondition' ) )
+			{
+				this.renderCondition = this.__Template.renderCondition;
+			}
+
+			if ( true === this.__Template.hasOwnProperty( 'modelCondition' ) )
+			{
+				this.modelCondition = this.__Template.modelCondition;
+			}
+
+			this._getRenderCondition( this );
+			this._getModelCondition( this );
+		}
+
+		this.__GlobalModel = GlobalModelReference;
+	}
+
+	__buildDynamicStep()
+	{
+		let GeneratedStep;
+		const Bind = this._executeFunctionOrGetAnything(
+			this.__Template.bind,
+			true
+		);
+
+		// eslint-disable-next-line
+        GeneratedStep = Bind();
+
+		if ( null === GeneratedStep || 'object' !== typeof GeneratedStep )
+		{
+			throw new InvalidFieldException(
+				StringHelper.format(
+					BlubberStep._INVALID_DYNAMIC_STEP_,
+					this.__Template.bind
+				)
+			);
+		}
+
+		this.__Template = Object.assign( this.__Template, GeneratedStep );
+		delete this.__Template.bind;
 	}
 
 	__addDescription()
@@ -390,7 +466,6 @@ export default class BlubberStep extends BlubberFields
 			GeneratedStep.build();
 		}
 
-		// this.NodeSchema.schema = GeneratedStep;
 		if ( true === this.__Template.hasOwnProperty( 'options' ) )
 		{
 			Options = this.__Template.options;
@@ -420,7 +495,7 @@ export default class BlubberStep extends BlubberFields
 
 		if ( true === this.__Template.hasOwnProperty( 'tag' ) )
 		{
-			Tag = this.__Template.tag;
+			Tag = this._executeFunctionOrGetString( this.__Template.tag );
 		}
 		else
 		{
@@ -458,49 +533,42 @@ export default class BlubberStep extends BlubberFields
 		this.Groups = GeneratedStep.Groups;
 		this.Fields = GeneratedStep.Fields;
 
-		if ( 0 < this.Fields.length )
-		{
-			Schema.fields = this.Fields;
-		}
+		Schema.fields = this.Fields;
+		Schema.groups = this.Groups;
 
-		if ( 0 < this.Groups.length )
-		{
-			Schema.groups = this.Groups;
-		}
+		this.NodeSchema.inner = {
+			options: Options,
+			multiple: Multiple,
+			isNewModel: IsNewModel,
+			tag: Tag,
+			schema: Schema,
+			model: this.__GlobalModel
+		};
+
+		this.NodeSchema.tab = {
+			title: Title,
+			icon: Icon
+		};
 
 		if ( true === this.__Template.hasOwnProperty( 'beforeChange' ) )
 		{
 			// eslint-disable-next-line
 			BeforeChange = this._executeFunctionOrGetAnything( this.__Template.beforeChange, true );
-			this.NodeSchema.inner = {
-				// schema: Schema,
-				options: Options,
-				multiple: Multiple,
-				isNewModel: IsNewModel,
-				tag: Tag
-			};
-			this.NodeSchema.tab = {
-				title: Title,
-				icon: Icon,
-				beforeChange: BeforeChange
-			};
+			this.NodeSchema.tab.beforeChange = BeforeChange;
 		}
-		else
+
+		if ( true === FieldBase._IdRegistry.containsId( this.__Template.name ) )
 		{
-			this.NodeSchema.inner = {
-				// schema: Schema,
-				options: Options,
-				multiple: Multiple,
-				isNewModel: IsNewModel,
-				tag: Tag,
-				title: Title,
-				icon: Icon
-			};
-			this.NodeSchema.tab = {
-				title: Title,
-				icon: Icon
-			};
+
+			throw new InvalidFieldPropertyException(
+				StringHelper.format(
+					BlubberStep.__INVALID_STEP_ID__,
+					this.__Template.name
+				)
+			);
 		}
+
+		BlubberStep._IdRegistry.addId( this.__Template.name );
 		this.NodeSchema.attr = { id: this.__Template.name };
 		this.NodeSchema.ref = this.__Template.name;
 	}
@@ -516,6 +584,6 @@ export default class BlubberStep extends BlubberFields
 
 	getCondition()
 	{
-		return this._executeFunctionOrGetBoolean( this.__Condition );
+		return this.renderCondition;
 	}
 }

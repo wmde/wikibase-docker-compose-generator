@@ -35,10 +35,10 @@ export default class CommonRequiredAttributes extends FieldBase
 		}
 
 		// common required properties
-		if ( false === FieldBase._IdRegistry.containsId( Id ) )
+		if ( false === CommonRequiredAttributes._IdRegistry.containsId( Id ) )
 		{
-			this._GeneratedField.id = this._executeFunctionOrGetString( Id );
-			FieldBase._IdRegistry.addId( Id );
+			this._GeneratedField.id = Id;
+			CommonRequiredAttributes._IdRegistry.addId( Id );
 		}
 		else
 		{

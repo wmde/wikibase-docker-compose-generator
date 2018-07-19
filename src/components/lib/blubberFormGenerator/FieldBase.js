@@ -24,6 +24,7 @@ export default class FieldBase
 	static __ALLOWED_TYPES__ = [ 'any', 'boolean', 'function', 'number', 'object', 'string' ];
 	/* Statics */
 	static _IdRegistry = new IdRegister();
+	static ModelRenderCondition = true;
 	/* Properties*/
 	_Field;
 	_BindedObject;
