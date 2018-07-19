@@ -25,6 +25,7 @@ export default class FieldBase
 	/* Statics */
 	static _IdRegistry = new IdRegister();
 	static ModelRenderCondition = true;
+    static RenderCondition = true;
 	/* Properties*/
 	_Field;
 	_BindedObject;

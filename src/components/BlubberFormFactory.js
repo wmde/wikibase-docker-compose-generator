@@ -4,8 +4,8 @@ import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaF
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
 import FieldBase from './lib/blubberFormGenerator/FieldBase';
+import { UPDATE_FORCE_COMPLETE_UPDATE, UPDATE_KEEP_MODEL, UPDATE_DEFAULT } from './lib/blubberFormGenerator/RenderConstants';
 /* eslint-disable operator-linebreak */
-
 export default {
 	components: {
 		FormWizard,
@@ -116,36 +116,62 @@ export default {
 				);
 			}
 		},
-		buildBlubberForm: function ( createElement, Form, LabelGenerator, ForceReload = false )
+		buildBlubberForm: function ( createElement, Form, LabelGenerator, ReRenderFlag = UPDATE_DEFAULT )
 		{
 			let FormSchema;
-			if (
-				false === Form.formAttributes.hasOwnProperty( 'id' )
+            
+            if( 
+                false === Form.hasOwnProperty( 'formAttributes' ) 
             ||
-                true === FieldBase._IdRegistry.containsId( Form.formAttributes.id )
-			)
-			{
-				return;
-			}
+                ( 
+                    true === Form.hasOwnProperty( 'formAttributes' )
+                &&
+                    false === Form.formAttributes.hasOwnProperty( 'id' )
+                )
+            )
+            {
+                return '';
+            }
 
-			if (
+		    FieldBase._IdRegistry.addId( Form.formAttributes.id );
+        
+            if (
 				true === this.$data.blubberRaw.hasOwnProperty( Form.formAttributes.id )
 			&&
 				false === Utils.isEmpty( this.$data.blubberRaw[ Form.formAttributes.id ] )
 			&&
-				false === ForceReload
+				UPDATE_FORCE_COMPLETE_UPDATE !== ReRenderFlag
 			)
 			{
-				this.$data.blubberRaw[ Form.formAttributes.id ].refresh(
-					ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
-				);
-				this.$data.blubberModel[ Form.formAttributes.id ] = this.$data.blubberRaw[ Form.formAttributes.id ].Form.Model;
-				return this.__generateFromSchema( createElement, this.$data.blubberRaw[ Form.formAttributes.id ].Form );
+                if( UPDATE_DEFAULT === ReRenderFlag )
+                {
+    				this.$data.blubberRaw[ Form.formAttributes.id ].refresh(
+	    				ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
+		    		);
+			    	this.$data.blubberModel[ Form.formAttributes.id ] = this.$data.blubberRaw[ Form.formAttributes.id ].Form.Model;
+				    return this.__generateFromSchema( createElement, this.$data.blubberRaw[ Form.formAttributes.id ].Form );
+                }
+                else
+                {
+                    FormSchema =  new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
+                    FormSchema.build();
+                    FormSchema.refresh(
+                        Object.assign( 
+                            FormSchema.Form.Model,
+                            ObjectHelper.copyObj(this.$data.blubberModel[ Form.formAttributes.id ] )
+                        )
+                    );
+                    
+                    this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
+                    this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
+                    this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
+                }
 			}
 			else
 			{
 				FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 				FormSchema.build();
+                console.log("hier");
 				this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
 				this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
 				this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
@@ -158,4 +184,4 @@ export default {
 	{
 		return { blubberModel: {}, blubberSchema: {}, blubberRaw: {} };
 	}
-};
+}

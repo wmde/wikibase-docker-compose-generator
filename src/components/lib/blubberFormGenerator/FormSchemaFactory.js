@@ -37,7 +37,17 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 		this.__validateProperties();
 		this.__setFormPropterties();
+        this.cleanUpStructure();
 	}
+
+    cleanUpStructure()
+    {
+        delete this._Model;
+        delete this.__HasDefaultValue;
+        delete this.__ModelKey;
+        delete this.__ModelPointer;
+        delete this._GeneratedField;
+    }
 
 	__buildDynamicForm()
 	{
@@ -156,6 +166,8 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 		{
 			throw new InvalidFormException();
 		}
+
+        delete this.__Form;
 	}
 
 	refresh( Model )

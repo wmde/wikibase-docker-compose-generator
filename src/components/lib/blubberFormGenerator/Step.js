@@ -232,7 +232,6 @@ class BlubberFields extends FieldBase
 		}
 
 		this.Model = Object.assign( Generated.Model, this.Model );
-
 	}
 
 	_getRenderCondition( Field )
@@ -245,28 +244,28 @@ class BlubberFields extends FieldBase
 		}
 		else
 		{
-			Field.renderCondition = true;
+			Field.renderCondition = FieldBase.RenderCondition;
 		}
 
 	}
 
 	_getModelCondition( Field )
 	{
-		if ( true === Field.hasOwnProperty( 'modelCondition' ) )
+		if ( true === Field.hasOwnProperty( 'modelRenderCondition' ) )
 		{
 			Field.modelCondition = this._executeFunctionOrGetBoolean(
-				Field.modelCondition
+				Field.modelRenderCondition
 			);
 		}
 		else
 		{
 			if ( false === Field.renderCondition )
 			{
-				Field.modelCondition = FieldBase.ModelRenderCondition;
+				Field.modelRenderCondition = FieldBase.ModelRenderCondition;
 			}
 			else
 			{
-				Field.modelCondition = true;
+				Field.modelRenderCondition = true;
 			}
 		}
 	}
