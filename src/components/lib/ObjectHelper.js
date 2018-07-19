@@ -100,7 +100,8 @@ export default class ObjectHelper
 
 	static mergeObj()
 	{
-		let Index, Key, ToMerge, MergedObject;
+		let Index, Key, ToMerge;
+		const MergedObject = arguments[ 0 ];
 
 		if ( 0 === arguments.length )
 		{
@@ -119,7 +120,6 @@ export default class ObjectHelper
 			);
 		}
 
-		MergedObject = arguments[ 0 ];
 		for ( Index = 1; arguments.length > Index; Index++ )
 		{
 			ToMerge = arguments[ Index ];

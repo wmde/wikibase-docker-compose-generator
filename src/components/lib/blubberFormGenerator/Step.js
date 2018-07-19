@@ -231,7 +231,7 @@ class BlubberFields extends FieldBase
 			GroupPointer.groups = Generated.Groups;
 		}
 
-		this.Model = Object.assign( {}, Generated.Model, this.Model );
+		this.Model = Object.assign( Generated.Model, this.Model );
 
 	}
 
