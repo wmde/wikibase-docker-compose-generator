@@ -119,7 +119,7 @@ export default {
 		},
         __buildForm: function( Form, LabelGenerator, UseExistingModel )
         {
-            const FormSchema = new BlubberFormSchemaConstructor( Form, @, LabelGenerator );
+            const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
             FormSchema.build();
 
             if( true === UseExistingModel )
