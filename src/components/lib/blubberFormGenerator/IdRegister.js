@@ -1,4 +1,4 @@
-import ObjectHelper from "../ObjectHelper";
+import ObjectHelper from '../ObjectHelper';
 
 export default class IdRegister
 {
@@ -24,13 +24,13 @@ export default class IdRegister
 
 	remove( Item )
 	{
-		let Index = this.__IdStore.indexOf( Item );
+		const Index = this.__IdStore.indexOf( Item );
 		if ( -1 === Index )
 		{
 			return;
 		}
 
-		this.__IdStore.splice( Index, 1);
+		this.__IdStore.splice( Index, 1 );
 	}
 
 	removeItems( Items )
