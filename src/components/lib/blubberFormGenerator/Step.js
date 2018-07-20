@@ -610,6 +610,6 @@ export default class BlubberStep extends BlubberFields
 
 	getCondition()
 	{
-		return this.renderCondition;
+		return this.__Template.renderCondition;
 	}
 }

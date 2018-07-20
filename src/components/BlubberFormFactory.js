@@ -4,7 +4,8 @@ import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaF
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
 import FieldBase from './lib/blubberFormGenerator/FieldBase';
-import { UPDATE_FORCE_COMPLETE_UPDATE, UPDATE_DEFAULT } from './lib/blubberFormGenerator/RenderConstants';
+import { UPDATE_FORCE_COMPLETE_UPDATE, UPDATE_DEFAULT } from './lib/blubberFormGenerator/RenderConstants';i
+import InvalidFormException from './lib/blubberFormGenerator/Exceptions/InvalidFieldException';
 /* eslint-disable operator-linebreak */
 export default {
 	components: {
@@ -116,6 +117,28 @@ export default {
 				);
 			}
 		},
+        __buildForm: function( Form, LabelGenerator, UseExistingModel )
+        {
+            const FormSchema = new BlubberFormSchemaConstructor( Form, @, LabelGenerator );
+            FormSchema.build();
+
+            if( true === UseExistingModel )
+            {
+                FormSchema.refresh(
+                    Object.assign(
+                        FormSchema.Form.Model,
+                        ObjectHelper.copyObj( 
+                            this.$data.blubberModel[ Form.formAttributes.id ] 
+                        )
+                    )
+                );
+            }
+
+            this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
+            this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
+            this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
+            return this.__generateFromSchema( createElement, FormSchema.Form );
+        },
 		buildBlubberForm: function ( createElement, Form, LabelGenerator, ReRenderFlag = UPDATE_DEFAULT )
 		{
 			let FormSchema;
@@ -130,8 +153,19 @@ export default {
 				)
 			)
 			{
-				return '';
+				throw new InvalidFormException( 'There was no form id given.' );
 			}
+
+            if (
+                false === this.$data.blubberIdTacker.hasOwnProperty( Form.formAttributes.id ) 
+            &&
+                true  === Field._IdRegistry.containsId( Form.formAttributes.id )
+                
+            )
+            {
+               throw new InvalidFormException( 'The given form id is allready in use.' );
+            }
+               
 
 			FieldBase._IdRegistry.addId( Form.formAttributes.id );
 
@@ -153,6 +187,7 @@ export default {
 				}
 				else
 				{
+
 					FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
 					FormSchema.build();
 					FormSchema.refresh(
@@ -165,6 +200,7 @@ export default {
 					this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
 					this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
 					this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
+                   
 				}
 			}
 			else
@@ -181,6 +217,11 @@ export default {
 	},
 	data: function ()
 	{
-		return { blubberModel: {}, blubberSchema: {}, blubberRaw: {} };
+		return { 
+            blubberModel: {},
+            blubberSchema: {},
+            blubberRaw: {},
+            blubberIdTracker: {}
+        };
 	}
 };

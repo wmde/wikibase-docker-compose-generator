@@ -2,8 +2,8 @@ import BaseException from '../../Exceptions/BaseException';
 
 export default class InvalidFormException extends BaseException
 {
-	constructor()
+	constructor( Message = '' )
 	{
-		super( 'InvalidFormException', 'The given form is invalid.' );
+		super( 'InvalidFormException', `The given form is invalid. ${ Message }` );
 	}
 }
