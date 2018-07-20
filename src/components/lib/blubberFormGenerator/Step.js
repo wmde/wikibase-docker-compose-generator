@@ -1,8 +1,8 @@
 import StringHelper from '../StringHelper';
 import Utils from '../../../Utils';
 import InvalidFieldException from './Exceptions/InvalidFieldException';
-import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import InvalidFieldPropertyWarning from './Exceptions/InvalidFieldPropertyWarning';
+import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import FieldBase from './FieldBase';
 import ButtonField from './Fields/ButtonField';
 import CheckBoxField from './Fields/CheckBoxField';
@@ -37,8 +37,9 @@ class BlubberFields extends FieldBase {
 	/* ErrorStrings*/
 	static _MODEL_EXISTS_ = 'The given model entry of {} is allready defined.';
 	static _UNKNOWN_FIELDTYPE__ = 'The given fieldtype {} of {} is unknown.';
-	static _INVALID_DYNAMIC_FIED__ = 'The given field {} does not work.';
+	static _INVALID_DYNAMIC_FIELD_ = 'The given field {} does not work.';
 	static _INVALID_SUB_MODEL__ = 'The generated model of field {} does not work.';
+	static __INVALID_STEP_ID__ = 'The given step name {} is allready in use.';
 	/* Class Constant*/
 	static _FIELDTYPES_ = {
 		button: ButtonField,
@@ -87,15 +88,39 @@ class BlubberFields extends FieldBase {
 		this.Model = {};
 	}
 
+	_evaluateRenderCondition( Field ) {
+		if ( Field.hasOwnProperty( 'renderCondition' ) === true ) {
+			Field.renderCondition = this._executeFunctionOrGetBoolean(
+				Field.renderCondition
+			);
+		} else {
+			Field.renderCondition = FieldBase.RenderCondition;
+		}
+	}
+
+	_evaluateModelCondition( Field ) {
+		if ( Field.hasOwnProperty( 'modelRenderCondition' ) === true ) {
+			Field.modelCondition = this._executeFunctionOrGetBoolean(
+				Field.modelRenderCondition
+			);
+		} else {
+			if ( Field.renderCondition === false ) {
+				Field.modelRenderCondition = FieldBase.ModelRenderCondition;
+			} else {
+				Field.modelRenderCondition = true;
+			}
+		}
+	}
+
 	__addSubModel( Field ) {
 		let Self = this.Model;
-		let ModelValue = Field.getModel();
 		const SubModel = Field.getModelKey();
+		let ModelValue = Field.getModel();
 
 		while ( SubModel.length > 1 ) {
 			if ( Self.hasOwnProperty( SubModel[ 0 ] ) === true ) {
 				if ( typeof Self[ SubModel[ 0 ] ] !== 'object' ) {
-					throw new InvalidFieldPropertyException(
+                    new InvalidFieldPropertyWarning(// eslint-disable-line
 						StringHelper.format(
 							BlubberFields._MODEL_EXISTS_,
 							Field.getModelKey().join( '' )
@@ -121,7 +146,7 @@ class BlubberFields extends FieldBase {
 		if ( Array.isArray( CurrentModelKey ) === true ) {
 			this.__addSubModel( Field );
 		} else {
-			if ( this.Model.hasOwnProperty( CurrentModelKey ) ) {
+			if ( this.Model.hasOwnProperty( CurrentModelKey ) === true ) {
 				new InvalidFieldPropertyWarning(// eslint-disable-line
 					StringHelper.format(
 						BlubberFields._MODEL_EXISTS_,
@@ -135,51 +160,44 @@ class BlubberFields extends FieldBase {
 
 	__buildDynamicField( Index ) {
 		let GeneratedFields;
-		let FieldExecution;
+		const FieldInsertion = [];
 		const Bind = this._executeFunctionOrGetAnything(
 			this.__Fields[ Index ].bind,
 			true
 		);
+		// eslint-disable-next-line
+		this._evaluateRenderCondition( this.Fields[ Index ] );
+		// eslint-disable-next-line
+        this._evaluateModelCondition( this.Fields[ Index ] );
+
+		if (
+			this.Fields[ Index ].renderCondition === false
+		&&
+            this.Fields[ Index ].modelCondition === false
+		) {
+			return;
+		}
+
 		// eslint-disable-next-line
 		GeneratedFields = Bind();
 
 		if ( GeneratedFields === null || typeof GeneratedFields !== 'object' ) {
 			throw new InvalidFieldException(
 				StringHelper.format(
-					BlubberFields._INVALID_DYNAMIC_FIED__,
+					BlubberFields._INVALID_DYNAMIC_FIELD_,
 					this.__Fields[ Index ].bind
 				)
 			);
 		}
 
 		if ( Array.isArray( GeneratedFields ) === true ) {
-			FieldExecution = new BlubberFields(
-				GeneratedFields,
-				this._BindedObject,
-				this._LabelGenerator
+			FieldInsertion.push( this.__Fields.slice( 0, Index ) );
+			FieldInsertion.push( GeneratedFields );
+			FieldInsertion.push( this.__Fields.slice( Index + 1 ) );
+			this.__Fields = FieldInsertion[ 0 ].concat(
+				FieldInsertion[ 1 ],
+				FieldInsertion[ 2 ]
 			);
-			GeneratedFields.build();
-
-			if ( Utils.isEmpty( FieldExecution.Model ) === true ) {
-				throw new InvalidFieldException(
-					StringHelper.format(
-						BlubberFields._INVALID_SUB_MODEL__,
-						this.__Fields[ Index ].bind
-					)
-				);
-			}
-
-			if ( FieldExecution.Fields.length > 0 ) {
-				this.Fields = this.Fields.concat( FieldExecution.Fields );
-			}
-
-			if ( FieldExecution.Groups.length > 0 ) {
-				this.Groups = this.Groups.concat( FieldExecution.Groups );
-			}
-
-			this.Model = Object.assign( {}, FieldExecution.Model, this.Model );
-
-			return true;
 		} else {
 			this.__Fields[ Index ] = GeneratedFields;
 			return false;
@@ -187,15 +205,28 @@ class BlubberFields extends FieldBase {
 	}
 
 	__buildGroup( Index ) {
-		const GroupPointer = this.Groups[ this.Groups.length - 1 ];
+		const GroupPointer = {};
 		let Generated;
-
 		if ( this.__Fields[ Index ].hasOwnProperty( 'name' ) ) {
 			GroupPointer.legend = this._getStringLabelOrPlaceholder( this.__Fields[ Index ].name );
 			GroupPointer.id = this.__Fields[ Index ].name;
 		} else {
 			throw new InvalidFieldException( FieldBase._NO_NAME_ );
 		}
+
+		// eslint-disable-next-line
+		this._evaluateRenderCondition( this.__Fields[ Index ] );
+		// eslint-disable-next-line
+		this._evaluateModelCondition( this.__Fields[ Index ] );
+
+		if (
+			this.Fields[ Index ].renderCondition === false
+		&&
+			this.Fields[ Index ].modelCondition === false
+		) {
+			return;
+		}
+
 		// eslint-disable-next-line
 		Generated = new BlubberFields(
 			this.__Fields[ Index ].group,
@@ -221,13 +252,77 @@ class BlubberFields extends FieldBase {
 			GroupPointer.groups = Generated.Groups;
 		}
 
-		this.Model = Object.assign( {}, Generated.Model, this.Model );
+		if ( this.Fields[ Index ].modelCondition === true ) {
+			this.Model = Object.assign( Generated.Model, this.Model );
+		}
 
+		if ( this.Fields[ Index ].renderCondition === true ) {
+			this.Groups.push( GroupPointer );
+		}
+	}
+
+	__buildField( Index ) {
+		let Field;
+
+		// eslint-disable-next-line
+        this._evaluateRenderCondition( this.__Fields[ Index ] );
+		// eslint-disable-next-line
+        this._evaluateModelCondition( this.__Fields[ Index ] );
+
+		if (
+			this.Fields[ Index ].renderCondition === false
+            &&
+            this.Fields[ Index ].modelCondition === false
+		) {
+			return;
+		}
+
+		if ( typeof this.__Fields[ Index ].type === 'undefined' ) {
+			throw new InvalidFieldException(
+				StringHelper.format(
+					BlubberFields._UNKNOWN_FIELDTYPE__,
+					'undefined',
+					this.__Fields[ Index ].name
+				)
+			);
+		}
+		this.__Fields[ Index ].type = this.__Fields[ Index ].type.toLowerCase();
+
+		if (
+			BlubberFields._FIELDTYPES_.hasOwnProperty(
+				this.__Fields[ Index ].type
+			) === false
+		) {
+			throw new InvalidFieldException(
+				StringHelper.format(
+					BlubberFields._UNKNOWN_FIELDTYPE__,
+					this.__Fields[ Index ].type,
+					this.__Fields[ Index ].name
+				)
+			);
+		}
+		// eslint-disable-next-line
+		Field = new BlubberFields._FIELDTYPES_[ this.__Fields[ Index ].type ](
+			this.__Fields[ Index ],
+			this._BindedObject,
+			this._LabelGenerator
+		);
+
+		if ( this.Fields[ Index ].modelCondition === true ) {
+			this.__addToModel( Field );
+		}
+
+		if ( this.Fields[ Index ].renderCondition === true ) {
+			this.Fields.push( Field.getGeneratedField() );
+		}
 	}
 
 	build() {
-		let FieldIndex, Field;
+		let FieldIndex;
 		for ( FieldIndex = 0; FieldIndex < this.__Fields.length; FieldIndex++ ) {
+			this._evaluateRenderCondition( this.__Fields[ FieldIndex ] );
+			this._evaluateModelCondition( this.__Fields[ FieldIndex ] );
+
 			if ( this.__Fields[ FieldIndex ].hasOwnProperty( 'bind' ) === true ) {
 				if ( this.__buildDynamicField( FieldIndex ) === false ) {
 					FieldIndex--;
@@ -237,80 +332,68 @@ class BlubberFields extends FieldBase {
 			}
 
 			if ( this.__Fields[ FieldIndex ].hasOwnProperty( 'group' ) === true ) {
-				this.Groups.push( {} );
 				this.__buildGroup( FieldIndex );
-				if (
-					this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' ) === true
-				&&
-					this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition ) === false
-				) {
-					this.Groups.pop();
-				}
 				continue;
 			}
 
-			if ( typeof this.__Fields[ FieldIndex ].type === 'undefined' ) {
-				throw new InvalidFieldException(
-					StringHelper.format(
-						BlubberFields._UNKNOWN_FIELDTYPE__,
-						'undefined',
-						this.__Fields[ FieldIndex ].name
-					)
-				);
-			}
-
-			this.__Fields[ FieldIndex ].type = this.__Fields[ FieldIndex ].type.toLowerCase();
-
-			if (
-				BlubberFields._FIELDTYPES_.hasOwnProperty(
-					this.__Fields[ FieldIndex ].type
-				) === false ) {
-				throw new InvalidFieldException(
-					StringHelper.format(
-						BlubberFields._UNKNOWN_FIELDTYPE__,
-						this.__Fields[ FieldIndex ].type,
-						this.__Fields[ FieldIndex ].name
-					)
-				);
-			}
-
-			Field = new BlubberFields._FIELDTYPES_[ this.__Fields[ FieldIndex ].type ](
-				this.__Fields[ FieldIndex ],
-				this._BindedObject,
-				this._LabelGenerator
-			);
-
-			this.__addToModel( Field );
-
-			if (
-				this.__Fields[ FieldIndex ].hasOwnProperty( 'condition' ) === true
-			&&
-				this._executeFunctionOrGetBoolean( this.__Fields[ FieldIndex ].condition ) === false
-			) {
-				continue;
-			}
-
-			this.Fields.push( Field.getGeneratedField() );
+			this.__buildField( FieldIndex );
 		}
 	}
 }
 
 export default class BlubberStep extends BlubberFields {
 	static _NO_NAME_ = 'The given fieldset has no identifier (name).';
+    static _INVALID_DYNAMIC_STEP_ = 'The return value of {} cannot be a valid step,';
 	__Template;
+	__GlobalModel;
 	NodeSchema;
-	__Condition;
 
-	constructor( Fields, BindedObject, Generator ) {
+	constructor( Fields, BindedObject, Generator, GlobalModelReference ) {
 		super( null, BindedObject, Generator );
 		this.__Template = Fields;
 		this.NodeSchema = { tab: {}, inner: {} };
 
-		if ( this.__Template.hasOwnProperty( 'condition' ) === true ) {
-			this.__Condition = this.__Template.condition;
-		} else {
-			this.__Condition = true;
+		this._evaluateRenderCondition( this.__Template );
+		this._evaluateModelCondition( this.__Template );
+
+		if (
+			this.__Template.hasOwnProperty( 'bind' ) === true
+		&&
+			(
+				this.__Template.renderCondition === true
+			||
+				this.__Template.modelCondition === true
+			)
+		) {
+			this.__buildDynamicStep();
+			this._evaluateRenderCondition( this.__Template );
+			this._evaluateModelCondition( this.__Template );
 		}
+
+		this.__GlobalModel = GlobalModelReference;
+	}
+
+	__buildDynamicStep() {
+		let GeneratedStep;
+		const Bind = this._executeFunctionOrGetAnything(
+			this.__Template.bind,
+			true
+		);
+
+		// eslint-disable-next-line
+        GeneratedStep = Bind();
+
+		if ( GeneratedStep === null || typeof GeneratedStep !== 'object' ) {
+			throw new InvalidFieldException(
+				StringHelper.format(
+					BlubberStep._INVALID_DYNAMIC_STEP_,
+					this.__Template.bind
+				)
+			);
+		}
+
+		this.__Template = Object.assign( this.__Template, GeneratedStep );
+		delete this.__Template.bind;
 	}
 
 	__addDescription() {
@@ -332,6 +415,10 @@ export default class BlubberStep extends BlubberFields {
 		}
 	}
 
+	__getOptions() {
+
+	}
+
 	__buildStep() {
 		let Options, Multiple, IsNewModel, Tag, Title, Icon, BeforeChange;
 		const GeneratedStep = new BlubberFields(
@@ -344,7 +431,6 @@ export default class BlubberStep extends BlubberFields {
 			GeneratedStep.build();
 		}
 
-		// this.NodeSchema.schema = GeneratedStep;
 		if ( this.__Template.hasOwnProperty( 'options' ) === true ) {
 			Options = this.__Template.options;
 		} else {
@@ -364,7 +450,7 @@ export default class BlubberStep extends BlubberFields {
 		}
 
 		if ( this.__Template.hasOwnProperty( 'tag' ) === true ) {
-			Tag = this.__Template.tag;
+			Tag = this._executeFunctionOrGetString( this.__Template.tag );
 		} else {
 			Tag = 'fieldset';
 		}
@@ -393,44 +479,40 @@ export default class BlubberStep extends BlubberFields {
 		this.Groups = GeneratedStep.Groups;
 		this.Fields = GeneratedStep.Fields;
 
-		if ( this.Fields.length > 0 ) {
-			Schema.fields = this.Fields;
-		}
+		Schema.fields = this.Fields;
+		Schema.groups = this.Groups;
 
-		if ( this.Groups.length > 0 ) {
-			Schema.groups = this.Groups;
-		}
+		this.NodeSchema.inner = {
+			options: Options,
+			multiple: Multiple,
+			isNewModel: IsNewModel,
+			tag: Tag,
+			schema: Schema,
+			model: this.__GlobalModel
+		};
+
+		this.NodeSchema.tab = {
+			title: Title,
+			icon: Icon
+		};
 
 		if ( this.__Template.hasOwnProperty( 'beforeChange' ) === true ) {
 			// eslint-disable-next-line
 			BeforeChange = this._executeFunctionOrGetAnything( this.__Template.beforeChange, true );
-			this.NodeSchema.inner = {
-				// schema: Schema,
-				options: Options,
-				multiple: Multiple,
-				isNewModel: IsNewModel,
-				tag: Tag
-			};
-			this.NodeSchema.tab = {
-				title: Title,
-				icon: Icon,
-				beforeChange: BeforeChange
-			};
-		} else {
-			this.NodeSchema.inner = {
-				// schema: Schema,
-				options: Options,
-				multiple: Multiple,
-				isNewModel: IsNewModel,
-				tag: Tag,
-				title: Title,
-				icon: Icon
-			};
-			this.NodeSchema.tab = {
-				title: Title,
-				icon: Icon
-			};
+			this.NodeSchema.tab.beforeChange = BeforeChange;
 		}
+
+		if ( FieldBase._IdRegistry.containsId( this.__Template.name ) === true ) {
+
+			throw new InvalidFieldPropertyException(
+				StringHelper.format(
+					BlubberStep.__INVALID_STEP_ID__,
+					this.__Template.name
+				)
+			);
+		}
+
+		BlubberStep._IdRegistry.addId( this.__Template.name );
 		this.NodeSchema.attr = { id: this.__Template.name };
 		this.NodeSchema.ref = this.__Template.name;
 	}
@@ -443,6 +525,6 @@ export default class BlubberStep extends BlubberFields {
 	}
 
 	getCondition() {
-		return this._executeFunctionOrGetBoolean( this.__Condition );
+		return this.renderCondition;
 	}
 }

@@ -23,6 +23,8 @@ export default class FieldBase {
 	static __ALLOWED_TYPES__ = [ 'any', 'boolean', 'function', 'number', 'object', 'string' ];
 	/* Statics */
 	static _IdRegistry = new IdRegister();
+	static ModelRenderCondition = true;
+    static RenderCondition = true;
 	/* Properties*/
 	_Field;
 	_BindedObject;
@@ -417,7 +419,11 @@ export default class FieldBase {
 		if ( this.__HasDefaultValue === true ) {
 			if ( Array.isArray( this.__ModelKey ) === true ) {
 				this._addValueToModel(
-					this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
+					this.__ModelPointer[
+						this.__ModelKey[
+							this.__ModelKey.length - 1
+						]
+					]
 				);
 			} else {
 				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
