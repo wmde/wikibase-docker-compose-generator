@@ -15,7 +15,7 @@
     "yes":"yes",
     "no":"no",
 
-    "components": "Components selection",
+    "components": "Component selection",
     "components_question": "Which components you want to install?",
 
     "components_elasticsearch": "Use Elasticsearch?",
