@@ -254,9 +254,9 @@ class BlubberFields extends FieldBase
 		this._evaluateModelCondition( this.__ToWrapFields[ Index ] );
 
 		if (
-			false === this.Fields[ Index ].renderCondition
+			false === this.__ToWrapFields[ Index ].renderCondition
 		&&
-			false === this.Fields[ Index ].modelRenderCondition
+			false === this.__ToWrapFields[ Index ].modelRenderCondition
 		)
 		{
 			return;
@@ -290,7 +290,7 @@ class BlubberFields extends FieldBase
 			GroupPointer.groups = Generated.Groups;
 		}
 
-		if ( true === this.Fields[ Index ].modelRenderCondition )
+		if ( true === this.__ToWrapFields[ Index ].modelRenderCondition )
 		{
 			this.Model = Object.assign( Generated.Model, this.Model );
 		}
