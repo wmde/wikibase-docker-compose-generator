@@ -49,7 +49,7 @@
                     "label": "components_elasticsearch",
                     "help": "components_elasticsearch_help",
                     "type": "choice",
-                    "default": false,
+                    "default": true,
                     "values": [
                       {"value": true, "label":"yes"},
                       {"value": false, "label":"no"}
@@ -60,7 +60,7 @@
                     "label": "components_wikibaseQuickstatements",
                     "help": "components_wikibaseQuickstatements_help",
                     "type": "choice",
-                    "default": false,
+                    "default": true,
                     "values": [
                       {"value": true, "label":"yes"},
                       {"value": false, "label":"no"}
@@ -71,7 +71,7 @@
                     "label": "components_wikibaseQueryService",
                     "help": "components_wikibaseQueryService_help",
                     "type": "choice",
-                    "default": false,
+                    "default": true,
                     "values": [
                       {"value": true, "label":"yes"},
                       {"value": false, "label":"no"}
