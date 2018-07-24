@@ -31,8 +31,7 @@ import TimeField from './Fields/TimeField';
 import UrlField from './Fields/UrlField';
 import WeekField from './Fields/WeekField';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
-import InvalidIdWarning from "./Exceptions/InvalidIdWarning";
-import CommonRequiredAttributes from "./CommonRequiredAttributes";
+import InvalidIdWarning from './Exceptions/InvalidIdWarning';
 
 /* eslint-disable operator-linebreak */
 class BlubberFields extends FieldBase
@@ -462,16 +461,17 @@ export default class BlubberStep extends BlubberFields
 
 		let DescriptionClass = '';
 
-		if( true === this.__Template.hasOwnProperty( 'descriptionClass') )
+		if ( true === this.__Template.hasOwnProperty( 'descriptionClass' ) )
 		{
 			DescriptionClass = this._executeFunctionOrGetString( this.__Template.descriptionClass );
-        }
+		}
 
-		if( true === BlubberStep._IdRegistry.containsId( this.__Template.description ) )
+		if ( true === BlubberStep._IdRegistry.containsId( this.__Template.description ) )
 		{
-            new InvalidIdWarning(
-            	StringHelper.format(
-            		BlubberStep._INVALID_ID_,
+			// eslint-disable-next-line
+			new InvalidIdWarning(
+				StringHelper.format(
+					BlubberStep._INVALID_ID_,
 					this.__Template.description
 				)
 			);
@@ -593,32 +593,31 @@ export default class BlubberStep extends BlubberFields
 			throw new InvalidFieldException( BlubberStep._NO_NAME_ );
 		}
 
-        if ( true === this.__Template.hasOwnProperty( 'id' ) )
-        {
-            Id = this._executeFunctionOrGetString( this.__Template.id );
-        }
-        else
-        {
-            Id = this.__Template.name;
-        }
-
-
-        if ( true === BlubberStep._IdRegistry.containsId( Id ) )
-        {
-
-            throw new InvalidFieldPropertyException(
-                StringHelper.format(
-                    BlubberStep.__INVALID_STEP_ID__,
-                    Id
-                )
-            );
-        }
+		if ( true === this.__Template.hasOwnProperty( 'id' ) )
+		{
+			Id = this._executeFunctionOrGetString( this.__Template.id );
+		}
 		else
-        {
-            BlubberStep._IdRegistry.addId( Id );
-        }
+		{
+			Id = this.__Template.name;
+		}
 
-        this.Model = GeneratedStep.Model;
+		if ( true === BlubberStep._IdRegistry.containsId( Id ) )
+		{
+
+			throw new InvalidFieldPropertyException(
+				StringHelper.format(
+					BlubberStep.__INVALID_STEP_ID__,
+					Id
+				)
+			);
+		}
+		else
+		{
+			BlubberStep._IdRegistry.addId( Id );
+		}
+
+		this.Model = GeneratedStep.Model;
 		this.Groups = GeneratedStep.Groups;
 		this.Fields = GeneratedStep.Fields;
 

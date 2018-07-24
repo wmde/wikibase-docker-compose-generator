@@ -104,22 +104,21 @@ export default {
 							{
 								props: Schema.Steps[ Index ][ 0 ].tab
 							},
-                            [
-                                createElement(
-                                    'div',
-                                    {
-                                        attrs: Schema.Steps[ Index ][ 0 ].attr,
-                                    },
-                                    [ Fields[ 0 ], Fields[ 1 ] ]
-                                )
-                            ]
+							[
+								createElement(
+									'div',
+									{
+										attrs: Schema.Steps[ Index ][ 0 ].attr
+									},
+									[ Fields[ 0 ], Fields[ 1 ] ]
+								)
+							]
 						);
 
 						Tabs.push( Tab );
 					}
 				}
 
-				console.log(Schema);
 				return createElement(
 					'form-wizard',
 					{

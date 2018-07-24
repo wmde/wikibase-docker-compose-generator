@@ -91,19 +91,18 @@ export default {
 					I18n
 				);
 
-				console.log( this.$data.blubberRaw )
 				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-        goOn()
-        {
-            /* Do nothing so far */
-        },
-        done()
-        {
-            /* Do nothing so far */
-        }
+		goOn()
+		{
+			/* Do nothing so far */
+		},
+		done()
+		{
+			/* Do nothing so far */
+		}
 	}
 };
 </script>
