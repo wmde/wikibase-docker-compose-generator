@@ -38,7 +38,7 @@ export default class IdRegister
 		let Index;
 		for ( Index in Ids )
 		{
-			this.remove( Items[ Index ] );
+			this.removeId( Ids[ Index ] );
 		}
 	}
 

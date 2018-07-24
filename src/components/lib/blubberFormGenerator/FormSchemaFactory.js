@@ -98,8 +98,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 				);
 			}
 			else if (
-				-1 !== BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label )
-			&&
+				-1 !== BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label )			&&
 				'id' !== Label
 			)
 			{

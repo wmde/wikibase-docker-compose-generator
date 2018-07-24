@@ -117,28 +117,30 @@ export default {
 				);
 			}
 		},
-        __buildForm: function( createElement, Form, LabelGenerator, UseExistingModel )
-        {
-            const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
-            FormSchema.build();
+		__buildForm: function ( createElement, Form, LabelGenerator, UseExistingModel )
+		{
+			const Ids = FieldBase._IdRegistry.getStore();
+			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
+			FormSchema.build();
 
-            if( true === UseExistingModel )
-            {
-                FormSchema.refresh(
-                    Object.assign(
-                        FormSchema.Form.Model,
-                        ObjectHelper.copyObj(
-                            this.$data.blubberModel[ Form.formAttributes.id ]
-                        )
-                    )
-                );
-            }
+			if ( true === UseExistingModel )
+			{
+				FormSchema.refresh(
+					Object.assign(
+						FormSchema.Form.Model,
+						ObjectHelper.copyObj(
+							this.$data.blubberModel[ Form.formAttributes.id ]
+						)
+					)
+				);
+			}
 
-            this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
-            this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
-            this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
-            return this.__generateFromSchema( createElement, FormSchema.Form );
-        },
+			this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
+			this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
+			this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
+			this.$data.blubberIdTracker[ Form.formAttributes.id ] = FieldBase._IdRegistry.intersection( Ids );
+			return this.__generateFromSchema( createElement, FormSchema.Form );
+		},
 		buildBlubberForm: function (
 			createElement,
 			Form,
@@ -159,16 +161,18 @@ export default {
 				throw new InvalidFormException( 'There was no form id given.' );
 			}
 
-            if (
-                false === this.$data.blubberIdTracker.hasOwnProperty( Form.formAttributes.id )
-            &&
-                true === FieldBase._IdRegistry.containsId( Form.formAttributes.id )
-
-            )
-            {
-               throw new InvalidFormException( 'The given form id is allready in use.' );
-            }
-
+			if ( true === this.$data.blubberIdTracker.hasOwnProperty( Form.formAttributes.id ) )
+			{
+				FieldBase._IdRegistry.removeIds(
+					this.$data.blubberIdTracker[ Form.formAttributes.id ]
+				);
+			}
+			else if (
+				true === FieldBase._IdRegistry.containsId( Form.formAttributes.id )
+			)
+			{
+				throw new InvalidFormException( 'The given form id is allready in use.' );
+			}
 
 			FieldBase._IdRegistry.addId( Form.formAttributes.id );
 
@@ -203,10 +207,10 @@ export default {
 	data: function ()
 	{
 		return {
-            blubberModel: {},
-            blubberSchema: {},
-            blubberRaw: {},
-            blubberIdTracker: {}
-        };
+			blubberModel: {},
+			blubberSchema: {},
+			blubberRaw: {},
+			blubberIdTracker: {}
+		};
 	}
 };
