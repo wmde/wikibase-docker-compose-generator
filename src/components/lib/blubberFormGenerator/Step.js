@@ -75,7 +75,7 @@ class BlubberFields extends FieldBase
 		url: UrlField,
 		week: WeekField
 	};
-	/* Properties*/
+	/* Properties */
 	__ToWrapFields;
 	Fields;
 	Groups;

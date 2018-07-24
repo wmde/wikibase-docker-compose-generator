@@ -86,6 +86,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 	{
 		let Label, AssigmentLabel;
 		this.Form.FormRef = this.__Form.formAttributes.id;
+
 		for ( Label in this.__Form.formAttributes )
 		{
 			if ( -1 !== BlubberFormSchemaConstructor._FORM_EVENTS_.indexOf( Label ) )
@@ -96,7 +97,11 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 					true
 				);
 			}
-			else if ( -1 !== BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label ) )
+			else if (
+				-1 !== BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label )
+			&&
+				'id' !== Label
+			)
 			{
 				this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
 			}
