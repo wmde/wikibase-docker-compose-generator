@@ -19,7 +19,7 @@
     "components_question": "Which components you want to install?",
 
     "components_elasticsearch": "Use Elasticsearch?",
-    "components_elasticsearch_help": "<span>Elasticsearch is vector-space search, which is used for faster search in your wikibase. <a href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
+    "components_elasticsearch_help": "<span>Elasticsearch is a vector-space search, which is used for faster search in your wikibase. <a href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
 
     "components_wikibaseQuickstatements": "Use Quickstatements?",
     "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here for more</a></span>",
