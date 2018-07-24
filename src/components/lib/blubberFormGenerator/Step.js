@@ -416,7 +416,29 @@ export default class BlubberStep extends BlubberFields {
 	}
 
 	__getOptions() {
+		let Option;
+		const StepOptions = {};
+		if ( this.__Template.hasOwnProperty( 'options' ) === true ) {
+			for ( Option in this.__Template.options ) {
+				if (
+					Option === 'validationErrorClass'
+				||
+                    Option === 'validationSuccessClass'
+				) {
+					StepOptions[ Option ] = this._executeFunctionOrGetString(
+						this.__Template.options[ Option ]
+					);
+				}
 
+				if ( Option === 'validateAfterChanged' ) {
+					StepOptions[ Option ] = this._executeFunctionOrGetBoolean(
+						this.__Template.options[ Option ]
+					);
+				}
+			}
+		}
+
+		return StepOptions;
 	}
 
 	__buildStep() {
@@ -431,20 +453,17 @@ export default class BlubberStep extends BlubberFields {
 			GeneratedStep.build();
 		}
 
-		if ( this.__Template.hasOwnProperty( 'options' ) === true ) {
-			Options = this.__Template.options;
-		} else {
-			Options = {};
-		}
+		// eslint-disable-next-line
+		Options = this.__getOptions();
 
 		if ( this.__Template.hasOwnProperty( 'isMultiple' ) === true ) {
-			Multiple = this.__Template.isMultiple;
+			Multiple = this._executeFunctionOrGetBoolean( this.__Template.isMultiple );
 		} else {
 			Multiple = false;
 		}
 
 		if ( this.__Template.hasOwnProperty( 'isNewModel' ) === true ) {
-			IsNewModel = this.__Template.isNewModel;
+			IsNewModel = this._executeFunctionOrGetBoolean( this.__Template.isNewModel );
 		} else {
 			IsNewModel = false;
 		}
