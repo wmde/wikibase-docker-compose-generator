@@ -153,26 +153,92 @@ input
 
 .help span
 {
-    display: none;
+    visibility: hidden;
+    width: 50%;
+    background-color: #555;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left:10px;
+    padding-right:10px;
 }
 
+.help span a
+{
+    color: #4683ff;
+}
+
+.help *
+{
+    display: inline-block;
+}
 .help:after
 {
     content: "?";
     color:white;
-    border: 1px inset white;
+    border: 1px solid black;
     border-radius: 15px;
     background-color: #3366cc;
-    padding-top: 2px;
+    margin-left: 0.5em;
+    padding-top: 3px;
     padding-bottom: 3px;
     padding-left:8px;
     padding-right:8px;
-    font-size: 0.8em;
+    font-size: 0.9em;
+    display: inline-block!important;
+}
+
+.help:hover span
+{
+    visibility: visible;
+    opacity: 1;
+}
+
+.help:hover:after
+{
+    display: none;
 
 }
 
-.help:hover
+#components .form-group
+{
+    margin-top: 1.5em;
+}
+
+#components .form-group:nth-child(1)
+{
+    margin-top: 0em;
+}
+
+#components label
 {
     display: inline-block;
+}
+
+#components .field-wrap
+{
+    margin: 0px 0px 0px 0px;
+    margin-left: 1em;
+}
+
+#components input
+{
+    height: 1.2em;
+}
+
+#components .radio-list *
+{
+    display: inline-block;
+}
+
+#components .radio-list input
+{
+    float: left;
 }
 </style>

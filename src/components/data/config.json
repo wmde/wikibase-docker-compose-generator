@@ -25,7 +25,6 @@
     },
     "steps":[ {
             "name":"prolog",
-            "id":"step0",
             "description": "prolog_description",
             "icon": "settings",
             "options": {
@@ -35,7 +34,6 @@
             }
         },{
             "name": "components",
-            "id":"step1",
             "icon": "settings",
             "options": {
                 "validationErrorClass": "has-error",
@@ -48,25 +46,37 @@
                     "type": "label"
                 },{
                     "name": "elasticsearchStep",
-                    "label": "elasticsearch",
-                    "type": "checkbox",
+                    "label": "components_elasticsearch",
                     "help": "components_elasticsearch_help",
-                    "required": true,
-                    "default": true
+                    "type": "choice",
+                    "default": false,
+                    "values": [
+                      {"value": true, "label":"yes"},
+                      {"value": false, "label":"no"}
+                    ],
+                    "required" : true
                 },{
                     "name": "quickstatementsStep",
-                    "label": "wikibaseQuickstatements",
-                    "type": "checkbox",
+                    "label": "components_wikibaseQuickstatements",
                     "help": "components_wikibaseQuickstatements_help",
-                    "required": true,
-                    "default": true
+                    "type": "choice",
+                    "default": false,
+                    "values": [
+                      {"value": true, "label":"yes"},
+                      {"value": false, "label":"no"}
+                    ],
+                    "required" : true
                 },{
                     "name": "wdqsStep",
-                    "label": "wikibaseQueryService",
-                    "type": "checkbox",
+                    "label": "components_wikibaseQueryService",
                     "help": "components_wikibaseQueryService_help",
-                    "required": true,
-                    "default": true
+                    "type": "choice",
+                    "default": false,
+                    "values": [
+                      {"value": true, "label":"yes"},
+                      {"value": false, "label":"no"}
+                    ],
+                    "required" : true
                 }
             ]
         }
