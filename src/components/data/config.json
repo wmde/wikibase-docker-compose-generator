@@ -11,9 +11,7 @@
           "color": "#3366cc",
           "errorColor": "#f81717",
           "transition": "fade",
-          "startIndex": 0,
-          "onComplete": "done",
-          "onChange": "goOn"
+          "startIndex": 0
     },
     "dependencies": {
       "Elasticsearch": [],

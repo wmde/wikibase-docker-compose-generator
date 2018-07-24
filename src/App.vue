@@ -94,14 +94,6 @@ export default {
 				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
-		},
-		goOn()
-		{
-			/* Do nothing so far */
-		},
-		done()
-		{
-			/* Do nothing so far */
 		}
 	}
 };
