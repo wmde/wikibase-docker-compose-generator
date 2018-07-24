@@ -1,12 +1,9 @@
 <script>
-import { saveAs } from 'file-saver';
 import BlubberFormFactory from './components/BlubberFormFactory';
 import Utils from './Utils';
 import Language from './components/Language';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
-import Validator from './components/lib/Validators';
-import StringHelper from './components/lib/StringHelper';
 
 export default {
 	name: 'Blubber',
@@ -64,7 +61,6 @@ export default {
 			this.$data.blubberDependencies = Configuration.dependencies;
 			this.getStepNames();
 			this.$forceUpdate();
-			console.log( this.$data.blubberRaw );
 		},
 		getI18nStrings: function ( Key, LanguageCode )
 		{
@@ -83,11 +79,6 @@ export default {
 				if ( 'undefined' !== typeof this.$data.i18n )
 				{
 					I18n = this.getI18nStrings;
-					Validator.InvalidPortNoInteger = this.getI18nStrings( 'invalid_port_integer' );
-					Validator.InvalidPortWellKnown = this.getI18nStrings( 'is_well_known_port' );
-					Validator.InvalidPortInUse = this.getI18nStrings( 'port_is_in_use' );
-					Validator.InvalidString = this.getI18nStrings( 'invalid_string' );
-					Validator.InvalidArray = this.getI18nStrings( 'invalid_step' );
 				}
 
 				const Element = this.buildBlubberForm(
@@ -103,282 +94,14 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-		getValidator( FieldId )
-		{
-			const Validators = {
-				steps: Validator.steps,
-				mediawikiAdminName: Validator.string,
-				mediawikiAdminPassword: Validator.string,
-				databaseHost: Validator.string,
-				databaseName: Validator.string,
-				databaseUser: Validator.string,
-				databaseUserPassword: Validator.string,
-				wikibaseAlias: Validator.string,
-				wikibaseQuickstatementsAlias: Validator.string,
-				wikibaseQuickstatementsNamespaceItem: Validator.string,
-				wikibaseQuickstatementsNamespaceProperty: Validator.string,
-				wikibaseQuickstatementsPrefixProperty: Validator.string,
-				wikibaseQuickstatementsPrefixItem: Validator.string,
-				wikibaseBlazegraphAlias: Validator.string,
-				wikibaseFrontendAlias: Validator.string,
-				databasePort: Validator.ports,
-				wikibasePort: Validator.ports,
-				wikibaseQuickstatementsPort: Validator.ports,
-				wikibaseBlazegraphPort: Validator.ports,
-				wikibaseFrontendPort: Validator.ports
-			};
-
-			FieldId = FieldId[ 0 ];
-
-			if ( false === Validators.hasOwnProperty( FieldId ) )
-			{
-				return '';
-			}
-			else
-			{
-				return Validators[ FieldId ];
-			}
-		},
-		isExpert: function ()
-		{
-
-			console.log( ObjectHelper.copyObj( this.$data.blubberSchema ) );
-			if ( 'undefined' === typeof this.$data.blubberModel[ this.$data.blubberGeneratedFormProperties.id ] )
-			{
-				return false;
-			}
-			else
-			{
-
-				console.log( this.$data.blubberModel[
-					this.$data.blubberGeneratedFormProperties.id
-				].expertMode );
-				return this.$data.blubberModel[
-					this.$data.blubberGeneratedFormProperties.id
-				].expertMode;
-			}
-		},
-		refreshSteps: function ()
-		{
-			console.log( 'hier' );
-			this.$forceUpdate();
-			return true;
-		},
-		lockSteps: function ()
-		{
-			console.log( this.$data.blubberModel );
-			return true;
-		},
-		changeDependcies: function ( Model )
-		{
-			console.log( this.$data.blubberDependencies );
-			console.log( this.$data.blubberSchema );
-			console.log( Model );
-		},
-		isAvailable()
-		{
-
-		},
-		useElasticsearch: function ()
-		{
-			return true;
-		},
-		showPasswords: function ()
-		{
-			let Node = document.getElementById( arguments[ 1 ].id );
-			let GetHideLabel = true;
-			if ( 'text' === Node.getAttribute( 'type' ) )
-			{
-				Node.setAttribute( 'type', 'password' );
-				GetHideLabel = false;
-			}
-			else
-			{
-				Node.setAttribute( 'type', 'text' );
-			}
-
-			Node = Node.parentNode.nextSibling.firstChild;
-
-			if ( true === GetHideLabel )
-			{
-				Node.innerText = this.getI18nStrings( 'hidePassword' );
-			}
-			else
-			{
-				Node.innerText = this.getI18nStrings( 'showPassword' );
-			}
-		},
-		randomString( Length, Min, Max, Exclude = [] )
-		{
-			const GeneratedString = [];
-			let Char, Index;
-			if ( 0 > Length )
-			{
-				return '';
-			}
-
-			Exclude = Exclude.sort();
-			for ( Index = 0; Index < Exclude.length; Index++ )
-			{
-				if ( 'string' === typeof Exclude[ Index ] )
-				{
-					Exclude[ Index ] = Exclude[ Index ].charCodeAt( 0 );
-				}
-			}
-
-			do
-			{
-				Char = Math.round( Math.random() * 100 + Math.random() * 100 );
-				if ( 0 < Min && Char < Min )
-				{
-					continue;
-				}
-
-				if ( 0 < Max && Char > Max )
-				{
-					continue;
-				}
-
-				if ( -1 !== Utils.binarySearch( Exclude, Char ) )
-				{
-					continue;
-				}
-
-				Char = String.fromCharCode( Char );
-				Length--;
-				GeneratedString[ Length ] = Char;
-			}
-			while ( 0 < Length );
-
-			return GeneratedString.join( '' );
-		},
-		generateAPassword()
-		{
-			const RandomString = this.randomString(
-				42,
-				33,
-				126,
-				[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
-			);
-
-			this.$data.blubberModel[
-				this.$data.blubberGeneratedFormProperties.id
-			][ arguments[ 1 ].model ] = RandomString;
-
-			this.$forceUpdate();
-		},
-		goOn: function ()
-		{
-			this.$data.blubberCurrentStep = arguments[ 1 ];
-		},
-		validateStep: function ()
-		{
-
-			this.$forceUpdate();
-			console.log( ObjectHelper.copyObj( this.$refs, 2 ) );
-			return this.$refs[
-				this.$data.blubberStepNames[
-					this.$data.blubberCurrentStep
-				]
-			].validate();
-		},
-		jumpToTheEnd()
-		{
-			this.$refs[ this.$data.blubberGeneratedFormProperties.id ].changeTab(
-				0,
-				this.$data.blubberSchema[ this.$data.blubberGeneratedFormProperties.id ].length - 1
-			);
-		},
-		showYmlFile()
-		{
-			let Index;
-			const ToPrint = [];
-			const Place = document.getElementById( 'yml' ).firstChild;
-
-			if ( false === this.$data.blubberModel[
-				this.$data.blubberGeneratedFormProperties.id
-			].hasOwnProperty( 'secretkey' ) )
-			{
-				this.$data.blubberModel[
-					this.$data.blubberGeneratedFormProperties.id
-				].secretkey = this.randomString(
-					42,
-					33,
-					126,
-					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
-				);
-			}
-			for ( Index = 0; Index < this.$data.blubberGeneratedSteps.length - 1; Index++ )
-			{
-				if (
-					false === this.$data.blubberGeneratedSteps[ Index ].hasOwnProperty( 'template' ) ||
-                    true === Utils.isEmpty( this.$data.blubberGeneratedSteps[ Index ].template )
-				)
-				{
-					continue;
-				}
-				ToPrint.push( StringHelper.format(
-					this.$data.blubberGeneratedSteps[ Index ].template,
-					this.$data.blubberModel[ this.$data.blubberGeneratedFormProperties.id ]
-				) );
-			}
-
-			ToPrint.splice(
-				0,
-				0,
-				this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 0 ]
-			);
-
-			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 1 ] );
-			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 2 ] );
-			Place.innerHTML = ToPrint.join( '\n' );
-		},
-		done()
-		{
-			let Index, Download;
-			const ToPrint = [];
-
-			if ( false === this.$data.blubberModel[
-				this.$data.blubberGeneratedFormProperties.id
-			].hasOwnProperty( 'secretKey' ) )
-			{
-				this.$data.blubberModel[
-					this.$data.blubberGeneratedFormProperties.id
-				].secretkey = this.randomString(
-					42,
-					33,
-					126,
-					[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
-				);
-			}
-
-			for ( Index = 0; Index < this.$data.blubberGeneratedSteps.length - 1; Index++ )
-			{
-				if (
-					false === this.$data.blubberGeneratedSteps[ Index ].hasOwnProperty( 'template' ) ||
-                    true === Utils.isEmpty( this.$data.blubberGeneratedSteps[ Index ].template )
-				)
-				{
-					continue;
-				}
-				ToPrint.push( StringHelper.format(
-					this.$data.blubberGeneratedSteps[ Index ].template,
-					this.$data.blubberModel[ this.$data.blubberGeneratedFormProperties.id ]
-				) );
-			}
-
-			ToPrint.splice(
-				0,
-				0,
-				this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 0 ]
-			);
-
-			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 1 ] );
-			ToPrint.push( this.$data.blubberGeneratedSteps[ this.$data.blubberGeneratedSteps.length - 1 ].template[ 2 ] );
-			// eslint-disable-next-line
-			Download = new File( [ ToPrint.join( '\n' ) ], 'docker-composer.yml', { type: 'text/plain;charset=utf-8' } );
-			saveAs( Download );
-		}
+        goOn()
+        {
+            /* Do nothing so far */
+        },
+        done()
+        {
+            /* Do nothing so far */
+        }
 	}
 };
 </script>

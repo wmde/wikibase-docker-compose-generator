@@ -32,334 +32,43 @@
               "validationSuccessClass": "has-success",
               "validateAfterChanged": true
             }
-        },{
-            "name":"generalSettings",
-            "icon": "settings",
-            "beforeChange": "lockSteps",
-            "options": {
-                    "validationErrorClass": "has-error",
-                    "validationSuccessClass": "has-success",
-                    "validateAfterChanged": true
-            },
-            "fields":[ {
-                  "name": "generalSettings_question",
-                  "type": "label"
-                },{
-                  "name": "elasticsearchStep",
-                  "label": "elasticsearch",
-                  "type": "checkbox",
-                  "required": true,
-                  "default": true
-                },{
-                  "name": "quickstatementsStep",
-                  "label": "wikibaseQuickstatements",
-                  "type": "checkbox",
-                  "afterChanged": "changeDependcies",
-                  "required": true,
-                  "default": true
-                },{
-                  "name": "wikibaseBlazegraphStep",
-                  "label": "wikibaseBlazegraph",
-                  "type": "checkbox",
-                  "required": true,
-                  "default": true
-                },{
-                  "name": "wikibaseProxyStep",
-                  "label": "wikibaseProxy",
-                  "type": "checkbox",
-                  "required": true,
-                  "default": true
-                },{
-                  "name": "wikibaseFrontendStep",
-                  "label": "wikibaseFrontend",
-                  "type": "checkbox",
-                  "required": true,
-                  "default": true
-                },{
-                  "name": "wikibaseUpdaterStep",
-                  "label": "wikibaseUpdater",
-                  "type": "checkbox",
-                  "required": true,
-                  "default": true
-                }
-            ]
-        },{
-              "name":"expert",
-              "icon": "settings",
-              "options": {
-                    "validationErrorClass": "has-error",
-                    "validationSuccessClass": "has-success",
-                    "validateAfterChanged": true
-              },
-              "fields":[ {
-                  "name":"expertMode",
-                  "type": "choice",
-                  "default": true,
-                  "required": true,
-                  "values": [
-                      { "value": false, "label":"no" },
-                      { "value": true, "label":"yes" }
-                    ]
-                }
-              ]
-        },{
-              "name":"mediawiki",
-              "condition": "isExpert",
-              "icon": "settings",
-              "beforeChange": "validateStep",
-              "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-              },
-              "fields":[{
-                  "name": "mediawikiAdminName",
-                  "type": "text",
-                  "default": "admin",
-                  "setToModel": false,
-                  "required": true
-                },{
-                  "name": "mediawikiAdminPassword",
-                  "type": "password",
-                  "default": "adminpass",
-                  "required": true,
-                  "buttons": [
-                      {
-                        "label": "showPassword",
-                        "action": "showPasswords"
-                      },
-                      {
-                        "label": "generatePassword",
-                        "action": "generateAPassword"
-                      }
-                  ]
-              }]
-        },{
-            "name":"dynamit",
-            "bind":"test"
-        },{
-              "name":"database",
-              "condition": "isExpert",
-              "icon": "settings",
-              "beforeChange": "validateStep",
-              "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-              },
-              "fields":[{
-                "name": "databaseAlias",
-                "type": "text",
-                "default": "mysql",
-                "required": true
-              },{
-                "name": "databaseName",
-                "type": "text",
-                "default": "my_wiki",
-                "required": true
-              },{
-                "name": "databaseUser",
-                "type": "text",
-                "default": "wikiuser",
-                "required": true
-              },{
-                  "name": "databaseUserPassword",
-                  "type": "password",
-                  "default": "sqlpass",
-                  "required": true,
-                  "buttons": [
-                    {
-                      "label": "showPassword",
-                      "action": "showPasswords"
-                    },
-                    {
-                      "label": "generatePassword",
-                      "action": "generateAPassword"
-                    }
-                  ]
-              }],
-              "template": "\tmysql:\n\t\timage: mariadb:latest\n\t\tvolumes:\n\t\t\t- mediawiki-mysql-data:/var/lib/mysql\n\t\tenvironment:\n\t\t\tMYSQL_DATABASE: {databaseName}\n\t\t\tMYSQL_USER: {databaseUser}\n\t\t\tMYSQL_PASSWORD: {databaseUserPassword}\n\t\t\tMYSQL_RANDOM_ROOT_PASSWORD: 'yes'\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {databaseAlias}.svc"
-        },{
-              "name":"wikibase",
-              "condition": "isExpert",
-              "icon": "settings",
-              "beforeChange": "validateStep",
-              "options": {
-                  "validationErrorClass": "has-error",
-                  "validationSuccessClass": "has-success",
-                  "validateAfterChanged": true
-              },
-              "fields":[{
-                          "name": "wikibaseAlias",
-                          "type": "text",
-                          "default": "wikibase",
-                          "required": true
-                      },{
-                          "name": "wikibasePort",
-                          "type": "number",
-                          "default": "8181",
-                          "required": true
-                      }
-              ],
-              "template": "\twikibase:\n\t\timage: wikibase/wikibase:1.30-bundle\n\t\tbuild:\n\t\t\tcontext: ./wikibase/1.30/bundle\n\t\t\tdockerfile: Dockerfile\n\t\tlinks:\n\t\t\t- mysql\n\t\tports:\n\t\t\t- \"{wikibasePort}:80\"\n\t\tvolumes:\n\t\t\t- mediawiki-images-data:/var/www/html/images\n\t\tdepends_on:\n\t\t\t- mysql\n\t\t\t- elasticsearch\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseAlias}.svc\n\t\tenvironment:\n\t\t\t- DB_SERVER={databaseAlias}.svc:3306\n\t\t\t- DB_USER={databaseUser}\n\t\t\t- DB_PASS={databaseUserPassword}\n\t\t\t- DB_NAME={databaseName}\n\t\t\t- MW_ADMIN_NAME={mediawikiAdminName}\n\t\t\t- MW_ADMIN_PASS={mediawikiAdminPassword}\n\t\t\t- MW_WG_SECRET_KEY={secretkey}\n\t\t\t- MW_ELASTIC_HOST=elasticsearch.svc\n\t\t\t- MW_ELASTIC_PORT=9200"
-        },{
-              "name":"elasticsearch",
-              "description": "elasticsearch_description",
-              "condition": "useElasticsearch",
-              "icon": "settings",
-              "beforeChange": "validateStep",
-              "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-              },
-              "fields":[{
-                "name": "elasticsearchAlias",
-                "type": "text",
-                "default": "elasticsearch",
-                "required": true
-              }],
-              "template": "\telasticsearch:\n\t\timage: elasticsearch@sha256:f1dbf2019dc9a4ca5dd458635bfb31f9a601e4905e1d6ca1d65a3958d428f497\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {elasticsearchAlias}.svc\n\t\tenvironment:\n\t\t\tdiscovery.type: single-node\n"
-        },{
-              "name": "wikibaseQuickstatements",
-              "beforeChange": "validateStep",
-              "description": "wikibaseQuickstatements_description",
-              "icon": "settings",
-              "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-              },
-              "fields":[{
-                    "name": "wikibaseQuickstatementsAlias",
-                    "type": "text",
-                    "default": "quickstatements",
-                    "required": false
-                  },{
-                    "name": "wikibaseQuickstatementsPort",
-                    "type": "number",
-                    "default": "9191"
-                  },{
-                      "name": "wikibaseQuickstatementsNamespaceProperty",
-                      "type": "text",
-                      "default": "122",
-                      "required": true
-                    },{
-                    "name": "wikibaseQuickstatementsPrefixProperty",
-                    "type": "text",
-                    "default": "Property",
-                    "required": true
-                  },{
-                    "name": "wikibaseQuickstatementsNamespaceItem",
-                    "type": "text",
-                    "default": "120",
-                    "required": false,
-                    "styleClasses":"col-xs-3"
-                  },{
-                    "name": "wikibaseQuickstatementsPrefixItem",
-                    "type": "text",
-                    "default": "Item",
-                    "required": true
-                  }
-              ],
-            "template":"\tquickstatements:\n\t\timage: wikibase/quickstatements:latest\n\t\tbuild:\n\t\t\tcontext: ./quickstatements/latest\n\t\t\tdockerfile: Dockerfile\n\t\tports:\n\t\t\t- \"{wikibaseQuickstatementsPort}:80\"\n\t\tdepends_on:\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseQuickstatementsAlias}.svc\n\t\tenvironment:\n\t\t\t- OAUTH_CONSUMER_KEY=559fcf1da153c5ec4b2fbefa7c3c395b\n\t\t\t- OAUTH_CONSUMER_SECRET=57cad33da0015dce1e94a597908e19848714a6af\n\t\t\t- QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibaseQuickstatementsPort}\n\t\t\t- WB_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibasePort}\n\t\t\t- WIKIBASE_SCHEME_AND_HOST=http://{wikibaseAlias}.svc\n\t\t\t- WB_PROPERTY_NAMESPACE={wikibaseQuickstatementsNamespaceProperty}\n\t\t\t- \"WB_PROPERTY_PREFIX={wikibaseQuickstatementsPrefixProperty}:\"\n\t\t\t- WB_ITEM_NAMESPACE={wikibaseQuickstatementsNamespaceItem}\n\t\t\t- \"WB_ITEM_PREFIX={wikibaseQuickstatementsPrefixItem}:\""
-        },{
-            "name": "wikibaseBlazegraph",
-            "beforeChange": "validateStep",
-            "description": "wikibaseBlazegraph_description",
-            "icon": "settings",
-            "options": {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-            },
-            "fields":[{
-                    "name": "wikibaseBlazegraphAlias",
-                    "type": "text",
-                    "default": "wdqs",
-                    "required": false
-                },{
-                    "name": "wikibaseBlazegraphPort",
-                    "type": "number",
-                    "default": "9999",
-                    "required": true
-                }
-            ],
-            "template":"\twdqs:\n\t\timage: wikibase/wdqs:0.3.0\n\t\trestart: always\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tvolumes:\n\t\t\t- query-service-data:/wdqs/data\n\t\tcommand: /runBlazegraph.sh\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseBlazegraphAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}\n\t\texpose:\n\t\t\t- {wikibaseBlazegraphPort}"
-        },{
-            "name": "wikibaseProxy",
-            "beforeChange": "validateStep",
-            "description": "wikibaseProxy_description",
-            "icon": "settings",
-            "options": {
-              "validationErrorClass": "has-error",
-              "validationSuccessClass": "has-success",
-              "validateAfterChanged": true
-            },
-            "fields":[{
-              "name": "wikibaseProxyAlias",
-              "type": "text",
-              "default": "wdqs-proxy",
-              "required": false
-            },{
-              "name": "wikibaseProxyPort",
-              "type": "number",
-              "default": "8989",
-              "required": true
-            }],
-            "template":"\twdqs-proxy:\n\t\timage: wikibase/wdqs-proxy\n\t\tbuild:\n\t\t\tcontext: ./wdqs-proxy/latest\n\t\t\tdockerfile: Dockerfile\n\t\tenvironment:\n\t\t\t- PROXY_PASS_HOST={wikibaseBlazegraphAlias}.svc:{wikibaseBlazegraphPort}\n\t\tports:\n\t\t\t- \"{wikibaseProxyPort}:80\"\n\t\tdepends_on:\n\t\t\t- wdqs\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseProxyAlias}.svc"
-        },{
-          "name": "wikibaseFrontend",
-           "beforeChange": "validateStep",
-          "description": "wikibaseFrontend_description",
-          "icon": "settings",
-          "options": {
-            "validationErrorClass": "has-error",
-            "validationSuccessClass": "has-success",
-            "validateAfterChanged": true
+        },
+      {
+        "name": "components",
+        "icon": "settings",
+        "options": {
+          "validationErrorClass": "has-error",
+          "validationSuccessClass": "has-success",
+          "validateAfterChanged": true
+        },
+        "fields": [
+          {
+            "name": "components_question",
+            "type": "label"
           },
-          "fields":[{
-            "name": "wikibaseFrontendAlias",
-            "default": "wdqs-frontend",
-            "type": "text",
-            "required": false
-          },{
-            "name": "wikibaseFrontendPort",
-            "type": "number",
-            "default": "8282",
-            "required": true
-          }],
-          "template":"\twdqs-frontend:\n\t\timage: wikibase/wdqs-frontend:latest\n\t\tbuild:\n\t\t\tcontext: ./wdqs-frontend/latest\n\t\t\tdockerfile: Dockerfile\n\t\tports:\n\t\t\t- \"{wikibaseFrontendPort}:80\"\n\t\tdepends_on:\n\t\t\t- wdqs-proxy\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseFrontendAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseProxyAlias}.svc"
-        },{
-          "name": "wikibaseUpdater",
-          "beforeChange": "validateStep",
-          "icon": "settings",
-          "options": {
-            "validationErrorClass": "has-error",
-            "validationSuccessClass": "has-success",
-            "validateAfterChanged": true
-          },
-          "fields":[{
-            "name": "wikibaseUpdaterAlias",
-            "type": "text",
-            "default": "wdqs-updater",
+          {
+            "name": "elasticsearchStep",
+            "label": "elasticsearch",
+            "type": "checkbox",
             "required": true,
-            "styleClasses":"col-xs-3"
-          }],
-          "template":"\twdqs-updater:\n\t\timage: wikibase/wdqs:0.3.0\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tcommand: /runUpdate.sh\n\t\tdepends_on:\n\t\t\t- wdqs\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- {wikibaseAlias}.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST={wikibaseAlias}.svc\n\t\t\t- WDQS_HOST={wikibaseBlazegraphAlias}.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}"
-    },{
-          "name": "complete",
-          "description": "complete_description",
-          "icon": "settings",
-          "fields": [{
-            "name": "showBeforeDownloadYml",
-            "type": "submit",
-            "onSubmit": "showYmlFile"
-          }],
-          "template": [
-            "version: 3",
-            "\n\tvolumes:\n\t\tmediawiki-mysql-data:\n\t\tmediawiki-images-data:\n\t\tquery-service-data:"
-          ]
-        }
+            "default": true
+          },
+          {
+            "name": "quickstatementsStep",
+            "label": "wikibaseQuickstatements",
+            "type": "checkbox",
+            "afterChanged": "changeDependcies",
+            "required": true,
+            "default": true
+          },
+          {
+            "name": "wdqsStep",
+            "label": "wdqs",
+            "type": "checkbox",
+            "required": true,
+            "default": true
+          }
+        ]
+      }
     ]
 }

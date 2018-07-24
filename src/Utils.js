@@ -127,7 +127,6 @@ class Utils
 
 	static async waitUntil( Callback )
 	{
-
 		while ( Callback() )
 		{
 			await Utils.sleep( 10 );

@@ -21,60 +21,12 @@
     "yes":"yes",
     "no":"no",
 
-    "generalSettings": "General Setting",
-    "generalSettings_question": "Which containers you want to install?",
-
-   "expert": "Customizing",
-   "expertMode": "Do you want to take the default settings?",
-
-    "mediawiki": "MediaWiki",
-    "mediawikiSiteName": "How would you like to name your MediaWiki?",
-    "mediawikiAdminName": "How would you like to name your MediaWiki admin account?",
-    "mediawikiAdminPassword": "Provide your admin account a password.",
-
-    "database": "MediaWiki database",
-    "databaseAlias": "How you like to name the Wikibase container localy?",
-    "databasePort": "Which port the database should use?",
-    "databaseName": "How you like to name the database?",
-    "databaseUser": "What is the name of your database user?",
-    "databaseUserPassword": "Provide your database user a password.",
-
-    "wikibase": "Wikibase",
-    "wikibaseAlias":"How you like to name the Wikibase container localy?",
-    "wikibasePort": "Which port Wikibase should use?",
+    "components": "Components selection",
+    "components_question": "Which components you want to install?",
 
     "elasticsearch": "Elasticsearch",
-    "elasticsearch_description": "<p>Elasticsearch is vectorspace-model based search engine, which is used by wikibase. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Elasticsearch\">here</a>.</p>",
-    "elasticsearchAlias": "How you like to name the Elasticsearch container localy?",
 
     "wikibaseQuickstatements": "Quickstatements",
-    "wikibaseQuickstatements_description": "<p>QuickStatements is a tool to batch-edit Wikidata. You can take a look <a href=\"https://tools.wmflabs.org/quickstatements/#/\">here</a>.</p>",
-    "wikibaseQuickstatementsAlias": "How you like to name the Quickstatements container localy?",
-    "wikibaseQuickstatementsPort": "Which port quickstatements should use?",
-    "wikibaseQuickstatementsNamespaceProperty": "Which namespace you want to use for properties in Wikibase?",
-    "wikibaseQuickstatementsNamespaceItem": "Which namespace you want to use for items in Wikibase?",
-    "wikibaseQuickstatementsPrefixProperty": "Which prefix you want to use for properties in Wikibase?",
-    "wikibaseQuickstatementsPrefixItem": "Which prefix you want to use for items in Wikibase?",
 
-    "wikibaseBlazegraph": "SPARQL query service (WDQS)",
-    "wikibaseBlazegraph_description": "Blazegraph is the backend for the SPARQL query service (WDQS).",
-    "wikibaseBlazegraphAlias": "How you like to name the SPARQL query service (WDQS) container localy?",
-    "wikibaseBlazegraphPort": "Which port the SPARQL query service should use?",
-
-    "wikibaseProxy": "WDQS-Proxy",
-    "wikibaseProxy_description": "<p>The Proxy is supposed to make the query service READONLY. Also he should enforce query timeouts.</p>",
-    "wikibaseProxyAlias": "How you like to name the proxy service?",
-    "wikibaseProxyPort": "Which port the proxy service should use?",
-
-    "wikibaseFrontend": "User Interface for WDQS",
-    "wikibaseFrontend_description": "<p>The User Interface for WDQS is a frontend for the  SPARQL query service.</p>",
-    "wikibaseFrontendAlias": "How you like to name the User Interface for WDQS container localy?",
-    "wikibaseFrontendPort": "Which port the User Interface for WDQS should use?",
-
-    "wikibaseUpdater": "Wikibase Updater",
-    "wikibaseUpdaterAlias": "How you like to name the update service?",
-
-    "complete": "Complete!",
-    "complete_description": "<p>You can download the generated yml file by clicking on download.</p><div id=\"yml\"><pre></pre></div>",
-    "showBeforeDownloadYml": "Show me the generated yml file"
+    "wdqs": "Wikibase query service"
 }
