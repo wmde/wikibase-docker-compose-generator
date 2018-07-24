@@ -158,6 +158,7 @@ input
     color: #fff;
     text-align: left;
     border-radius: 6px;
+    margin-top: -0.1em;
     position: absolute;
     z-index: 1;
     opacity: 0;
