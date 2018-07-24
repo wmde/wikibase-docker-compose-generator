@@ -17,7 +17,6 @@ export default {
 		__generateAStep( createElement, Step )
 		{
 			let VGenerator, Description;
-
 			if (
 				0 < Step.inner.schema.fields.length
 			||
@@ -65,7 +64,7 @@ export default {
 
 			if ( true === Schema.JustFields )
 			{
-				if ( true === Schema.Steps[ 1 ] )
+				if ( true === Schema.Steps[ 0 ][ 1 ] )
 				{
 					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ][ 0 ] );
 
@@ -77,7 +76,15 @@ export default {
 							on: Schema.FormEvents,
 							ref: Schema.FormRef
 						},
-						[ Fields[ 0 ], Fields[ 1 ] ]
+						[
+							createElement(
+								'div',
+								{
+									attrs: Schema.Steps[ 0 ][ 0 ].attr
+								},
+								[ Fields[ 0 ], Fields[ 1 ] ]
+							)
+						]
 					);
 				}
 				else
@@ -95,16 +102,24 @@ export default {
 						Tab = createElement(
 							'tab-content',
 							{
-								attr: Schema.Steps[ Index ][ 0 ].attr,
 								props: Schema.Steps[ Index ][ 0 ].tab
 							},
-							[ Fields[ 0 ], Fields[ 1 ] ]
+                            [
+                                createElement(
+                                    'div',
+                                    {
+                                        attrs: Schema.Steps[ Index ][ 0 ].attr,
+                                    },
+                                    [ Fields[ 0 ], Fields[ 1 ] ]
+                                )
+                            ]
 						);
 
 						Tabs.push( Tab );
 					}
 				}
 
+				console.log(Schema);
 				return createElement(
 					'form-wizard',
 					{

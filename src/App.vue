@@ -90,6 +90,8 @@ export default {
 					},
 					I18n
 				);
+
+				console.log( this.$data.blubberRaw )
 				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
@@ -147,5 +149,30 @@ input
     border-width: 1px;
     border-color: #2e5b01;
     padding-left: 5px;
+}
+
+.help span
+{
+    display: none;
+}
+
+.help:after
+{
+    content: "?";
+    color:white;
+    border: 1px inset white;
+    border-radius: 15px;
+    background-color: #3366cc;
+    padding-top: 2px;
+    padding-bottom: 3px;
+    padding-left:8px;
+    padding-right:8px;
+    font-size: 0.8em;
+
+}
+
+.help:hover
+{
+    display: inline-block;
 }
 </style>

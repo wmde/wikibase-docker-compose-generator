@@ -25,50 +25,50 @@
     },
     "steps":[ {
             "name":"prolog",
+            "id":"step0",
             "description": "prolog_description",
             "icon": "settings",
             "options": {
-              "validationErrorClass": "has-error",
-              "validationSuccessClass": "has-success",
-              "validateAfterChanged": true
+                "validationErrorClass": "has-error",
+                "validationSuccessClass": "has-success",
+                "validateAfterChanged": true
             }
-        },
-      {
-        "name": "components",
-        "icon": "settings",
-        "options": {
-          "validationErrorClass": "has-error",
-          "validationSuccessClass": "has-success",
-          "validateAfterChanged": true
-        },
-        "fields": [
-          {
-            "name": "components_question",
-            "type": "label"
-          },
-          {
-            "name": "elasticsearchStep",
-            "label": "elasticsearch",
-            "type": "checkbox",
-            "required": true,
-            "default": true
-          },
-          {
-            "name": "quickstatementsStep",
-            "label": "wikibaseQuickstatements",
-            "type": "checkbox",
-            "afterChanged": "changeDependcies",
-            "required": true,
-            "default": true
-          },
-          {
-            "name": "wdqsStep",
-            "label": "wdqs",
-            "type": "checkbox",
-            "required": true,
-            "default": true
-          }
-        ]
-      }
+        },{
+            "name": "components",
+            "id":"step1",
+            "icon": "settings",
+            "options": {
+                "validationErrorClass": "has-error",
+                "validationSuccessClass": "has-success",
+                "validateAfterChanged": true
+            },
+            "fields": [
+                {
+                    "name": "components_question",
+                    "type": "label"
+                },{
+                    "name": "elasticsearchStep",
+                    "label": "elasticsearch",
+                    "type": "checkbox",
+                    "help": "components_elasticsearch_help",
+                    "required": true,
+                    "default": true
+                },{
+                    "name": "quickstatementsStep",
+                    "label": "wikibaseQuickstatements",
+                    "type": "checkbox",
+                    "help": "components_wikibaseQuickstatements_help",
+                    "required": true,
+                    "default": true
+                },{
+                    "name": "wdqsStep",
+                    "label": "wikibaseQueryService",
+                    "type": "checkbox",
+                    "help": "components_wikibaseQueryService_help",
+                    "required": true,
+                    "default": true
+                }
+            ]
+        }
     ]
 }

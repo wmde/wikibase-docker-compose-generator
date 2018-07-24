@@ -25,8 +25,11 @@
     "components_question": "Which components you want to install?",
 
     "elasticsearch": "Elasticsearch",
+    "components_elasticsearch_help": "<span>Elasticsearch is vector-space search, which is used for faster search in your wikibase. <a href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here fore more</a></span>",
 
     "wikibaseQuickstatements": "Quickstatements",
+    "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here fore more</a></span>",
 
-    "wdqs": "Wikibase query service"
+    "wikibaseQueryService": "Wikibase query service",
+    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package which provides a <a href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here fore more</a></span>"
 }
