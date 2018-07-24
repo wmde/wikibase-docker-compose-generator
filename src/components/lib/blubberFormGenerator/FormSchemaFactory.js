@@ -76,6 +76,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 	__setFormPropterties() {
 		let Label, AssigmentLabel;
 		this.Form.FormRef = this.__Form.formAttributes.id;
+
 		for ( Label in this.__Form.formAttributes ) {
 			if ( BlubberFormSchemaConstructor._FORM_EVENTS_.indexOf( Label ) !== -1 ) {
 				AssigmentLabel = `on-${ Label.substring( 2 ).toLowerCase() }`;
@@ -83,7 +84,10 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 					this.__Form.formAttributes[ Label ],
 					true
 				);
-			} else if ( BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label ) !== -1 ) {
+			} else if (
+				BlubberFormSchemaConstructor._FORM_ATTRIBUTES_.indexOf( Label ) !== -1			&&
+				Label !== 'id'
+			) {
 				this.Form.FormAttributes[ Label ] = this.__Form.formAttributes[ Label ];
 			} else if (
 				BlubberFormSchemaConstructor._FORM_PROPERTIES_.indexOf( Label ) !== -1
@@ -105,9 +109,9 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 		}
 	}
 
-	__build( Set ) {
+	__build( Steps ) {
 		const Generated = new BlubberStep(
-			Set,
+			Steps,
 			this._BindedObject,
 			this._LabelGenerator,
 			this.Form.Model

@@ -5,6 +5,7 @@ import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
 import FieldBase from './lib/blubberFormGenerator/FieldBase';
 import { UPDATE_FORCE_COMPLETE_UPDATE, UPDATE_DEFAULT } from './lib/blubberFormGenerator/RenderConstants';
+import InvalidFormException from './lib/blubberFormGenerator/Exceptions/InvalidFieldException';
 /* eslint-disable operator-linebreak */
 export default {
 	components: {
@@ -100,24 +101,56 @@ export default {
 				);
 			}
 		},
+		__buildForm: function ( createElement, Form, LabelGenerator, UseExistingModel ) {
+			const Ids = FieldBase._IdRegistry.getStore();
+			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
+			FormSchema.build();
+
+			if ( UseExistingModel === true ) {
+				FormSchema.refresh(
+					Object.assign(
+						FormSchema.Form.Model,
+						ObjectHelper.copyObj(
+							this.$data.blubberModel[ Form.formAttributes.id ]
+						)
+					)
+				);
+			}
+
+			this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
+			this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
+			this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
+			this.$data.blubberIdTracker[ Form.formAttributes.id ] = FieldBase._IdRegistry.intersection(
+				Ids
+			);
+			return this.__generateFromSchema( createElement, FormSchema.Form );
+		},
 		buildBlubberForm: function (
 			createElement,
 			Form,
-			LabelGenerator,
+			LabelGenerator = null,
 			ReRenderFlag = UPDATE_DEFAULT
 		) {
-			let FormSchema;
-
 			if (
 				Form.hasOwnProperty( 'formAttributes' ) === false
 			||
 				(
-					Form.formAttributes.hasOwnProperty( 'id' ) === false
-				&&
 					Form.hasOwnProperty( 'formAttributes' ) === true
+				&&
+					Form.formAttributes.hasOwnProperty( 'id' ) === false
 				)
 			) {
-				return '';
+				throw new InvalidFormException( 'There was no form id given.' );
+			}
+
+			if ( this.$data.blubberIdTracker.hasOwnProperty( Form.formAttributes.id ) === true ) {
+				FieldBase._IdRegistry.removeIds(
+					this.$data.blubberIdTracker[ Form.formAttributes.id ]
+				);
+			} else if (
+				FieldBase._IdRegistry.containsId( Form.formAttributes.id ) === true
+			) {
+				throw new InvalidFormException( 'The given form id is allready in use.' );
 			}
 
 			FieldBase._IdRegistry.addId( Form.formAttributes.id );
@@ -140,36 +173,23 @@ export default {
 					].Form.Model;
 					return this.__generateFromSchema(
 						createElement,
-						this.$data.blubberRaw[
-							Form.formAttributes.id
-						].Form
+						this.$data.blubberRaw[ Form.formAttributes.id ].Form
 					);
 				} else {
-					FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
-					FormSchema.build();
-					FormSchema.refresh(
-						Object.assign(
-							FormSchema.Form.Model,
-							ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
-						)
-					);
-
-					this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
-					this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
-					this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
+					return this.__buildForm( createElement, Form, LabelGenerator, true );
 				}
 			} else {
-				FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
-				FormSchema.build();
-				this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
-				this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
-				this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
-				return this.__generateFromSchema( createElement, FormSchema.Form );
+				return this.__buildForm( createElement, Form, LabelGenerator, false );
 			}
 
 		}
 	},
 	data: function () {
-		return { blubberModel: {}, blubberSchema: {}, blubberRaw: {} };
+		return {
+			blubberModel: {},
+			blubberSchema: {},
+			blubberRaw: {},
+			blubberIdTracker: {}
+		};
 	}
 };

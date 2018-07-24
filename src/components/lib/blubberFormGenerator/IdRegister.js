@@ -16,8 +16,8 @@ export default class IdRegister {
 		}
 	}
 
-	remove( Item ) {
-		const Index = this.__IdStore.indexOf( Item );
+	removeId( Id ) {
+		const Index = this.__IdStore.indexOf( Id );
 		if ( Index === -1 ) {
 			return;
 		}
@@ -25,10 +25,10 @@ export default class IdRegister {
 		this.__IdStore.splice( Index, 1 );
 	}
 
-	removeItems( Items ) {
+	removeIds( Ids ) {
 		let Index;
-		for ( Index in Items ) {
-			this.remove( Items[ Index ] );
+		for ( Index in Ids ) {
+			this.removeId( Ids[ Index ] );
 		}
 	}
 
