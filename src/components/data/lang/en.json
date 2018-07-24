@@ -5,9 +5,6 @@
     "nextButton": "Next",
     "backButton": "Back",
     "finishButton": "Download",
-    "showPassword": "Show me the password",
-    "generatePassword": "Generate me a password",
-    "hidePassword": "Hide the password",
 
     "prolog": "Welcome",
     "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a href=\"https://docs.docker.com/compose/\">here</a>.</p>",
