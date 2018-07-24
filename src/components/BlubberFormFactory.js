@@ -16,7 +16,6 @@ export default {
 	methods: {
 		__generateAStep( createElement, Step ) {
 			let VGenerator, Description;
-
 			if (
 				Step.inner.schema.fields.length > 0
 			||
@@ -56,7 +55,7 @@ export default {
 			const Tabs = [];
 
 			if ( Schema.JustFields === true ) {
-				if ( Schema.Steps[ 1 ] === true ) {
+				if ( Schema.Steps[ 0 ][ 1 ] === true ) {
 					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ][ 0 ] );
 
 					return createElement(
@@ -67,7 +66,15 @@ export default {
 							on: Schema.FormEvents,
 							ref: Schema.FormRef
 						},
-						[ Fields[ 0 ], Fields[ 1 ] ]
+						[
+							createElement(
+								'div',
+								{
+									attrs: Schema.Steps[ 0 ][ 0 ].attr
+								},
+								[ Fields[ 0 ], Fields[ 1 ] ]
+							)
+						]
 					);
 				} else {
 					return '';
@@ -79,10 +86,17 @@ export default {
 						Tab = createElement(
 							'tab-content',
 							{
-								attr: Schema.Steps[ Index ][ 0 ].attr,
 								props: Schema.Steps[ Index ][ 0 ].tab
 							},
-							[ Fields[ 0 ], Fields[ 1 ] ]
+							[
+								createElement(
+									'div',
+									{
+										attrs: Schema.Steps[ Index ][ 0 ].attr
+									},
+									[ Fields[ 0 ], Fields[ 1 ] ]
+								)
+							]
 						);
 
 						Tabs.push( Tab );

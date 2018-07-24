@@ -31,6 +31,7 @@ import TimeField from './Fields/TimeField';
 import UrlField from './Fields/UrlField';
 import WeekField from './Fields/WeekField';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
+import InvalidIdWarning from './Exceptions/InvalidIdWarning';
 
 /* eslint-disable operator-linebreak */
 class BlubberFields extends FieldBase {
@@ -400,7 +401,24 @@ export default class BlubberStep extends BlubberFields {
 		const DescriptionText = this._getStringLabelOrPlaceholder(
 			this.__Template.description
 		);
-		const DescriptionClass = this._getStringLabelOrEmpty( this.__Template.descriptionClass );
+
+		let DescriptionClass = '';
+
+		if ( this.__Template.hasOwnProperty( 'descriptionClass' ) === true ) {
+			DescriptionClass = this._executeFunctionOrGetString( this.__Template.descriptionClass );
+		}
+
+		if ( BlubberStep._IdRegistry.containsId( this.__Template.description ) === true ) {
+			// eslint-disable-next-line
+			new InvalidIdWarning(
+				StringHelper.format(
+					BlubberStep._INVALID_ID_,
+					this.__Template.description
+				)
+			);
+		} else {
+			BlubberStep._IdRegistry.addId( this.__Template.description );
+		}
 
 		if ( Utils.isEmpty( this.__Template.description ) === false ) {
 			this.NodeSchema.description = {
@@ -442,7 +460,7 @@ export default class BlubberStep extends BlubberFields {
 	}
 
 	__buildStep() {
-		let Options, Multiple, IsNewModel, Tag, Title, Icon, BeforeChange;
+		let Options, Multiple, IsNewModel, Tag, Title, Icon, BeforeChange, Id;
 		const GeneratedStep = new BlubberFields(
 			this.__Template.fields,
 			this._BindedObject,
@@ -494,6 +512,24 @@ export default class BlubberStep extends BlubberFields {
 			throw new InvalidFieldException( BlubberStep._NO_NAME_ );
 		}
 
+		if ( this.__Template.hasOwnProperty( 'id' ) === true ) {
+			Id = this._executeFunctionOrGetString( this.__Template.id );
+		} else {
+			Id = this.__Template.name;
+		}
+
+		if ( BlubberStep._IdRegistry.containsId( Id ) === true ) {
+
+			throw new InvalidFieldPropertyException(
+				StringHelper.format(
+					BlubberStep.__INVALID_STEP_ID__,
+					Id
+				)
+			);
+		} else {
+			BlubberStep._IdRegistry.addId( Id );
+		}
+
 		this.Model = GeneratedStep.Model;
 		this.Groups = GeneratedStep.Groups;
 		this.Fields = GeneratedStep.Fields;
@@ -521,18 +557,7 @@ export default class BlubberStep extends BlubberFields {
 			this.NodeSchema.tab.beforeChange = BeforeChange;
 		}
 
-		if ( FieldBase._IdRegistry.containsId( this.__Template.name ) === true ) {
-
-			throw new InvalidFieldPropertyException(
-				StringHelper.format(
-					BlubberStep.__INVALID_STEP_ID__,
-					this.__Template.name
-				)
-			);
-		}
-
-		BlubberStep._IdRegistry.addId( this.__Template.name );
-		this.NodeSchema.attr = { id: this.__Template.name };
+		this.NodeSchema.attr = { id: Id };
 		this.NodeSchema.ref = this.__Template.name;
 	}
 
