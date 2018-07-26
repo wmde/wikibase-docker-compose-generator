@@ -3,7 +3,7 @@ import StringHelper from '../StringHelper';
 import CommonRequiredAttributes from './CommonRequiredAttributes';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import Utils from '../../../Utils';
-
+/* eslint-disable operator-linebreak */
 export default class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes
 {
 	/* ERRORS*/
@@ -19,7 +19,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 	_setAutocomplete()
 	{
 		if (
-			true === this._Field.hasOwnProperty( 'autocomplete' ) &&
+			true === this._Field.hasOwnProperty( 'autocomplete' )
+		&&
 			false === this._Field.autocomplete
 		)
 		{
@@ -58,7 +59,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 			(
 				true === this._Field.hasOwnProperty( 'default' ) &&
 				false === Utils.isEmpty( this._Field.default )
-			) ||
+			)
+		||
 			'boolean' !== typeof this._Field.default
 		)
 		{
@@ -180,8 +182,11 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 			for ( Index in InsideButtons )
 			{
 				if (
-					true === InsideButtons[ Index ].hasOwnProperty( 'renderCondition' ) &&
-					false === this._executeFunctionOrGetBoolean( InsideButtons[ Index ].renderCondition )
+					true === InsideButtons[ Index ].hasOwnProperty( 'renderCondition' )
+				&&
+					false === this._executeFunctionOrGetBoolean(
+						InsideButtons[ Index ].renderCondition
+					)
 				)
 				{
 					continue;

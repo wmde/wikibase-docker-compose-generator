@@ -242,7 +242,9 @@ class BlubberFields extends FieldBase
 		let Generated;
 		if ( this.__ToWrapFields[ Index ].hasOwnProperty( 'name' ) )
 		{
-			GroupPointer.legend = this._getStringLabelOrPlaceholder( this.__ToWrapFields[ Index ].name );
+			GroupPointer.legend = this._getStringLabelOrPlaceholder(
+				this.__ToWrapFields[ Index ].name
+			);
 			GroupPointer.id = this.__ToWrapFields[ Index ].name;
 		}
 		else
@@ -521,12 +523,16 @@ export default class BlubberStep extends BlubberFields
                     'validationSuccessClass' === Option
 				)
 				{
-					StepOptions[ Option ] = this._executeFunctionOrGetString( this.__Template.options[ Option ] );
+					StepOptions[ Option ] = this._executeFunctionOrGetString(
+						this.__Template.options[ Option ]
+					);
 				}
 
 				if ( 'validateAfterChanged' === Option )
 				{
-					StepOptions[ Option ] = this._executeFunctionOrGetBoolean( this.__Template.options[ Option ] );
+					StepOptions[ Option ] = this._executeFunctionOrGetBoolean(
+						this.__Template.options[ Option ]
+					);
 				}
 			}
 		}

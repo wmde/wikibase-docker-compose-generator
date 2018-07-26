@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable operator-linebreak */
 import BlubberFormFactory from './components/BlubberFormFactory';
 import Utils from './Utils';
 import Language from './components/Language';
@@ -62,7 +63,11 @@ export default {
 		{
 			if ( false === this.$data.buildForm )
 			{
-				return createElement( 'div', { attrs: { id: 'application' } }, createElement( BlubberFormFactory, {}, '' ) );
+				return createElement(
+					'div',
+					{ attrs: { id: 'application' } },
+					createElement( BlubberFormFactory, {}, '' )
+				);
 			}
 			else
 			{
@@ -90,7 +95,11 @@ export default {
 					I18n,
 					UPDATE_KEEP_MODEL_DATA
 				);
-				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
+				return createElement(
+					'div',
+					{ attrs: { id: 'application' } },
+					[ Element ]
+				);
 			}
 		},
 		refresh: function ()
@@ -106,7 +115,11 @@ export default {
 		},
 		hasComponents: function ()
 		{
-			if ( 0 === ObjectHelper.objectSize( this.$data.blubberModel ) )
+			if (
+				false === this.$data.blubberModel.hasOwnProperty(
+					this.blubberFormProperties.id
+				)
+			)
 			{
 				return true;
 			}
@@ -115,7 +128,8 @@ export default {
 				if (
 					false === this.$data.blubberModel[
 						this.blubberFormProperties.id
-					].wdqsStep &&
+					].wdqsStep
+				&&
 					false === this.$data.blubberModel[
 						this.blubberFormProperties.id
 					].quickstatementsStep
@@ -131,24 +145,36 @@ export default {
 		},
 		hasWDQS: function ()
 		{
-			if ( false === this.$data.blubberModel.hasOwnProperty( this.blubberFormProperties.id ) )
+			if (
+				false === this.$data.blubberModel.hasOwnProperty(
+					this.blubberFormProperties.id
+				)
+			)
 			{
 				return true;
 			}
 			else
 			{
-				return this.$data.blubberModel[ this.blubberFormProperties.id ].wdqsStep;
+				return this.$data.blubberModel[
+					this.blubberFormProperties.id
+				].wdqsStep;
 			}
 		},
 		hasQuickstatements: function ()
 		{
-			if ( false === this.$data.blubberModel.hasOwnProperty( this.blubberFormProperties.id ) )
+			if (
+				false === this.$data.blubberModel.hasOwnProperty(
+					this.blubberFormProperties.id
+				)
+			)
 			{
 				return true;
 			}
 			else
 			{
-				return this.$data.blubberModel[ this.blubberFormProperties.id ].quickstatementsStep;
+				return this.$data.blubberModel[
+					this.blubberFormProperties.id
+				].quickstatementsStep;
 			}
 		},
 		validateStep2: function ()
@@ -170,7 +196,13 @@ export default {
 
 h1,h2,h3,h4,h5,h6,p,ul, button
 {
-	font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
+	font-family:
+            'Helvetica Neue',
+            'Helvetica',
+            'Nimbus Sans L',
+            'Arial',
+            'Liberation Sans',
+            sans-serif !important;
 	text-align: left;
 }
 
@@ -187,7 +219,6 @@ p
 	margin: 0px 0px 0px 0px;
 	margin-bottom:1em;
 	font-size: 1em;
-	font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
 }
 
 input:focus

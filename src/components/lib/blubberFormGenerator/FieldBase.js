@@ -515,11 +515,15 @@ export default class FieldBase
 		{
 			if ( true === Array.isArray( this.__ModelKey ) )
 			{
-				this._addValueToModel( this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ] );
+				this._addValueToModel(
+					this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
+				);
 			}
 			else
 			{
-				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
+				this._addValueToModel(
+					this.__ModelPointer[ this.__ModelKey ]
+				);
 			}
 		}
 		else

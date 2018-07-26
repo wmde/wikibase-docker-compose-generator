@@ -178,7 +178,11 @@ export default {
 		__buildForm: function ( createElement, BindedObject, Form, LabelGenerator, ReRenderFlag )
 		{
 			const Ids = FieldBase._IdRegistry.getStore();
-			const FormSchema = new BlubberFormSchemaConstructor( Form, BindedObject, LabelGenerator );
+			const FormSchema = new BlubberFormSchemaConstructor(
+				Form,
+				BindedObject,
+				LabelGenerator
+			);
 			FormSchema.build();
 
 			if (
@@ -200,14 +204,18 @@ export default {
 				}
 				else if ( UPDATE_KEEP_MODEL_DATA === ReRenderFlag )
 				{
-					this.__copyModelData( this.$data.blubberModel[ Form.formAttributes.id ], FormSchema.Form.Model );
+					this.__copyModelData(
+						this.$data.blubberModel[ Form.formAttributes.id ],
+						FormSchema.Form.Model );
 				}
 			}
 
 			this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
 			this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
 			this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
-			this.$data.blubberIdTracker[ Form.formAttributes.id ] = FieldBase._IdRegistry.intersection( Ids );
+			this.$data.blubberIdTracker[
+				Form.formAttributes.id
+			] = FieldBase._IdRegistry.intersection( Ids );
 			return this.__generateFromSchema( createElement, FormSchema.Form );
 		},
 		buildBlubberForm: function (
@@ -258,12 +266,25 @@ export default {
 					ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
 				);
 
-				this.$data.blubberModel[ Form.formAttributes.id ] = this.$data.blubberRaw[ Form.formAttributes.id ].Form.Model;
-				return this.__generateFromSchema( createElement, this.$data.blubberRaw[ Form.formAttributes.id ].Form );
+				this.$data.blubberModel[
+					Form.formAttributes.id
+				] = this.$data.blubberRaw[
+					Form.formAttributes.id
+				].Form.Model;
+				return this.__generateFromSchema(
+					createElement,
+					this.$data.blubberRaw[ Form.formAttributes.id ].Form
+				);
 			}
 			else
 			{
-				return this.__buildForm( createElement, BindedObject, Form, LabelGenerator, ReRenderFlag );
+				return this.__buildForm(
+					createElement,
+					BindedObject,
+					Form,
+					LabelGenerator,
+					ReRenderFlag
+				);
 			}
 
 		},
