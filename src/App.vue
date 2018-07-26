@@ -9,7 +9,7 @@ import { UPDATE_KEEP_MODEL_DATA } from './components/lib/blubberFormGenerator/Re
 
 class StaticReference
 {
-    static References = {};
+	static References = {};
 }
 
 export default {
@@ -24,11 +24,10 @@ export default {
 	{
 		const Return = {};
 		Return.buildForm = false;
-		Return.blubberGeneratedSteps = [];
-		Return.blubberGeneratedFormProperties = {};
-		Return.blubberGeneratedFormStyle = {};
+		Return.blubberSteps = [];
+		Return.blubberFormProperties = {};
+		Return.blubberFormStyle = {};
 		Return.blubberGeneratedYML = '';
-		Return.blubberCurrentStep = 0;
 		return Return;
 	},
 	mounted: function ()
@@ -49,9 +48,9 @@ export default {
 		},
 		evaluateConfiguration: function ( Configuration )
 		{
-			this.$data.blubberGeneratedSteps = Configuration.steps;
-			this.$data.blubberGeneratedFormProperties = Configuration.form;
-			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
+			this.$data.blubberSteps = Configuration.steps;
+			this.$data.blubberFormProperties = Configuration.form;
+			this.$data.blubberFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
@@ -84,9 +83,9 @@ export default {
 					createElement,
 					StaticReference.References,
 					{
-						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
+						formAttributes: ObjectHelper.copyObj( this.$data.blubberFormProperties ),
 						formEvents: { Complete: 'done' },
-						steps: ObjectHelper.copyObj( this.$data.blubberGeneratedSteps )
+						steps: ObjectHelper.copyObj( this.$data.blubberSteps )
 					},
 					I18n,
 					UPDATE_KEEP_MODEL_DATA
@@ -114,8 +113,12 @@ export default {
 			else
 			{
 				if (
-					false === this.$data.blubberModel.BlubberForm.wdqsStep &&
-                    false === this.$data.blubberModel.BlubberForm.quickstatementsStep
+					false === this.$data.blubberModel[
+						this.blubberFormProperties.id
+					].wdqsStep &&
+					false === this.$data.blubberModel[
+						this.blubberFormProperties.id
+					].quickstatementsStep
 				)
 				{
 					return false;
@@ -128,24 +131,24 @@ export default {
 		},
 		hasWDQS: function ()
 		{
-			if ( 0 === ObjectHelper.objectSize( this.$data.blubberModel ) )
+			if ( false === this.$data.blubberModel.hasOwnProperty( this.blubberFormProperties.id ) )
 			{
 				return true;
 			}
 			else
 			{
-				return this.$data.blubberModel.BlubberForm.wdqsStep;
+				return this.$data.blubberModel[ this.blubberFormProperties.id ].wdqsStep;
 			}
 		},
 		hasQuickstatements: function ()
 		{
-			if ( 0 === ObjectHelper.objectSize( this.$data.blubberModel ) )
+			if ( false === this.$data.blubberModel.hasOwnProperty( this.blubberFormProperties.id ) )
 			{
 				return true;
 			}
 			else
 			{
-				return this.$data.blubberModel.BlubberForm.quickstatementsStep;
+				return this.$data.blubberModel[ this.blubberFormProperties.id ].quickstatementsStep;
 			}
 		},
 		validateStep2: function ()
@@ -161,135 +164,135 @@ export default {
 @import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 .vue-form-generator div div
 {
-    margin-top: 1em;
-    margin-bottom: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 h1,h2,h3,h4,h5,h6,p,ul, button
 {
-    font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
-    text-align: left;
+	font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
+	text-align: left;
 }
 
 h4.wizard-title
 {
-    font-weight: 600 !important;
-    font-size: 1.2em;
-    margin-left: 0;
-    margin-bottom: 0;
+	font-weight: 600 !important;
+	font-size: 1.2em;
+	margin-left: 0;
+	margin-bottom: 0;
 }
 
 p
 {
-    margin: 0px 0px 0px 0px;
-    margin-bottom:1em;
-    font-size: 1em;
-    font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
+	margin: 0px 0px 0px 0px;
+	margin-bottom:1em;
+	font-size: 1em;
+	font-family: 'Helvetica Neue','Helvetica','Nimbus Sans L','Arial','Liberation Sans', sans-serif !important;
 }
 
 input:focus
 {
-    outline:none;
+	outline:none;
 }
 
 input
 {
-    border-radius: 2px;
-    border-style:solid;
-    border-width: 1px;
-    border-color: #2e5b01;
-    padding-left: 5px;
+	border-radius: 2px;
+	border-style:solid;
+	border-width: 1px;
+	border-color: #2e5b01;
+	padding-left: 5px;
 }
 
 .help span
 {
-    visibility: hidden;
-    width: 50%;
-    background-color: #555;
-    color: #fff;
-    text-align: left;
-    border-radius: 6px;
-    margin-top: -0.1em;
-    position: absolute;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left:10px;
-    padding-right:10px;
+	visibility: hidden;
+	width: 50%;
+	background-color: #555;
+	color: #fff;
+	text-align: left;
+	border-radius: 6px;
+	margin-top: -0.1em;
+	position: absolute;
+	z-index: 1;
+	opacity: 0;
+	transition: opacity 0.3s;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left:10px;
+	padding-right:10px;
 }
 
 .help span a
 {
-    color: #4683ff;
+	color: #4683ff;
 }
 
 .help *
 {
-    display: inline-block;
+	display: inline-block;
 }
 .help:after
 {
-    content: "?";
-    color:white;
-    border: 1px solid black;
-    border-radius: 15px;
-    background-color: #3366cc;
-    margin-left: 0.5em;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left:8px;
-    padding-right:8px;
-    font-size: 0.9em;
-    display: inline-block!important;
+	content: "?";
+	color:white;
+	border: 1px solid black;
+	border-radius: 15px;
+	background-color: #3366cc;
+	margin-left: 0.5em;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left:8px;
+	padding-right:8px;
+	font-size: 0.9em;
+	display: inline-block!important;
 }
 
 .help:hover span
 {
-    visibility: visible;
-    opacity: 1;
+	visibility: visible;
+	opacity: 1;
 }
 
 .help:hover:after
 {
-    display: none;
+	display: none;
 
 }
 
 #components .form-group
 {
-    margin-top: 1.5em;
+	margin-top: 1.5em;
 }
 
 #components .form-group:nth-child(1)
 {
-    margin-top: 0em;
+	margin-top: 0em;
 }
 
 #components label
 {
-    display: inline-block;
+	display: inline-block;
 }
 
 #components .field-wrap
 {
-    margin: 0px 0px 0px 0px;
-    margin-left: 1em;
+	margin: 0px 0px 0px 0px;
+	margin-left: 1em;
 }
 
 #components input
 {
-    height: 1.2em;
+	height: 1.2em;
 }
 
 #components .radio-list *
 {
-    display: inline-block;
+	display: inline-block;
 }
 
 #components .radio-list input
 {
-    float: left;
+	float: left;
 }
 </style>
