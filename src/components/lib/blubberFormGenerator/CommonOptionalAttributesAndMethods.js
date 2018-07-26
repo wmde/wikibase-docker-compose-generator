@@ -82,24 +82,7 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 	{
 		this._assignFunction( 'onChanged' );
 		this._assignFunction( 'onValidated' );
-		this.__addValidator();
-	}
-
-	__addValidator()
-	{
-		if ( 'function' !== typeof this._BindedObject.getValidator )
-		{
-			return '';
-		}
-
-		if ( true === this._Field.name.includes( '.' ) )
-		{
-			this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
-		}
-		else
-		{
-			this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
-		}
+        this._assignFunction( 'validator' );
 	}
 
 	__addClass()

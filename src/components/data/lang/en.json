@@ -32,5 +32,9 @@
     "wikibaseFrontendPort": "Which port the User Interface for Wikibase query service should use?",
     "wikibaseQuickstatementsPort": "Which port Quickstatements should use?",
 
-    "quickStatementsConfiguration": "Configure Quickstatements"
+    "quickStatementsConfiguration": "Configure Quickstatements",
+    "quickStatementsConfigurationNamespaceProperty": "Which namespace you want to use for properties in Wikibase?",
+    "quickStatementsConfigurationNamespaceItem": "Which namespace you want to use for items in Wikibase?",
+    "quickStatementsConfigurationPrefixProperty": "Which prefix you want to use for properties in Wikibase?",
+    "quickStatementsConfigurationPrefixItem": "Which prefix you want to use for items in Wikibase?"
 }

@@ -18,20 +18,27 @@ export default {
 		{
 			let VGenerator, Description;
 
-			if ( 0 === Step.inner.schema.fields.length )
+			if (
+                true === Step.inner.schema.hasOwnProperty( 'fields' )
+			&&
+				0 === Step.inner.schema.fields.length )
 			{
 				delete Step.inner.schema.fields;
 			}
 
-            if ( 0 === Step.inner.schema.groups.length )
-            {
-                delete Step.inner.schema.groups;
-            }
+			if (
+                true === Step.inner.schema.hasOwnProperty( 'groups' )
+			&&
+				0 === Step.inner.schema.groups.length
+			)
+			{
+				delete Step.inner.schema.groups;
+			}
 
 			if (
-				true === Step.inner.schema.hasOwnProperty( "fields" )
+				true === Step.inner.schema.hasOwnProperty( 'fields' )
 			||
-				true === Step.inner.schema.hasOwnProperty( "groups" )
+				true === Step.inner.schema.hasOwnProperty( 'groups' )
 			)
 			{
 				VGenerator = createElement(
@@ -142,10 +149,10 @@ export default {
 				);
 			}
 		},
-		__buildForm: function ( createElement, Form, LabelGenerator, UseExistingModel )
+		__buildForm: function ( createElement, BindedObject, Form, LabelGenerator, UseExistingModel )
 		{
 			const Ids = FieldBase._IdRegistry.getStore();
-			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
+			const FormSchema = new BlubberFormSchemaConstructor( Form, BindedObject, LabelGenerator );
 			FormSchema.build();
 
 			if ( true === UseExistingModel )
@@ -168,6 +175,7 @@ export default {
 		},
 		buildBlubberForm: function (
 			createElement,
+			BindedObject,
 			Form,
 			LabelGenerator = null,
 			ReRenderFlag = UPDATE_DEFAULT
@@ -219,12 +227,12 @@ export default {
 				}
 				else
 				{
-					return this.__buildForm( createElement, Form, LabelGenerator, true );
+					return this.__buildForm( createElement, BindedObject, Form, LabelGenerator, true );
 				}
 			}
 			else
 			{
-				return this.__buildForm( createElement, Form, LabelGenerator, false );
+				return this.__buildForm( createElement, BindedObject, Form, LabelGenerator, false );
 			}
 
 		}

@@ -48,7 +48,7 @@ export default class FieldBase
 		this.__HasDefaultValue = false;
 	}
 
-	__lookForPropertyAtVueObject( IsTypeOrFunction )
+	__lookForPropertyAtBindedObject( IsTypeOrFunction )
 	{
 		let Index;
 		const Chunks = IsTypeOrFunction.split( '.' );
@@ -115,7 +115,7 @@ export default class FieldBase
 			{
 				if ( true === Value.includes( '.' ) )
 				{
-					Self = this.__lookForPropertyAtVueObject( Value );
+					Self = this.__lookForPropertyAtBindedObject( Value );
 					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
 						( typeof Self )
 					);

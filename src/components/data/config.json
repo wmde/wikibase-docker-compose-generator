@@ -94,6 +94,7 @@
         {
             "name": "componentsConfiguration",
             "icon": "settings",
+            "beforeChange": "vue.validateStep2",
             "options":
             {
                 "validationErrorClass": "has-error",
@@ -110,26 +111,29 @@
                             "name": "wikibaseBlazegraphPort",
                             "type": "number",
                             "default": 9999,
-                            "required": true
+                            "required": true,
+                            "validator": "validator.port"
                         },
                         {
                             "name": "wikibaseProxyPort",
                             "type": "number",
                             "default": 8989,
-                            "required": true
+                            "required": true,
+                            "validator": "validator.port"
                         },
                         {
                             "name": "wikibaseFrontendPort",
                             "type": "number",
                             "default": 8282,
-                            "required": true
-
+                            "required": true,
+                            "validator": "validator.port"
                         },
                         {
                             "name": "wikibaseQuickstatementsPort",
                             "type": "number",
                             "default": 9999,
-                            "required": true
+                            "required": true,
+                            "validator": "validator.port"
                         }
 
                     ]
@@ -139,9 +143,27 @@
                     "group":
                     [
                         {
-                            "name": "wikibaseBlazegraphPorts",
-                            "type": "number",
-                            "default": 9999,
+                            "name": "quickStatementsConfigurationNamespaceProperty",
+                            "type": "text",
+                            "default": "122",
+                            "required": true
+                        },
+                        {
+                            "name": "quickStatementsConfigurationPrefixProperty",
+                            "type": "text",
+                            "default": "Property",
+                            "required": true
+                        },
+                        {
+                            "name": "quickStatementsConfigurationNamespaceItem",
+                            "type": "text",
+                            "default": "120",
+                            "required": true
+                        },
+                        {
+                            "name": "quickStatementsConfigurationPrefixItem",
+                            "type": "text",
+                            "default": "Item",
                             "required": true
                         }
                     ]

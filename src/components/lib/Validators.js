@@ -2,12 +2,12 @@ import Utils from '../../Utils';
 
 export default class Validators
 {
-	static InvalidPortNoInteger;
-	static InvalidPortWellKnown;
-	static InvalidPortInUse;
-	static InvalidString;
+	static InvalidPortNoInteger = "The given value is not an integer.";
+	static InvalidPortWellKnown = "Do not use wellknown ports.";
+	static InvalidPortInUse = "The given port is allready in use.";
+	static InvalidString = "The given value is not an valid string.";
 	static __LastInteger;
-	static __UsedPorts = {};
+	static __UsedPorts = [];
 
 	static isInteger( Integer )
 	{
@@ -45,7 +45,7 @@ export default class Validators
 
 	static containsPort( Value )
 	{
-        if( -1 === Utils.binarySearch( Validators.__UsedPorts, Value ) )
+		if ( -1 === Utils.binarySearch( Validators.__UsedPorts, Value ) )
 		{
 			return false;
 		}
@@ -68,10 +68,10 @@ export default class Validators
 
 	static clearPorts()
 	{
-        Validators.__UsedPorts.length = 0;
+		Validators.__UsedPorts.length = 0;
 	}
 
-	static ports( Value )
+	static port( Value )
 	{
 		let InsertIndex;
 		if ( false === Validators.isInteger( Value ) )
@@ -85,13 +85,13 @@ export default class Validators
 		}
 
 		InsertIndex = Utils.binaryInsertSearch( Validators.__UsedPorts, Validators.__LastInteger );
-		if( 0 > InsertIndex )
+		if ( 0 > InsertIndex )
 		{
-            Validators.__UsedPorts.splice(
-                -( InsertIndex + 1 ),
-                0,
-                Value
-			)
+			Validators.__UsedPorts.splice(
+				-( InsertIndex + 1 ),
+				0,
+				Value
+			);
 		}
 		else
 		{

@@ -4,6 +4,12 @@ import Utils from './Utils';
 import Language from './components/Language';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
+import Validators from './components/lib/Validators';
+
+class StaticReference
+{
+    static References = {};
+}
 
 export default {
 	name: 'Blubber',
@@ -81,8 +87,12 @@ export default {
 					I18n = this.getI18nStrings;
 				}
 
+				StaticReference.References['vue'] = this;
+                StaticReference.References['validator'] = Validators;
+
 				const Element = this.buildBlubberForm(
 					createElement,
+                    StaticReference.References,
 					{
 						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
 						formEvents: { Complete: 'done' },
@@ -94,7 +104,12 @@ export default {
 				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
-		}
+		},
+        validateStep2: function ()
+        {
+            this.$forceUpdate();
+            return this.$refs[ 'componentsConfiguration' ].validate();
+        },
 	}
 };
 </script>
