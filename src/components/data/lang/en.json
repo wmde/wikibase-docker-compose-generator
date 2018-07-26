@@ -27,9 +27,9 @@
     "componentsConfiguration": "Components configuration",
     "portsConfiguration": "Compontents ports",
     "portsWDQS": "Ports of Wikibase query service",
-    "wikibaseBlazegraphPort": "Which port the Blazegraph for Wikibase query service should use?",
-    "wikibaseProxyPort": "Which port the proxy for Wikibase query service should use?",
-    "wikibaseFrontendPort": "Which port the User Interface for Wikibase query service should use?",
+    "wikibaseBlazegraphPort": "Which port the Blazegraph of Wikibase query service should use?",
+    "wikibaseProxyPort": "Which port the proxy of Wikibase query service should use?",
+    "wikibaseFrontendPort": "Which port the User Interface of Wikibase query service should use?",
     "wikibaseQuickstatementsPort": "Which port Quickstatements should use?",
 
     "quickStatementsConfiguration": "Configure Quickstatements",

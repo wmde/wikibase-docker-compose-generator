@@ -29,7 +29,6 @@ export default {
 		Return.blubberGeneratedFormStyle = {};
 		Return.blubberGeneratedYML = '';
 		Return.blubberCurrentStep = 0;
-		Return.blubberFirstLoad = true;
 		return Return;
 	},
 	mounted: function ()
@@ -69,6 +68,7 @@ export default {
 			else
 			{
 				let I18n = null;
+				let Element;
 
 				if ( 'undefined' !== typeof this.$data.i18n )
 				{
@@ -79,7 +79,8 @@ export default {
 				StaticReference.References.validator = Validators;
 				this.setDefaultModelRenderBehaviour( false );
 
-				const Element = this.buildBlubberForm(
+				// eslint-disable-next-line
+				Element = this.buildBlubberForm(
 					createElement,
 					StaticReference.References,
 					{
@@ -90,7 +91,6 @@ export default {
 					I18n,
 					UPDATE_KEEP_MODEL_DATA
 				);
-				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
