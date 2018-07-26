@@ -27,9 +27,9 @@ export default class CommonRequiredAttributes extends FieldBase {
 		}
 
 		// common required properties
-		if ( FieldBase._IdRegistry.containsId( Id ) === false ) {
-			this._GeneratedField.id = this._executeFunctionOrGetString( Id );
-			FieldBase._IdRegistry.addId( Id );
+		if ( CommonRequiredAttributes._IdRegistry.containsId( Id ) === false ) {
+			this._GeneratedField.id = Id;
+			CommonRequiredAttributes._IdRegistry.addId( Id );
 		} else {
 			new InvalidIdWarning( StringHelper.format( FieldBase._INVALID_ID_, Id ) );// eslint-disable-line
 		}

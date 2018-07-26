@@ -148,8 +148,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 
 		if ( typeof InsideButtons === 'object' && Array.isArray( InsideButtons ) === false ) {
 			if (
-				InsideButtons.hasOwnProperty( 'condition' ) === true &&
-				this._executeFunctionOrGetBoolean( InsideButtons.condition ) === false
+				InsideButtons.hasOwnProperty( 'renderCondition' ) === true &&
+				this._executeFunctionOrGetBoolean( InsideButtons.renderCondition ) === false
 			) {
 				return;
 			}
@@ -157,8 +157,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 		} else if ( Array.isArray( InsideButtons ) === true ) {
 			for ( Index in InsideButtons ) {
 				if (
-					InsideButtons[ Index ].hasOwnProperty( 'condition' ) === true &&
-					this._executeFunctionOrGetBoolean( InsideButtons[ Index ].condition ) === false
+					InsideButtons[ Index ].hasOwnProperty( 'renderCondition' ) === true &&
+					this._executeFunctionOrGetBoolean( InsideButtons[ Index ].renderCondition ) === false
 				) {
 					continue;
 				}

@@ -18,17 +18,49 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 		super( null, BindedObject, Generator );
 		this.__Form = Form;
 		this.Form = {
-			JustField: false,
+			JustFields: false,
 			FormEvents: {},
 			FormProperties: {},
 			FormAttributes: {},
 			FormRef: '',
-			Schema: {},
+			Schema: [],
 			Model: {},
 			Steps: []
 		};
+
+		if ( this.__Form.hasOwnProperty( 'bind' ) === true ) {
+			this.__buildDynamicForm();
+		}
+
 		this.__validateProperties();
 		this.__setFormPropterties();
+		this.cleanUpStructure();
+	}
+
+	cleanUpStructure() {
+		delete this._Model;
+		delete this.__HasDefaultValue;
+		delete this.__ModelKey;
+		delete this.__ModelPointer;
+		delete this._GeneratedField;
+	}
+
+	__buildDynamicForm() {
+		let GeneratedForm;
+		const Bind = this._executeFunctionOrGetAnything(
+			this.__Form.bind,
+			true
+		);
+
+		// eslint-disable-next-line
+        GeneratedForm = Bind();
+
+		if ( GeneratedForm === null || typeof GeneratedForm !== 'object' ) {
+			throw new InvalidFormException();
+		}
+
+		this.__Form = Object.assign( this.__Form, GeneratedForm );
+		delete this.__Form.bind;
 	}
 
 	__validateProperties() {
@@ -44,6 +76,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 	__setFormPropterties() {
 		let Label, AssigmentLabel;
 		this.Form.FormRef = this.__Form.formAttributes.id;
+
 		for ( Label in this.__Form.formAttributes ) {
 			if ( BlubberFormSchemaConstructor._FORM_EVENTS_.indexOf( Label ) !== -1 ) {
 				AssigmentLabel = `on-${ Label.substring( 2 ).toLowerCase() }`;
@@ -73,58 +106,38 @@ export default class BlubberFormSchemaConstructor extends FieldBase {
 		}
 	}
 
+	__build( Steps ) {
+		const Generated = new BlubberStep(
+			Steps,
+			this._BindedObject,
+			this._LabelGenerator,
+			this.Form.Model
+		);
+		Generated.build();
+
+		Object.assign( this.Form.Model, Generated.Model );
+
+		this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
+		this.Form.Schema.push( Generated.NodeSchema.inner.schema );
+	}
+
 	build() {
-		let Generated, Index;
+		let Index;
 
-		if ( this.__Form.hasOwnProperty( 'fields' ) === true ) {
-			Generated = new BlubberStep(
-				this.__Form.fields,
-				this._BindedObject,
-				this._LabelGenerator
-			);
-			Generated.build();
-			this.Form.Schema = {
-				fields: Generated.Fields,
-				groups: Generated.Groups
-			};
-
-			this.Form.JustField = true;
-			this.Form.Model = Generated.Model;
-			this.Form.Steps = Generated.NodeSchema;
-			this.Form.Steps[ 0 ].inner.schema = this.Form.Schema;
-			this.Form.Steps[ 0 ].inner.model = this.Form.Model;
+		if ( this.__Form.hasOwnProperty( 'fields' ) === true && Array.isArray( this.__Form.fields ) === true ) {
+			this.__build( this.__Form.fields );
+			this.Form.JustFields = true;
 		} else if ( this.__Form.hasOwnProperty( 'steps' ) === true && Array.isArray( this.__Form.steps ) === true ) {
 			this.Form.Schema = [];
-			this.Form.JustField = false;
+			this.Form.JustFields = false;
 			for ( Index in this.__Form.steps ) {
-				Generated = new BlubberStep(
-					this.__Form.steps[ Index ],
-					this._BindedObject,
-					this._LabelGenerator
-				);
-
-				Generated.build();
-
-				this.Form.Model = Object.assign( {}, Generated.Model, this.Form.Model );
-				if ( Generated.getCondition() === false ) {
-					continue;
-				}
-
-				this.Form.Schema.push( {
-					fields: Generated.Fields,
-					groups: Generated.Groups
-				} );
-
-				this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
-			}
-
-			for ( Index in this.Form.Steps ) {
-				this.Form.Steps[ Index ][ 0 ].inner.model = this.Form.Model;
-				this.Form.Steps[ Index ][ 0 ].inner.schema = this.Form.Schema[ Index ];
+				this.__build( this.__Form.steps[ Index ] );
 			}
 		} else {
 			throw new InvalidFormException();
 		}
+
+		delete this.__Form;
 	}
 
 	refresh( Model ) {

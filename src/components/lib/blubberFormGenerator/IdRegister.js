@@ -1,3 +1,5 @@
+import ObjectHelper from '../ObjectHelper';
+
 export default class IdRegister {
 	__IdStore = [];
 
@@ -12,5 +14,29 @@ export default class IdRegister {
 		} else {
 			return false;
 		}
+	}
+
+	removeId( Id ) {
+		const Index = this.__IdStore.indexOf( Id );
+		if ( Index === -1 ) {
+			return;
+		}
+
+		this.__IdStore.splice( Index, 1 );
+	}
+
+	removeIds( Ids ) {
+		let Index;
+		for ( Index in Ids ) {
+			this.removeId( Ids[ Index ] );
+		}
+	}
+
+	intersection( Items ) {
+		return this.__IdStore.filter( Value => Items.indexOf( Value ) );
+	}
+
+	getStore() {
+		return ObjectHelper.copyObj( this.__IdStore );
 	}
 }
