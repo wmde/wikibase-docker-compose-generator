@@ -16,10 +16,19 @@ export default {
 	methods: {
 		__generateAStep( createElement, Step ) {
 			let VGenerator, Description;
+
+			if ( Step.inner.schema.fields.length === 0 ) {
+				delete Step.inner.schema.fields;
+			}
+
+			if ( Step.inner.schema.groups.length === 0 ) {
+				delete Step.inner.schema.groups;
+			}
+
 			if (
-				Step.inner.schema.fields.length > 0
-			||
-				Step.inner.schema.groups.length > 0
+				Step.inner.schema.hasOwnProperty( 'fields' ) === true
+            ||
+                Step.inner.schema.hasOwnProperty( 'groups' ) === true
 			) {
 				VGenerator = createElement(
 					'vue-form-generator',
