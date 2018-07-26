@@ -13,14 +13,6 @@
           "transition": "fade",
           "startIndex": 0
     },
-    "dependencies": {
-      "Elasticsearch": [],
-      "Quickstatements": [],
-      "wikibaseBlazegraph": [],
-      "wikibaseProxy": [ "wikibaseBlazegraph" ],
-      "wikibaseFrontend" : [ "wikibaseProxy" ],
-      "wikibaseUpdater": [ "wikibaseBlazegraph" ]
-    },
     "steps":[ {
             "name":"prolog",
             "description": "prolog_description",
