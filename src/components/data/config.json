@@ -52,8 +52,8 @@
                     "default": true,
                     "values":
                     [
-                      {"value": true, "label":"yes"},
-                      {"value": false, "label":"no"}
+                          {"value": true, "label":"yes"},
+                          {"value": false, "label":"no"}
                     ],
                     "required" : true
                 },
@@ -66,8 +66,8 @@
                     "default": true,
                     "values":
                     [
-                      { "value": true, "label": "yes" },
-                      { "value": false, "label": "no" }
+                          { "value": true, "label": "yes" },
+                          { "value": false, "label": "no" }
                     ],
                     "required" : true
                 },
@@ -79,8 +79,8 @@
                     "onChanged": "vue.refresh",
                     "default": true,
                     "values": [
-                      { "value": true, "label": "yes" },
-                      { "value": false, "label": "no" }
+                          { "value": true, "label": "yes" },
+                          { "value": false, "label": "no" }
                     ],
                     "required" : true
                 }
@@ -135,7 +135,6 @@
                             "validator": "validator.port",
                             "renderCondition": "vue.hasQuickstatements"
                         }
-
                     ]
                 },
                 {
