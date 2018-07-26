@@ -342,7 +342,7 @@ export default class FieldBase
 			{
 				return '';
 			}
-			return Label;
+			return LabelValue;
 		}
 	}
 

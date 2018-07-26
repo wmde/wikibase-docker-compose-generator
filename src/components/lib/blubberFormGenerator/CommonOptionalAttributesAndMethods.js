@@ -82,7 +82,7 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 	{
 		this._assignFunction( 'onChanged' );
 		this._assignFunction( 'onValidated' );
-        this._assignFunction( 'validator' );
+		this._assignFunction( 'validator' );
 	}
 
 	__addClass()

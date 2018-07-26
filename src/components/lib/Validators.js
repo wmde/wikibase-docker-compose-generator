@@ -2,12 +2,14 @@ import Utils from '../../Utils';
 
 export default class Validators
 {
-	static InvalidPortNoInteger = "The given value is not an integer.";
-	static InvalidPortWellKnown = "Do not use wellknown ports.";
-	static InvalidPortInUse = "The given port is allready in use.";
-	static InvalidString = "The given value is not an valid string.";
+	static InvalidPortNoInteger = 'The given value is not an integer.';
+	static InvalidPortWellKnown = 'Do not use wellknown ports.';
+	static InvalidPortInUse = 'The given port is allready in use.';
+	static InvalidString = 'The given value is not an valid string.';
+    static InvalidStringCharacter = 'The given value contain(s) an invalid character(s) ';
 	static __LastInteger;
 	static __UsedPorts = [];
+	static StringPattern = new RegExp( /[^a-zA-Z0-9_]/g );
 
 	static isInteger( Integer )
 	{
@@ -31,16 +33,6 @@ export default class Validators
 
 		Validators.__LastInteger = parseInt( Integer );
 		return true;
-	}
-
-	static string( Value )
-	{
-		if ( 'string' !== typeof Value || 0 === Value.length )
-		{
-			return [ Validators.InvalidString ];
-		}
-
-		return [];
 	}
 
 	static containsPort( Value )
@@ -83,7 +75,7 @@ export default class Validators
 		{
 			return [ Validators.InvalidPortWellKnown ];
 		}
-
+		// eslint-disable-next-line
 		InsertIndex = Utils.binaryInsertSearch( Validators.__UsedPorts, Validators.__LastInteger );
 		if ( 0 > InsertIndex )
 		{
@@ -96,6 +88,24 @@ export default class Validators
 		else
 		{
 			return [ Validators.InvalidPortInUse ];
+		}
+
+		return [];
+	}
+
+	static string( Value )
+	{
+		if (
+			'string' !== typeof Value ||
+            0 === Value.length
+		)
+		{
+			return [ Validators.InvalidString ];
+		}
+
+		if ( true === Validators.StringPattern.test( Value ) )
+		{
+			return [ `${ Validators.InvalidStringCharacter }: ${ Value.match( Validators.StringPattern ) }` ];
 		}
 
 		return [];

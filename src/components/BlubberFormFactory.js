@@ -4,7 +4,12 @@ import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaF
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
 import FieldBase from './lib/blubberFormGenerator/FieldBase';
-import { UPDATE_FORCE_COMPLETE_UPDATE, UPDATE_DEFAULT } from './lib/blubberFormGenerator/RenderConstants';
+import {
+	UPDATE_FORCE_COMPLETE_UPDATE,
+	UPDATE_KEEP_MODEL,
+	UPDATE_DEFAULT,
+	UPDATE_KEEP_MODEL_DATA
+} from './lib/blubberFormGenerator/RenderConstants';
 import InvalidFormException from './lib/blubberFormGenerator/Exceptions/InvalidFieldException';
 /* eslint-disable operator-linebreak */
 export default {
@@ -19,7 +24,7 @@ export default {
 			let VGenerator, Description;
 
 			if (
-                true === Step.inner.schema.hasOwnProperty( 'fields' )
+				true === Step.inner.schema.hasOwnProperty( 'fields' )
 			&&
 				0 === Step.inner.schema.fields.length )
 			{
@@ -27,7 +32,7 @@ export default {
 			}
 
 			if (
-                true === Step.inner.schema.hasOwnProperty( 'groups' )
+				true === Step.inner.schema.hasOwnProperty( 'groups' )
 			&&
 				0 === Step.inner.schema.groups.length
 			)
@@ -149,22 +154,54 @@ export default {
 				);
 			}
 		},
-		__buildForm: function ( createElement, BindedObject, Form, LabelGenerator, UseExistingModel )
+		__copyModelData: function ( Source, Target )
+		{
+			let Index;
+			for ( Index in Source )
+			{
+				if ( true === Target.hasOwnProperty( Index ) )
+				{
+					if ( 'object' === typeof Source[ Index ] )
+					{
+						if ( 'object' === typeof Target[ Index ] )
+						{
+							this.__copyModelData( Target[ Index ], Source[ Index ] );
+						}
+					}
+					else
+					{
+						Target[ Index ] = Source[ Index ];
+					}
+				}
+			}
+		},
+		__buildForm: function ( createElement, BindedObject, Form, LabelGenerator, ReRenderFlag )
 		{
 			const Ids = FieldBase._IdRegistry.getStore();
 			const FormSchema = new BlubberFormSchemaConstructor( Form, BindedObject, LabelGenerator );
 			FormSchema.build();
 
-			if ( true === UseExistingModel )
+			if (
+				UPDATE_FORCE_COMPLETE_UPDATE !== ReRenderFlag
+			&&
+				true === this.$data.blubberModel.hasOwnProperty( Form.formAttributes.id )
+			)
 			{
-				FormSchema.refresh(
-					Object.assign(
-						FormSchema.Form.Model,
-						ObjectHelper.copyObj(
-							this.$data.blubberModel[ Form.formAttributes.id ]
+				if ( UPDATE_KEEP_MODEL === ReRenderFlag )
+				{
+					FormSchema.refresh(
+						Object.assign(
+							FormSchema.Form.Model,
+							ObjectHelper.copyObj(
+								this.$data.blubberModel[ Form.formAttributes.id ]
+							)
 						)
-					)
-				);
+					);
+				}
+				else if ( UPDATE_KEEP_MODEL_DATA === ReRenderFlag )
+				{
+					this.__copyModelData( this.$data.blubberModel[ Form.formAttributes.id ], FormSchema.Form.Model );
+				}
 			}
 
 			this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
@@ -214,27 +251,29 @@ export default {
 			&&
 				false === Utils.isEmpty( this.$data.blubberRaw[ Form.formAttributes.id ] )
 			&&
-				UPDATE_FORCE_COMPLETE_UPDATE !== ReRenderFlag
+                UPDATE_DEFAULT === ReRenderFlag
 			)
 			{
-				if ( UPDATE_DEFAULT === ReRenderFlag )
-				{
-					this.$data.blubberRaw[ Form.formAttributes.id ].refresh(
-						ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
-					);
-					this.$data.blubberModel[ Form.formAttributes.id ] = this.$data.blubberRaw[ Form.formAttributes.id ].Form.Model;
-					return this.__generateFromSchema( createElement, this.$data.blubberRaw[ Form.formAttributes.id ].Form );
-				}
-				else
-				{
-					return this.__buildForm( createElement, BindedObject, Form, LabelGenerator, true );
-				}
+				this.$data.blubberRaw[ Form.formAttributes.id ].refresh(
+					ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
+				);
+
+				this.$data.blubberModel[ Form.formAttributes.id ] = this.$data.blubberRaw[ Form.formAttributes.id ].Form.Model;
+				return this.__generateFromSchema( createElement, this.$data.blubberRaw[ Form.formAttributes.id ].Form );
 			}
 			else
 			{
-				return this.__buildForm( createElement, BindedObject, Form, LabelGenerator, false );
+				return this.__buildForm( createElement, BindedObject, Form, LabelGenerator, ReRenderFlag );
 			}
 
+		},
+		setDefaultRenderBehaviour: function ( Value )
+		{
+			FieldBase.RenderCondition = Value;
+		},
+		setDefaultModelRenderBehaviour: function ( Value )
+		{
+			FieldBase.ModelRenderCondition = Value;
 		}
 	},
 	data: function ()

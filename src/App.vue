@@ -5,6 +5,7 @@ import Language from './components/Language';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
 import Validators from './components/lib/Validators';
+import { UPDATE_KEEP_MODEL_DATA } from './components/lib/blubberFormGenerator/RenderConstants';
 
 class StaticReference
 {
@@ -26,10 +27,9 @@ export default {
 		Return.blubberGeneratedSteps = [];
 		Return.blubberGeneratedFormProperties = {};
 		Return.blubberGeneratedFormStyle = {};
-		Return.forReadOnly = {};
 		Return.blubberGeneratedYML = '';
 		Return.blubberCurrentStep = 0;
-		Return.blubberStepNames = [];
+		Return.blubberFirstLoad = true;
 		return Return;
 	},
 	mounted: function ()
@@ -48,24 +48,12 @@ export default {
 		{
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
-		getStepNames: function ()
-		{
-			let Index;
-			for ( Index in this.$data.blubberGeneratedSteps )
-			{
-				this.$data.blubberStepNames.push(
-					this.$data.blubberGeneratedSteps[ Index ].name
-				);
-			}
-		},
 		evaluateConfiguration: function ( Configuration )
 		{
 			this.$data.blubberGeneratedSteps = Configuration.steps;
 			this.$data.blubberGeneratedFormProperties = Configuration.form;
 			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
-			this.$data.blubberDependencies = Configuration.dependencies;
-			this.getStepNames();
 			this.$forceUpdate();
 		},
 		getI18nStrings: function ( Key, LanguageCode )
@@ -87,29 +75,84 @@ export default {
 					I18n = this.getI18nStrings;
 				}
 
-				StaticReference.References['vue'] = this;
-                StaticReference.References['validator'] = Validators;
+				StaticReference.References.vue = this;
+				StaticReference.References.validator = Validators;
+				this.setDefaultModelRenderBehaviour( false );
 
 				const Element = this.buildBlubberForm(
 					createElement,
-                    StaticReference.References,
+					StaticReference.References,
 					{
 						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
 						formEvents: { Complete: 'done' },
 						steps: ObjectHelper.copyObj( this.$data.blubberGeneratedSteps )
 					},
-					I18n
+					I18n,
+					UPDATE_KEEP_MODEL_DATA
 				);
-
 				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
 		},
-        validateStep2: function ()
-        {
-            this.$forceUpdate();
-            return this.$refs[ 'componentsConfiguration' ].validate();
-        },
+		refresh: function ()
+		{
+			this.$forceUpdate();
+		},
+		changeStep: function ( prevIndex, nextIndex )
+		{
+			if ( 2 === nextIndex )
+			{
+				Validators.clearPorts();
+			}
+		},
+		hasComponents: function ()
+		{
+			if ( 0 === ObjectHelper.objectSize( this.$data.blubberModel ) )
+			{
+				return true;
+			}
+			else
+			{
+				if (
+					false === this.$data.blubberModel.BlubberForm.wdqsStep &&
+                    false === this.$data.blubberModel.BlubberForm.quickstatementsStep
+				)
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+		},
+		hasWDQS: function ()
+		{
+			if ( 0 === ObjectHelper.objectSize( this.$data.blubberModel ) )
+			{
+				return true;
+			}
+			else
+			{
+				return this.$data.blubberModel.BlubberForm.wdqsStep;
+			}
+		},
+		hasQuickstatements: function ()
+		{
+			if ( 0 === ObjectHelper.objectSize( this.$data.blubberModel ) )
+			{
+				return true;
+			}
+			else
+			{
+				return this.$data.blubberModel.BlubberForm.quickstatementsStep;
+			}
+		},
+		validateStep2: function ()
+		{
+			this.$forceUpdate();
+			return this.$refs.componentsConfiguration.validate();
+		}
 	}
 };
 </script>

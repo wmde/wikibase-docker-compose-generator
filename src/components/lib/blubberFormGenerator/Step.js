@@ -32,6 +32,7 @@ import UrlField from './Fields/UrlField';
 import WeekField from './Fields/WeekField';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import InvalidIdWarning from './Exceptions/InvalidIdWarning';
+import InvalidFieldWarning from './Exceptions/InvalidFieldWarning';
 
 /* eslint-disable operator-linebreak */
 class BlubberFields extends FieldBase
@@ -271,9 +272,20 @@ class BlubberFields extends FieldBase
 		);
 		Generated.build();
 
-		if ( true === Utils.isEmpty( Generated.Model ) )
+		if (
+			true === this.__ToWrapFields[ Index ].modelRenderCondition
+		&&
+			true === Utils.isEmpty( Generated.Model )
+		&&
+			(
+				0 > Generated.Fields.length
+			||
+				0 > Generated.Groups.length
+			)
+		)
 		{
-			throw new InvalidFieldException(
+			// eslint-disable-next-line
+			new InvalidFieldWarning(
 				StringHelper.format(
 					BlubberFields._INVALID_SUB_MODEL__,
 					this.__ToWrapFields[ Index ].name

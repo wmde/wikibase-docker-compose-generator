@@ -6,5 +6,6 @@ export default class LabelField extends CommonOptionalAttributesAndMethods
 	{
 		super( Field, BindedObject, Generator );
 		this._GeneratedField.type = 'label';
+		this._Model = {};
 	}
 }

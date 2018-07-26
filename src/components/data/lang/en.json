@@ -36,5 +36,7 @@
     "quickStatementsConfigurationNamespaceProperty": "Which namespace you want to use for properties in Wikibase?",
     "quickStatementsConfigurationNamespaceItem": "Which namespace you want to use for items in Wikibase?",
     "quickStatementsConfigurationPrefixProperty": "Which prefix you want to use for properties in Wikibase?",
-    "quickStatementsConfigurationPrefixItem": "Which prefix you want to use for items in Wikibase?"
+    "quickStatementsConfigurationPrefixItem": "Which prefix you want to use for items in Wikibase?",
+    "quickStatementsConfigurationOAuthConsumerKey": "Which consumer key you got for Quickstatements?",
+    "quickStatementsConfigurationConsumerKeyPlaceholder": "Your consumer key"
 }

@@ -2,26 +2,18 @@
     "name": "BlubberForm",
     "form":
     {
-          "title":"title",
-          "subtitle": "subtitle",
-          "nextButtonText": "nextButton",
-          "backButtonText": "backButton",
-          "finishButtonText" : "finishButton",
-          "stepSize": "xs",
-          "shape": "tab",
-          "color": "#3366cc",
-          "errorColor": "#f81717",
-          "transition": "fade",
-          "startIndex": 0
-    },
-    "dependencies":
-    {
-      "Elasticsearch": [],
-      "Quickstatements": [],
-      "wikibaseBlazegraph": [],
-      "wikibaseProxy": [ "wikibaseBlazegraph" ],
-      "wikibaseFrontend" : [ "wikibaseProxy" ],
-      "wikibaseUpdater": [ "wikibaseBlazegraph" ]
+        "title":"title",
+        "subtitle": "subtitle",
+        "nextButtonText": "nextButton",
+        "backButtonText": "backButton",
+        "finishButtonText" : "finishButton",
+        "stepSize": "xs",
+        "shape": "tab",
+        "color": "#3366cc",
+        "errorColor": "#f81717",
+        "transition": "fade",
+        "startIndex": 0,
+        "onChange": "vue.changeStep"
     },
     "steps":
     [
@@ -56,6 +48,7 @@
                     "label": "components_elasticsearch",
                     "help": "components_elasticsearch_help",
                     "type": "choice",
+                    "onChanged": "vue.refresh",
                     "default": true,
                     "values":
                     [
@@ -69,6 +62,7 @@
                     "label": "components_wikibaseQuickstatements",
                     "help": "components_wikibaseQuickstatements_help",
                     "type": "choice",
+                    "onChanged": "vue.refresh",
                     "default": true,
                     "values":
                     [
@@ -82,6 +76,7 @@
                     "label": "components_wikibaseQueryService",
                     "help": "components_wikibaseQueryService_help",
                     "type": "choice",
+                    "onChanged": "vue.refresh",
                     "default": true,
                     "values": [
                       { "value": true, "label": "yes" },
@@ -94,6 +89,7 @@
         {
             "name": "componentsConfiguration",
             "icon": "settings",
+            "renderCondition": "vue.hasComponents",
             "beforeChange": "vue.validateStep2",
             "options":
             {
@@ -112,59 +108,75 @@
                             "type": "number",
                             "default": 9999,
                             "required": true,
-                            "validator": "validator.port"
+                            "validator": "validator.port",
+                            "renderCondition": "vue.hasWDQS"
                         },
                         {
                             "name": "wikibaseProxyPort",
                             "type": "number",
                             "default": 8989,
                             "required": true,
-                            "validator": "validator.port"
+                            "validator": "validator.port",
+                            "renderCondition": "vue.hasWDQS"
                         },
                         {
                             "name": "wikibaseFrontendPort",
                             "type": "number",
                             "default": 8282,
                             "required": true,
-                            "validator": "validator.port"
+                            "validator": "validator.port",
+                            "renderCondition": "vue.hasWDQS"
                         },
                         {
                             "name": "wikibaseQuickstatementsPort",
                             "type": "number",
                             "default": 9999,
                             "required": true,
-                            "validator": "validator.port"
+                            "validator": "validator.port",
+                            "renderCondition": "vue.hasQuickstatements"
                         }
 
                     ]
                 },
                 {
                     "name": "quickStatementsConfiguration",
+                    "renderCondition": "vue.hasQuickstatements",
                     "group":
                     [
+                        {
+                            "name": "quickStatementsConfigurationOAuthConsumerKey",
+                            "type": "text",
+                            "briefDescription": "quickStatementsConfigurationConsumerKeyPlaceholder",
+                            "required": true,
+                            "validator": "validator.string"
+                        },
                         {
                             "name": "quickStatementsConfigurationNamespaceProperty",
                             "type": "text",
                             "default": "122",
-                            "required": true
+                            "required": true,
+                            "validator": "validator.string"
                         },
                         {
                             "name": "quickStatementsConfigurationPrefixProperty",
                             "type": "text",
                             "default": "Property",
-                            "required": true
+                            "required": true,
+                            "validator": "validator.string"
                         },
                         {
                             "name": "quickStatementsConfigurationNamespaceItem",
                             "type": "text",
                             "default": "120",
-                            "required": true
+                            "required": true,
+                            "validator": "validator.string"
                         },
                         {
                             "name": "quickStatementsConfigurationPrefixItem",
                             "type": "text",
                             "default": "Item",
-                            "required": true
+                            "required": true,
+                            "validator": "validator.string"
                         }
                     ]
                 }
