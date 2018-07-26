@@ -1,203 +1,82 @@
 {
     "name": "BlubberForm",
     "form": {
-          "title":"Blubber",
+          "title":"title",
           "subtitle": "subtitle",
           "nextButtonText": "nextButton",
           "backButtonText": "backButton",
           "finishButtonText" : "finishButton",
-          "stepSize": "md",
-          "shape": "circle",
-          "color": "#000000",
+          "stepSize": "xs",
+          "shape": "tab",
+          "color": "#3366cc",
           "errorColor": "#f81717",
           "transition": "fade",
           "startIndex": 0
     },
-    "steps":[{
-            "name":"installLanguageSetting",
-            "description": "installLanguageSetting_description",
-            "icon": "settings"
-        },{
-            "name":"generalSetting",
-            "description": "generalSetting_description",
+    "dependencies": {
+      "Elasticsearch": [],
+      "Quickstatements": [],
+      "wikibaseBlazegraph": [],
+      "wikibaseProxy": [ "wikibaseBlazegraph" ],
+      "wikibaseFrontend" : [ "wikibaseProxy" ],
+      "wikibaseUpdater": [ "wikibaseBlazegraph" ]
+    },
+    "steps":[ {
+            "name":"prolog",
+            "description": "prolog_description",
             "icon": "settings",
             "options": {
-                    "validationErrorClass": "has-error",
-                    "validationSuccessClass": "has-success",
-                    "validateAfterChanged": true
-            },
-            "fields":[{
-                    "name": "settingLanguage",
-                    "type": "select",
-                    "default": "en",
-                    "required": true,
-                    "multipleInput": true,
-                    "values": [
-                        {"value": "en", "label":"languageOption_english" },
-                        {"value": "de", "label":"languageOption_german" }
-                    ]
-                },
-                {
-                    "name": "downloadDefault",
-                    "type": "choice",
-                    "prefix": "",
-                    "default": false,
-                    "values": [
-                        {"value": true, "label":"choice_yes"},
-                        {"value": false, "label":"choice_no"}
-                    ],
-                    "required" : true
-                },
-                {
-                    "name": "expertMode",
-                    "type": "choice",
-                    "default": false,
-                    "values": [
-                        {"value": true, "label":"choice_yes"},
-                        {"value": false, "label":"choice_no"}
-                    ],
-                    "required": true
-                }],
-              "advance":"",
-              "template": ""
+                "validationErrorClass": "has-error",
+                "validationSuccessClass": "has-success",
+                "validateAfterChanged": true
+            }
         },{
-              "name":"wikibase",
-              "description": "wikibase_description",
-              "icon": "settings",
-              "options": {
-                  "validationErrorClass": "has-error",
-                  "validationSuccessClass": "has-success",
-                  "validateAfterChanged": true
-              },
-              "fields":[{
-                  "name": "wikiBaseGeneral",
-                  "group": [{
-                          "name": "wikibaseServiceAlias",
-                          "type": "text",
-                          "default": "test",
-                          "required": false,
-                          "help": "help me",
-                          "hint": "what a hint",
-                          "styleClasses":"col-xs-3"
-                      },{
-                          "name": "wikibasePort",
-                          "type": "number",
-                          "default": "",
-                          "help": "",
-                          "hint": "",
-                          "required": true
-                      }
-                  ]
-              },{
-                  "name": "wikibaseDatabase",
-                  "group": [{
-                          "name": "wikibaseDatabaseHost",
-                          "type": "text",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": ""
-                      },{
-                          "name": "wikibaseDatabasePort",
-                          "type": "number",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": ""
-                      },{
-                          "name": "wikibaseDatabaseName",
-                          "type": "text",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": ""
-                      },{
-                          "name": "wikibaseDatabaseUser",
-                          "type": "text",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": ""
-                      },{
-                          "name": "wikibaseDatabaseUserPassword",
-                          "type": "password",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": "",
-                          "buttons": {
-                              "label": "showPassword",
-                              "action": "showGi"
-                          }
-                      }
-                  ]
-              },{
-                  "name": "wikibaseMediawiki",
-                  "group": [{
-                          "name": "wikibaseMediawikiSiteName",
-                          "type": "text",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": "",
-                          "styleClasses":"col-xs-3"
-                      },{
-                          "name": "wikibaseMediawikiAdminName",
-                          "type": "text",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": ""
-                      },{
-                          "name": "wikibaseMediawikiAdminPassword",
-                          "type": "password",
-                          "default": "",
-                          "required": true,
-                          "help": "",
-                          "hint": ""
-                      }
-                   ]
-                }
-            ],
-            "advance":"",
-            "template": ""
-        },{
-            "name": "wikibaseBlazegraph",
-            "description": "wikibaseBlazegraph_description",
+            "name": "components",
             "icon": "settings",
             "options": {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
                 "validateAfterChanged": true
             },
-            "fields":[{
-                    "name": "wikibaseBlazegraphAlias",
-                    "type": "text",
-                    "default": "",
-                    "required": false,
-                    "help": "",
-                    "hint": ""
-
-                }, {
-                "name": "wikibaseBlazegraphEmai",
-                "type": "email",
-                "default": "",
-                "required": false,
-                "help": "",
-                "hint": "",
-                "multipleInput": true
+            "fields": [
+                {
+                    "name": "components_question",
+                    "type": "label"
+                },{
+                    "name": "elasticsearchStep",
+                    "label": "components_elasticsearch",
+                    "help": "components_elasticsearch_help",
+                    "type": "choice",
+                    "default": true,
+                    "values": [
+                      {"value": true, "label":"yes"},
+                      {"value": false, "label":"no"}
+                    ],
+                    "required" : true
+                },{
+                    "name": "quickstatementsStep",
+                    "label": "components_wikibaseQuickstatements",
+                    "help": "components_wikibaseQuickstatements_help",
+                    "type": "choice",
+                    "default": true,
+                    "values": [
+                      {"value": true, "label":"yes"},
+                      {"value": false, "label":"no"}
+                    ],
+                    "required" : true
+                },{
+                    "name": "wdqsStep",
+                    "label": "components_wikibaseQueryService",
+                    "help": "components_wikibaseQueryService_help",
+                    "type": "choice",
+                    "default": true,
+                    "values": [
+                      {"value": true, "label":"yes"},
+                      {"value": false, "label":"no"}
+                    ],
+                    "required" : true
                 }
-                ,{
-                    "name": "wikibaseBlazegraphPort",
-                    "type": "number",
-                    "default": "",
-                    "required": true,
-                    "help": "",
-                    "hint": ""
-                }
-            ],
-            "advance":"",
-            "template": ""
+            ]
         }
     ]
 }
