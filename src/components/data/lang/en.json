@@ -1,7 +1,7 @@
 {
     "key": "en",
     "title": "Blubber",
-    "subtitle": "A yml builder for wikibase-docker",
+    "subtitle": "A yaml builder for wikibase-docker",
     "nextButton": "Next",
     "backButton": "Back",
     "finishButton": "Download",
