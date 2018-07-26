@@ -1,6 +1,7 @@
 {
     "name": "BlubberForm",
-    "form": {
+    "form":
+    {
           "title":"title",
           "subtitle": "subtitle",
           "nextButtonText": "nextButton",
@@ -13,7 +14,8 @@
           "transition": "fade",
           "startIndex": 0
     },
-    "dependencies": {
+    "dependencies":
+    {
       "Elasticsearch": [],
       "Quickstatements": [],
       "wikibaseBlazegraph": [],
@@ -21,60 +23,128 @@
       "wikibaseFrontend" : [ "wikibaseProxy" ],
       "wikibaseUpdater": [ "wikibaseBlazegraph" ]
     },
-    "steps":[ {
+    "steps":
+    [
+        {
             "name":"prolog",
             "description": "prolog_description",
             "icon": "settings",
-            "options": {
+            "options":
+            {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
                 "validateAfterChanged": true
             }
-        },{
+        },
+        {
             "name": "components",
             "icon": "settings",
-            "options": {
+            "options":
+            {
                 "validationErrorClass": "has-error",
                 "validationSuccessClass": "has-success",
                 "validateAfterChanged": true
             },
-            "fields": [
+            "fields":
+            [
                 {
                     "name": "components_question",
                     "type": "label"
-                },{
+                },
+                {
                     "name": "elasticsearchStep",
                     "label": "components_elasticsearch",
                     "help": "components_elasticsearch_help",
                     "type": "choice",
                     "default": true,
-                    "values": [
+                    "values":
+                    [
                       {"value": true, "label":"yes"},
                       {"value": false, "label":"no"}
                     ],
                     "required" : true
-                },{
+                },
+                {
                     "name": "quickstatementsStep",
                     "label": "components_wikibaseQuickstatements",
                     "help": "components_wikibaseQuickstatements_help",
                     "type": "choice",
                     "default": true,
-                    "values": [
-                      {"value": true, "label":"yes"},
-                      {"value": false, "label":"no"}
+                    "values":
+                    [
+                      { "value": true, "label": "yes" },
+                      { "value": false, "label": "no" }
                     ],
                     "required" : true
-                },{
+                },
+                {
                     "name": "wdqsStep",
                     "label": "components_wikibaseQueryService",
                     "help": "components_wikibaseQueryService_help",
                     "type": "choice",
                     "default": true,
                     "values": [
-                      {"value": true, "label":"yes"},
-                      {"value": false, "label":"no"}
+                      { "value": true, "label": "yes" },
+                      { "value": false, "label": "no" }
                     ],
                     "required" : true
+                }
+            ]
+        },
+        {
+            "name": "componentsConfiguration",
+            "icon": "settings",
+            "options":
+            {
+                "validationErrorClass": "has-error",
+                "validationSuccessClass": "has-success",
+                "validateAfterChanged": true
+            },
+            "fields":
+            [
+                {
+                    "name": "portsConfiguration",
+                    "group":
+                    [
+                        {
+                            "name": "wikibaseBlazegraphPort",
+                            "type": "number",
+                            "default": 9999,
+                            "required": true
+                        },
+                        {
+                            "name": "wikibaseProxyPort",
+                            "type": "number",
+                            "default": 8989,
+                            "required": true
+                        },
+                        {
+                            "name": "wikibaseFrontendPort",
+                            "type": "number",
+                            "default": 8282,
+                            "required": true
+
+                        },
+                        {
+                            "name": "wikibaseQuickstatementsPort",
+                            "type": "number",
+                            "default": 9999,
+                            "required": true
+                        }
+
+                    ]
+                },
+                {
+                    "name": "quickStatementsConfiguration",
+                    "group":
+                    [
+                        {
+                            "name": "wikibaseBlazegraphPorts",
+                            "type": "number",
+                            "default": 9999,
+                            "required": true
+                        }
+                    ]
                 }
             ]
         }

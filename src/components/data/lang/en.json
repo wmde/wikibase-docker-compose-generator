@@ -22,5 +22,15 @@
     "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here for more</a></span>",
 
     "components_wikibaseQueryService": "Use Wikibase query service?",
-    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>"
+    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>",
+
+    "componentsConfiguration": "Components configuration",
+    "portsConfiguration": "Compontents ports",
+    "portsWDQS": "Ports of Wikibase query service",
+    "wikibaseBlazegraphPort": "Which port the Blazegraph for Wikibase query service should use?",
+    "wikibaseProxyPort": "Which port the proxy for Wikibase query service should use?",
+    "wikibaseFrontendPort": "Which port the User Interface for Wikibase query service should use?",
+    "wikibaseQuickstatementsPort": "Which port Quickstatements should use?",
+
+    "quickStatementsConfiguration": "Configure Quickstatements"
 }

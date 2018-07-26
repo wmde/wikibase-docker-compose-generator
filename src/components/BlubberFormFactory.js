@@ -17,10 +17,21 @@ export default {
 		__generateAStep( createElement, Step )
 		{
 			let VGenerator, Description;
+
+			if ( 0 === Step.inner.schema.fields.length )
+			{
+				delete Step.inner.schema.fields;
+			}
+
+            if ( 0 === Step.inner.schema.groups.length )
+            {
+                delete Step.inner.schema.groups;
+            }
+
 			if (
-				0 < Step.inner.schema.fields.length
+				true === Step.inner.schema.hasOwnProperty( "fields" )
 			||
-				0 < Step.inner.schema.groups.length
+				true === Step.inner.schema.hasOwnProperty( "groups" )
 			)
 			{
 				VGenerator = createElement(

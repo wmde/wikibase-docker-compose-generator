@@ -1,10 +1,11 @@
+import Utils from '../../Utils';
+
 export default class Validators
 {
 	static InvalidPortNoInteger;
 	static InvalidPortWellKnown;
 	static InvalidPortInUse;
 	static InvalidString;
-	static InvalidArray;
 	static __LastInteger;
 	static __UsedPorts = {};
 
@@ -42,9 +43,37 @@ export default class Validators
 		return [];
 	}
 
-	static ports( Value, Schema )
+	static containsPort( Value )
 	{
-		let Index;
+        if( -1 === Utils.binarySearch( Validators.__UsedPorts, Value ) )
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	static removePort( Value )
+	{
+		const Index = Utils.binarySearch( Validators.__UsedPorts, Value );
+		if ( -1 === Index )
+		{
+			return;
+		}
+
+		Validators.__UsedPorts.splice( Index, 1 );
+	}
+
+	static clearPorts()
+	{
+        Validators.__UsedPorts.length = 0;
+	}
+
+	static ports( Value )
+	{
+		let InsertIndex;
 		if ( false === Validators.isInteger( Value ) )
 		{
 			return [ Validators.InvalidPortNoInteger ];
@@ -55,29 +84,18 @@ export default class Validators
 			return [ Validators.InvalidPortWellKnown ];
 		}
 
-		for ( Index in Validators.__UsedPorts )
+		InsertIndex = Utils.binaryInsertSearch( Validators.__UsedPorts, Validators.__LastInteger );
+		if( 0 > InsertIndex )
 		{
-			if ( Index === Schema.id )
-			{
-				continue;
-			}
-
-			if ( Validators.__LastInteger === Validators.__UsedPorts[ Index ] )
-			{
-				return [ Validators.InvalidPortInUse ];
-			}
+            Validators.__UsedPorts.splice(
+                -( InsertIndex + 1 ),
+                0,
+                Value
+			)
 		}
-
-		Validators.__UsedPorts[ Schema.id ] = Validators.__LastInteger;
-
-		return [];
-	}
-
-	static steps( Value )
-	{
-		if ( false === Array.isArray( Value ) || 0 === Value.length )
+		else
 		{
-			return [ Validators.InvalidArray ];
+			return [ Validators.InvalidPortInUse ];
 		}
 
 		return [];
