@@ -1,5 +1,5 @@
 import Utils from '../../Utils';
-
+/* eslint-disable operator-linebreak */
 export default class Validators
 {
 	static InvalidPortNoInteger = 'The given value is not an integer.';
@@ -13,7 +13,7 @@ export default class Validators
 
 	static isInteger( Integer )
 	{
-		let Index;
+		let Index, CharCode;
 		if ( 'number' === typeof Integer )
 		{
 			Integer = `${ Integer }`;
@@ -23,9 +23,10 @@ export default class Validators
 			return false;
 		}
 
-		for ( Index in Integer )
+		for ( Index = 0; Index < Integer.length; Index++ )
 		{
-			if ( 48 > Integer[ Index ] && 57 < Integer[ Index ] )
+			CharCode = Integer.charCodeAt( Index );
+			if ( 48 > CharCode || 57 < CharCode )
 			{
 				return false;
 			}
@@ -96,7 +97,8 @@ export default class Validators
 	static string( Value )
 	{
 		if (
-			'string' !== typeof Value ||
+			'string' !== typeof Value
+		||
             0 === Value.length
 		)
 		{
@@ -107,7 +109,6 @@ export default class Validators
 		{
 			return [ `${ Validators.InvalidStringCharacter }: ${ Value.match( Validators.StringPattern ) }` ];
 		}
-
 		return [];
 	}
 }

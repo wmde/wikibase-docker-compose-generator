@@ -130,7 +130,7 @@
                         {
                             "name": "wikibaseQuickstatementsPort",
                             "type": "number",
-                            "default": 9999,
+                            "default": 9191,
                             "required": true,
                             "validator": "validator.port",
                             "renderCondition": "vue.hasQuickstatements"

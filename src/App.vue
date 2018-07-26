@@ -151,6 +151,9 @@ export default {
 		validateStep2: function ()
 		{
 			this.$forceUpdate();
+            Validators.clearPorts();
+            console.log(Validators.__UsedPorts)
+            console.log(this.$refs.componentsConfiguration.validate())
 			return this.$refs.componentsConfiguration.validate();
 		}
 	}
