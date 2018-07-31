@@ -153,7 +153,7 @@
                             "name": "quickStatementsConfigurationNamespaceProperty",
                             "type": "text",
                             "default": "122",
-                            "help": "quickStatementsConfigurationOAuthHelp",
+                            "help": "quickStatementsConfigurationNamespacePropertyHelp",
                             "required": true,
                             "validator": "validator.string"
                         },
@@ -161,7 +161,7 @@
                             "name": "quickStatementsConfigurationPrefixProperty",
                             "type": "text",
                             "default": "Property",
-                            "help": "quickStatementsConfigurationOAuthHelp",
+                            "help": "quickStatementsConfigurationPrefixPropertyHelp",
                             "required": true,
                             "validator": "validator.string"
                         },
@@ -169,7 +169,7 @@
                             "name": "quickStatementsConfigurationNamespaceItem",
                             "type": "text",
                             "default": "120",
-                            "help": "quickStatementsConfigurationOAuthHelp",
+                            "help": "quickStatementsConfigurationNamespaceItemHelp",
                             "required": true,
                             "validator": "validator.string"
                         },
@@ -177,7 +177,7 @@
                             "name": "quickStatementsConfigurationPrefixItem",
                             "type": "text",
                             "default": "Item",
-                            "help": "quickStatementsConfigurationOAuthHelp",
+                            "help": "quickStatementsConfigurationPrefixItemHelp",
                             "required": true,
                             "validator": "validator.string"
                         }
