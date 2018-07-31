@@ -17,8 +17,12 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 	constructor( Form, BindedObject, Generator )
 	{
-		const Name = FieldBase._getName( Form );
-		super( { name: Name }, BindedObject, Generator );
+		super(
+			{ name: FieldBase._getName( Form ) },
+			BindedObject,
+			Generator
+		);
+		
 		this.__Form = Form;
 		this.Form = {
 			JustFields: false,
