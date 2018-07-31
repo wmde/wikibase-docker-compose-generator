@@ -22,7 +22,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 			BindedObject,
 			Generator
 		);
-		
+
 		this.__Form = Form;
 		this.Form = {
 			JustFields: false,

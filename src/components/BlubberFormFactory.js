@@ -159,19 +159,21 @@ export default {
 			let Index;
 			for ( Index in Source )
 			{
-				if ( true === Target.hasOwnProperty( Index ) )
+				if ( false === Target.hasOwnProperty( Index ) )
 				{
-					if ( 'object' === typeof Source[ Index ] )
+					continue;
+				}
+
+				if ( 'object' === typeof Source[ Index ] )
+				{
+					if ( 'object' === typeof Target[ Index ] )
 					{
-						if ( 'object' === typeof Target[ Index ] )
-						{
-							this.__copyModelData( Target[ Index ], Source[ Index ] );
-						}
+						this.__copyModelData( Target[ Index ], Source[ Index ] );
 					}
-					else
-					{
-						Target[ Index ] = Source[ Index ];
-					}
+				}
+				else
+				{
+					Target[ Index ] = Source[ Index ];
 				}
 			}
 		},
