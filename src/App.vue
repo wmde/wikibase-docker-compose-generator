@@ -105,6 +105,7 @@ export default {
 		refresh: function ()
 		{
 			this.$forceUpdate();
+			return true;
 		},
 		changeStep: function ( prevIndex, nextIndex )
 		{
@@ -143,9 +144,24 @@ export default {
 				}
 			}
 		},
-		hasWDQS: function ()
+		hasSingelComponenet: function ( WhichField )
 		{
-		    console.log( arguments );
+			let FieldName;
+			const WQDS = [
+				'wikibaseBlazegraphPort',
+				'wikibaseProxyPort',
+				'wikibaseFrontendPort'
+			];
+
+			if ( -1 !== WQDS.indexOf( WhichField ) )
+			{
+				FieldName = 'wdqsStep';
+			}
+			else
+			{
+				FieldName = 'quickstatementsStep';
+			}
+
 			if (
 				false === this.$data.blubberModel.hasOwnProperty(
 					this.blubberFormProperties.id
@@ -158,24 +174,7 @@ export default {
 			{
 				return this.$data.blubberModel[
 					this.blubberFormProperties.id
-				].wdqsStep;
-			}
-		},
-		hasQuickstatements: function ()
-		{
-			if (
-				false === this.$data.blubberModel.hasOwnProperty(
-					this.blubberFormProperties.id
-				)
-			)
-			{
-				return true;
-			}
-			else
-			{
-				return this.$data.blubberModel[
-					this.blubberFormProperties.id
-				].quickstatementsStep;
+				][ FieldName ];
 			}
 		},
 		validateStep2: function ()
@@ -195,7 +194,7 @@ export default {
 	margin-bottom: 1em;
 }
 
-h1,h2,h3,h4,h5,h6,p,ul, button
+h1,h2,h3,h4,h5,h6,p,ul, label, button
 {
 	font-family:
             'Helvetica Neue',
@@ -236,15 +235,14 @@ input
 	padding-left: 5px;
 }
 
-.help span
+.helpText
 {
 	visibility: hidden;
-	width: 50%;
 	background-color: #555;
 	color: #fff;
 	text-align: left;
 	border-radius: 6px;
-	margin-top: -0.1em;
+	margin-top: 0em!important;
 	position: absolute;
 	z-index: 1;
 	opacity: 0;
@@ -255,7 +253,7 @@ input
 	padding-right:10px;
 }
 
-.help span a
+.help a
 {
 	color: #4683ff;
 }
@@ -264,6 +262,7 @@ input
 {
 	display: inline-block;
 }
+
 .help:after
 {
 	content: "?";
@@ -280,7 +279,7 @@ input
 	display: inline-block!important;
 }
 
-.help:hover span
+.help:hover .helpText
 {
 	visibility: visible;
 	opacity: 1;

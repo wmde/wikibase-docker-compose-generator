@@ -31,6 +31,7 @@
         {
             "name": "components",
             "icon": "settings",
+            "beforeChange": "vue.refresh",
             "options":
             {
                 "validationErrorClass": "has-error",
@@ -63,7 +64,9 @@
                     "help": "components_wikibaseQuickstatements_help",
                     "type": "choice",
                     "onChanged": "vue.refresh",
-                    "default": true,
+                    "default": false,
+                    "renderCondition": false,
+                    "modelRenderCondition": true,
                     "values":
                     [
                           { "value": true, "label": "yes" },
@@ -104,12 +107,16 @@
                     "group":
                     [
                         {
+                            "type": "label",
+                            "name": "portsConfigurationDescription"
+                        },
+                        {
                             "name": "wikibaseBlazegraphPort",
                             "type": "number",
                             "default": 9999,
                             "required": true,
                             "validator": "validator.port",
-                            "renderCondition": "vue.hasWDQS"
+                            "renderCondition": "vue.hasSingelComponenet"
                         },
                         {
                             "name": "wikibaseProxyPort",
@@ -117,7 +124,7 @@
                             "default": 8989,
                             "required": true,
                             "validator": "validator.port",
-                            "renderCondition": "vue.hasWDQS"
+                            "renderCondition": "vue.hasSingelComponenet"
                         },
                         {
                             "name": "wikibaseFrontendPort",
@@ -125,7 +132,7 @@
                             "default": 8282,
                             "required": true,
                             "validator": "validator.port",
-                            "renderCondition": "vue.hasWDQS"
+                            "renderCondition": "vue.hasSingelComponenet"
                         },
                         {
                             "name": "wikibaseQuickstatementsPort",
@@ -133,26 +140,20 @@
                             "default": 9191,
                             "required": true,
                             "validator": "validator.port",
-                            "renderCondition": "vue.hasQuickstatements"
+                            "renderCondition": "vue.hasSingelComponenet"
                         }
                     ]
                 },
                 {
                     "name": "quickStatementsConfiguration",
-                    "renderCondition": "vue.hasQuickstatements",
+                    "renderCondition": "vue.hasSingelComponenet",
                     "group":
                     [
-                        {
-                            "name": "quickStatementsConfigurationOAuthConsumerKey",
-                            "type": "text",
-                            "briefDescription": "quickStatementsConfigurationConsumerKeyPlaceholder",
-                            "required": true,
-                            "validator": "validator.string"
-                        },
                         {
                             "name": "quickStatementsConfigurationNamespaceProperty",
                             "type": "text",
                             "default": "122",
+                            "help": "quickStatementsConfigurationOAuthHelp",
                             "required": true,
                             "validator": "validator.string"
                         },
@@ -160,6 +161,7 @@
                             "name": "quickStatementsConfigurationPrefixProperty",
                             "type": "text",
                             "default": "Property",
+                            "help": "quickStatementsConfigurationOAuthHelp",
                             "required": true,
                             "validator": "validator.string"
                         },
@@ -167,6 +169,7 @@
                             "name": "quickStatementsConfigurationNamespaceItem",
                             "type": "text",
                             "default": "120",
+                            "help": "quickStatementsConfigurationOAuthHelp",
                             "required": true,
                             "validator": "validator.string"
                         },
@@ -174,6 +177,7 @@
                             "name": "quickStatementsConfigurationPrefixItem",
                             "type": "text",
                             "default": "Item",
+                            "help": "quickStatementsConfigurationOAuthHelp",
                             "required": true,
                             "validator": "validator.string"
                         }
