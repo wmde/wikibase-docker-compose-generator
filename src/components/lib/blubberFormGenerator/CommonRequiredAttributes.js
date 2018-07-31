@@ -2,9 +2,12 @@ import FieldBase from './FieldBase';
 import InvalidFieldException from './Exceptions/InvalidFieldException';
 import InvalidIdWarning from './Exceptions/InvalidIdWarning';
 import StringHelper from '../StringHelper';
+import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 
 export default class CommonRequiredAttributes extends FieldBase
 {
+	static _INVALID_IDENTIFIER_STRING_ = 'The given string {} is not a valid identifier string.';
+
 	constructor( Field, BindedObject, Generator )
 	{
 		super( Field, BindedObject, Generator );
@@ -28,10 +31,27 @@ export default class CommonRequiredAttributes extends FieldBase
 		if ( true === this._Field.hasOwnProperty( 'id' ) )
 		{
 			Id = this._executeFunctionOrGetString( this._Field.id );
+
+			if ( false === this._validateIdentifier( Id ) )
+			{
+				throw new InvalidFieldPropertyException(
+					CommonRequiredAttributes._INVALID_IDENTIFIER_STRING_,
+					Id );
+			}
 		}
 		else
 		{
 			Id = this._Field.name;
+		}
+
+		if ( false === this._validateIdentifier( this._Field.name ) )
+		{
+			throw new InvalidFieldPropertyException(
+				StringHelper.format(
+					CommonRequiredAttributes._INVALID_IDENTIFIER_STRING_,
+					Id
+				)
+			);
 		}
 
 		// common required properties
@@ -42,7 +62,12 @@ export default class CommonRequiredAttributes extends FieldBase
 		}
 		else
 		{
-			new InvalidIdWarning( StringHelper.format( FieldBase._INVALID_ID_, Id ) );// eslint-disable-line
+			new InvalidIdWarning(// eslint-disable-line
+				StringHelper.format(
+					FieldBase._INVALID_ID_,
+					Id
+				)
+			);
 		}
 
 		this._GeneratedField.model = `${ this._Field.name }`;

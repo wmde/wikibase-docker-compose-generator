@@ -22,6 +22,7 @@ export default class FieldBase
 	static __IS_OBJECT__ = 0x4;
 	static __IS_STRING__ = 0x5;
 	static __ALLOWED_TYPES__ = [ 'any', 'boolean', 'function', 'number', 'object', 'string' ];
+    static __WHITESPACES__ = [ 7, 8, 9, 10, 11, 12, 13, 32 ];
 	/* Statics */
 	static _IdRegistry = new IdRegister();
 	static ModelRenderCondition = true;
@@ -46,6 +47,78 @@ export default class FieldBase
 		this.__ModelKey = '';
 		this.__ModelPointer = null;
 		this.__HasDefaultValue = false;
+		if ( null === Field )
+		{
+			this._Field = { name: '"not set"' };
+		}
+	}
+
+	static _getName( Field )
+	{
+		let Name;
+		if ( true === Field.hasOwnProperty( 'bind' ) )
+		{
+			Name = Field.bind;
+		}
+		else
+		{
+			Name = Field.name;
+		}
+
+		if ( 'undefined' === typeof Name )
+		{
+			return '"not set"';
+		}
+		else
+		{
+			return Name;
+		}
+	}
+
+	_validateIdentifier( Identifier )
+	{
+		let CurrentCharacter, Index;
+		if (
+			'string' !== typeof Identifier
+		||
+			true === Utils.isEmpty( Identifier )
+		)
+		{
+			return false;
+		}
+
+		CurrentCharacter = Identifier.charCodeAt( 0 );
+		// First char should be a character
+		if (
+			(
+				65 > CurrentCharacter
+			||
+				90 < CurrentCharacter
+			)
+		&&
+			(
+				97 > CurrentCharacter
+			||
+				122 < CurrentCharacter
+			)
+		)
+		{
+			return false;
+		}
+		else
+		{
+			// no whitespaces
+			for ( Index = 1; Index < Identifier.length; Index++ )
+			{
+				CurrentCharacter = Identifier.charCodeAt( Index );
+				if ( -1 !== Utils.binarySearch( FieldBase.__WHITESPACES__, CurrentCharacter ) )
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
 	}
 
 	__lookForPropertyAtBindedObject( IsTypeOrFunction )
@@ -82,11 +155,6 @@ export default class FieldBase
 	{
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
-
-		if ( null === this._Field )
-		{
-			this._Field = { name: '"not set"' };
-		}
 
 		if ( -1 === ValueType && FieldBase.__IS_ANY__ !== Type )
 		{
@@ -398,6 +466,19 @@ export default class FieldBase
 				);
 			}
 		}
+		else if (
+			'string' === typeof AssignmentLabel
+		&&
+            0 < AssignmentLabel.length
+		&&
+			true === this._Field.hasOwnProperty( AssignmentLabel )
+		)
+		{
+			this._GeneratedField[ AssignmentLabel ] = this[ AssignFunction ](
+				this._Field[ AssignmentLabel ]
+			);
+		}
+
 	}
 
 	_assignString( FieldLabel, AssignmentLabel = '' )
@@ -438,6 +519,18 @@ export default class FieldBase
 					true
 				);
 			}
+		}
+		else if (
+			'string' === typeof AssignmentLabel
+		&&
+            0 < AssignmentLabel.length
+		&&
+            true === this._Field.hasOwnProperty( AssignmentLabel )
+		)
+		{
+			this._GeneratedField[ AssignmentLabel ] = this._executeFunctionOrGetAnything(
+				this._Field[ AssignmentLabel ]
+			);
 		}
 	}
 

@@ -145,6 +145,7 @@ export default {
 		},
 		hasWDQS: function ()
 		{
+		    console.log( arguments );
 			if (
 				false === this.$data.blubberModel.hasOwnProperty(
 					this.blubberFormProperties.id

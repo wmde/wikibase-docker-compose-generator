@@ -17,7 +17,8 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 	constructor( Form, BindedObject, Generator )
 	{
-		super( null, BindedObject, Generator );
+		const Name = FieldBase._getName( Form );
+		super( { name: Name }, BindedObject, Generator );
 		this.__Form = Form;
 		this.Form = {
 			JustFields: false,
@@ -140,7 +141,7 @@ export default class BlubberFormSchemaConstructor extends FieldBase
 
 		Object.assign( this.Form.Model, Generated.Model );
 
-		this.Form.Steps.push( [ Generated.NodeSchema, Generated.getCondition() ] );
+		this.Form.Steps.push( Generated.NodeSchema );
 		this.Form.Schema.push( Generated.NodeSchema.inner.schema );
 	}
 

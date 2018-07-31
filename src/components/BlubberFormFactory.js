@@ -87,9 +87,9 @@ export default {
 
 			if ( true === Schema.JustFields )
 			{
-				if ( true === Schema.Steps[ 0 ][ 1 ] )
+				if ( true === Schema.Steps[ 0 ].inner.renderCondition )
 				{
-					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ][ 0 ] );
+					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ] );
 
 					return createElement(
 						'form-wizard',
@@ -103,7 +103,7 @@ export default {
 							createElement(
 								'div',
 								{
-									attrs: Schema.Steps[ 0 ][ 0 ].attr
+									attrs: Schema.Steps[ 0 ].attr
 								},
 								[ Fields[ 0 ], Fields[ 1 ] ]
 							)
@@ -119,19 +119,19 @@ export default {
 			{
 				for ( Index in Schema.Steps )
 				{
-					if ( true === Schema.Steps[ Index ][ 1 ] )
+					if ( true === Schema.Steps[ Index ].inner.renderCondition )
 					{
-						Fields = this.__generateAStep( createElement, Schema.Steps[ Index ][ 0 ] );
+						Fields = this.__generateAStep( createElement, Schema.Steps[ Index ] );
 						Tab = createElement(
 							'tab-content',
 							{
-								props: Schema.Steps[ Index ][ 0 ].tab
+								props: Schema.Steps[ Index ].tab
 							},
 							[
 								createElement(
 									'div',
 									{
-										attrs: Schema.Steps[ Index ][ 0 ].attr
+										attrs: Schema.Steps[ Index ].attr
 									},
 									[ Fields[ 0 ], Fields[ 1 ] ]
 								)
