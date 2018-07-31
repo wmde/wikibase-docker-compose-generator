@@ -166,14 +166,14 @@ export default {
 
 				if ( 'object' === typeof Source[ Index ] )
 				{
-					if( 'object' === typeof Target[ Index ] )
+					if ( 'object' === typeof Target[ Index ] )
 					{
-                        this.__copyModelData(Target[Index], Source[Index]);
-                    }
-                    else
+						this.__copyModelData( Target[ Index ], Source[ Index ] );
+					}
+					else
 					{
-                        Target[ Index ] = ObjectHelper.copyObj(  Source[ Index ] );
-                    }
+						Target[ Index ] = ObjectHelper.copyObj( Source[ Index ] );
+					}
 				}
 				else
 				{
