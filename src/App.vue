@@ -7,6 +7,8 @@ import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
 import Validators from './components/lib/Validators';
 import { UPDATE_KEEP_MODEL_DATA } from './components/lib/blubberFormGenerator/RenderConstants';
+import { saveAs } from 'file-saver';
+import StringHelper from './components/lib/StringHelper';
 
 class StaticReference
 {
@@ -28,6 +30,7 @@ export default {
 		Return.blubberSteps = [];
 		Return.blubberFormProperties = {};
 		Return.blubberFormStyle = {};
+		Return.blubberYAMLTemplate = {};
 		Return.blubberGeneratedYML = '';
 		return Return;
 	},
@@ -49,9 +52,10 @@ export default {
 		},
 		evaluateConfiguration: function ( Configuration )
 		{
-			this.$data.blubberSteps = Configuration.steps;
-			this.$data.blubberFormProperties = Configuration.form;
-			this.$data.blubberFormProperties.id = Configuration.name;
+			this.$data.blubberSteps = Configuration.formModel.steps;
+			this.$data.blubberFormProperties = Configuration.formModel.form;
+			this.$data.blubberFormProperties.id = Configuration.formModel.name;
+			this.$data.blubberYAMLTemplate = Configuration.yaml;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
@@ -241,6 +245,66 @@ export default {
 			][ arguments[ 1 ].model ] = RandomString;
 
 			this.$forceUpdate();
+		},
+		prepareForYAML()
+		{
+			const ToTransform = [];
+			let Index;
+
+			ToTransform.push( this.blubberYAMLTemplate.prolog );
+			ToTransform.push( this.blubberYAMLTemplate.wikibase );
+
+			// \n\t\t\t- MW_ELASTIC_HOST=elasticsearch.svc\n\t\t\t- MW_ELASTIC_PORT=9200
+
+			if ( true === this.$data.blubberModel[
+				this.blubberFormProperties.id
+			].elasticsearchStep
+			)
+			{
+				ToTransform[ 1 ] += this.blubberYAMLTemplate.elasticsearch[ 0 ];
+				ToTransform.push( this.blubberYAMLTemplate.elasticsearch[ 1 ] );
+			}
+
+			if ( true === this.$data.blubberModel[
+				this.blubberFormProperties.id
+			].wdqsStep
+			)
+			{
+				for ( Index in this.blubberYAMLTemplate.wdqsComponents )
+				{
+					ToTransform.push( this.blubberYAMLTemplate.wdqsComponents[ Index ] );
+				}
+			}
+
+			ToTransform.push( this.blubberYAMLTemplate.epilog );
+
+			return ToTransform;
+		},
+		downloadYAML()
+		{
+
+			const Transformer = ObjectHelper.copyObj(
+				this.blubberModel[ this.blubberFormProperties.id ]
+			);
+			const ToTransform = this.prepareForYAML();
+			let Transformed = '';
+			let Download = null;
+
+			Transformer.dependencyElasticsearch = '\n\t\t\t- elasticsearch';
+			Transformer.secretkey = this.randomString(
+				42,
+				33,
+				126,
+				[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
+			);
+
+			Transformed = StringHelper.format(
+				ToTransform.join( '\n' ),
+				Transformer
+			);
+
+			Download = new File( [ Transformed ], 'docker-composer.yml', { type: 'text/plain;charset=utf-8' } );
+			saveAs( Download );
 		}
 	}
 };

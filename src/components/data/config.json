@@ -1,254 +1,272 @@
 {
-    "name": "BlubberForm",
-    "form":
+    "formModel":
     {
-        "title":"title",
-        "subtitle": "subtitle",
-        "nextButtonText": "nextButton",
-        "backButtonText": "backButton",
-        "finishButtonText" : "finishButton",
-        "stepSize": "xs",
-        "shape": "tab",
-        "color": "#3366cc",
-        "errorColor": "#f81717",
-        "transition": "fade",
-        "startIndex": 0,
-        "onChange": "vue.changeStep"
-    },
-    "steps":
-    [
+        "name": "BlubberForm",
+        "form":
         {
-            "name":"prolog",
-            "description": "prolog_description",
-            "icon": "settings",
-            "options":
+            "title":"title",
+            "subtitle": "subtitle",
+            "nextButtonText": "nextButton",
+            "backButtonText": "backButton",
+            "finishButtonText" : "finishButton",
+            "stepSize": "xs",
+            "shape": "tab",
+            "color": "#3366cc",
+            "errorColor": "#f81717",
+            "transition": "fade",
+            "startIndex": 0,
+            "onChange": "vue.changeStep",
+            "onComplete": "vue.downloadYAML"
+        },
+        "steps":
+        [
             {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
+                "name":"prolog",
+                "description": "prolog_description",
+                "icon": "settings"
+            },
+            {
+                "name": "components",
+                "beforeChange": "vue.refresh",
+                "icon": "settings",
+                "options":
+                {
+                    "validationErrorClass": "has-error",
+                    "validationSuccessClass": "has-success",
+                    "validateAfterChanged": true
+                },
+                "fields":
+                [
+                    {
+                        "name": "components_question",
+                        "type": "label"
+                    },
+                    {
+                        "name": "elasticsearchStep",
+                        "label": "components_elasticsearch",
+                        "help": "components_elasticsearch_help",
+                        "type": "choice",
+                        "onChanged": "vue.refresh",
+                        "default": true,
+                        "values":
+                        [
+                              {"value": true, "label":"yes"},
+                              {"value": false, "label":"no"}
+                        ],
+                        "required" : true
+                    },
+                    {
+                        "name": "quickstatementsStep",
+                        "label": "components_wikibaseQuickstatements",
+                        "help": "components_wikibaseQuickstatements_help",
+                        "type": "choice",
+                        "onChanged": "vue.refresh",
+                        "default": false,
+                        "renderCondition": false,
+                        "modelRenderCondition": true,
+                        "values":
+                        [
+                              { "value": true, "label": "yes" },
+                              { "value": false, "label": "no" }
+                        ],
+                        "required" : true
+                    },
+                    {
+                        "name": "wdqsStep",
+                        "label": "components_wikibaseQueryService",
+                        "help": "components_wikibaseQueryService_help",
+                        "type": "choice",
+                        "onChanged": "vue.refresh",
+                        "default": true,
+                        "values": [
+                              { "value": true, "label": "yes" },
+                              { "value": false, "label": "no" }
+                        ],
+                        "required" : true
+                    }
+                ]
+            },
+            {
+                "name": "componentsConfiguration",
+                "beforeChange": "vue.validateStep2",
+                "icon": "settings",
+                "options":
+                {
+                    "validationErrorClass": "has-error",
+                    "validationSuccessClass": "has-success",
+                    "validateAfterChanged": true
+                },
+                "fields":
+                [
+                    {
+                        "name": "portsConfiguration",
+                        "group":
+                        [
+                            {
+                                "type": "label",
+                                "name": "portsConfigurationDescription"
+                            },
+                            {
+                                "name": "wikibasePort",
+                                "type": "number",
+                                "default": 8181,
+                                "required": true,
+                                "validator": "validator.port"
+                            },
+                            {
+                                "name": "wikibaseBlazegraphPort",
+                                "type": "number",
+                                "default": 9999,
+                                "required": true,
+                                "validator": "validator.port",
+                                "renderCondition": "vue.hasSingelComponenet"
+                            },
+                            {
+                                "name": "wikibaseProxyPort",
+                                "type": "number",
+                                "default": 8989,
+                                "required": true,
+                                "validator": "validator.port",
+                                "renderCondition": "vue.hasSingelComponenet"
+                            },
+                            {
+                                "name": "wikibaseFrontendPort",
+                                "type": "number",
+                                "default": 8282,
+                                "required": true,
+                                "validator": "validator.port",
+                                "renderCondition": "vue.hasSingelComponenet"
+                            },
+                            {
+                                "name": "wikibaseQuickstatementsPort",
+                                "type": "number",
+                                "default": 9191,
+                                "required": true,
+                                "validator": "validator.port",
+                                "renderCondition": "vue.hasSingelComponenet"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "quickStatementsConfiguration",
+                        "renderCondition": "vue.hasSingelComponenet",
+                        "group":
+                        [
+                            {
+                                "name": "quickStatementsConfigurationNamespaceProperty",
+                                "type": "text",
+                                "default": "122",
+                                "help": "quickStatementsConfigurationNamespacePropertyHelp",
+                                "required": true,
+                                "validator": "validator.string"
+                            },
+                            {
+                                "name": "quickStatementsConfigurationPrefixProperty",
+                                "type": "text",
+                                "default": "Property",
+                                "help": "quickStatementsConfigurationPrefixPropertyHelp",
+                                "required": true,
+                                "validator": "validator.string"
+                            },
+                            {
+                                "name": "quickStatementsConfigurationNamespaceItem",
+                                "type": "text",
+                                "default": "120",
+                                "help": "quickStatementsConfigurationNamespaceItemHelp",
+                                "required": true,
+                                "validator": "validator.string"
+                            },
+                            {
+                                "name": "quickStatementsConfigurationPrefixItem",
+                                "type": "text",
+                                "default": "Item",
+                                "help": "quickStatementsConfigurationPrefixItemHelp",
+                                "required": true,
+                                "validator": "validator.string"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "databaseConfiguration",
+                        "group":
+                        [
+                            {
+                                "name": "databaseName",
+                                "type": "text",
+                                "default": "my_wiki",
+                                "validator": "validator.sqlIdentifier",
+                                "required": true
+                            },
+                            {
+                                "name": "databaseUser",
+                                "type": "text",
+                                "default": "wikiuser",
+                                "validator": "validator.sqlIdentifier",
+                                "required": true
+                            },
+                            {
+                                "name": "databaseUserPassword",
+                                "type": "text",
+                                "default": "sqlpass",
+                                "required": true,
+                                "buttons":
+                                [
+                                    {
+                                        "label": "generatePassword",
+                                        "action": "vue.generateAPassword"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name":"mediawikiConfiguration",
+                        "group":
+                        [
+                            {
+                                "name": "mediawikiAdminName",
+                                "type": "text",
+                                "default": "admin",
+                                "validator": "validator.sqlIdentifier",
+                                "required": true
+                            },
+                            {
+                                "name": "mediawikiAdminPassword",
+                                "type": "text",
+                                "default": "adminpass",
+                                "required": true,
+                                "buttons":
+                                [
+                                    {
+                                        "label": "generatePassword",
+                                        "action": "vue.generateAPassword"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "finish",
+                "description": "finish_description",
+                "icon": "settings"
             }
-        },
+        ]
+    },
+    "yaml":
+    {
+        "prolog":"# Wikibase with Query Service\n#\n# This docker-compose example can be used to build and run the images.\n#\n# Access Wikibase via 'http://localhost:8181'\n#   (or 'http://$(docker-machine ip):8181' if using docker-machine)\n#\n#   (or 'http://$(docker-machine ip):8282' if using docker-machine)\nversion: '3'\n\nservices:",
+        "wikibase": "\twikibase:\n\t\timage: wikibase/wikibase:1.30-bundle\n\t\tbuild:\n\t\t\tcontext: ./wikibase/1.30/bundle\n\t\t\tdockerfile: Dockerfile\n\t\tlinks:\n\t\t\t- mysql\n\t\tports:\n\t\t\t- \"{wikibasePort}:80\"\n\t\tvolumes:\n\t\t\t- mediawiki-images-data:/var/www/html/images\n\t\tdepends_on:\n\t\t\t- mysql{dependencyElasticsearch}\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- - wikibase.svc\n\t\tenvironment:\n\t\t\t- DB_SERVER=mysql.svc:3306\n\t\t\t- DB_USER={databaseUser}\n\t\t\t- DB_PASS={databaseUserPassword}\n\t\t\t- DB_NAME={databaseName}\n\t\t\t- MW_ADMIN_NAME={mediawikiAdminName}\n\t\t\t- MW_ADMIN_PASS={mediawikiAdminPassword}\n\t\t\t- MW_WG_SECRET_KEY={secretkey}",
+        "elasticsearch": [ "\n\t\t\t- MW_ELASTIC_HOST=elasticsearch.svc\n\t\t\t- MW_ELASTIC_PORT=9200", "\telasticsearch:\n\t\timage: elasticsearch@sha256:f1dbf2019dc9a4ca5dd458635bfb31f9a601e4905e1d6ca1d65a3958d428f497\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- elasticsearch.svc\n\t\tenvironment:\n\t\t\tdiscovery.type: single-node" ],
+        "quickstatements":"\tquickstatements:\n\t\timage: wikibase/quickstatements:latest\n\t\tbuild:\n\t\t\tcontext: ./quickstatements/latest\n\t\t\tdockerfile: Dockerfile\n\t\tports:\n\t\t\t- \"{wikibaseQuickstatementsPort}:80\"\n\t\tdepends_on:\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- quickstatements.svc\n\t\tenvironment:\n\t\t\t- OAUTH_CONSUMER_KEY=559fcf1da153c5ec4b2fbefa7c3c395b\n\t\t\t- OAUTH_CONSUMER_SECRET=57cad33da0015dce1e94a597908e19848714a6af\n\t\t\t- QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibaseQuickstatementsPort}\n\t\t\t- WB_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:{wikibasePort}\n\t\t\t- WIKIBASE_SCHEME_AND_HOST=http://wikibase.svc\n\t\t\t- WB_PROPERTY_NAMESPACE={wikibaseQuickstatementsNamespaceProperty}\n\t\t\t- \"WB_PROPERTY_PREFIX={wikibaseQuickstatementsPrefixProperty}:\"\n\t\t\t- WB_ITEM_NAMESPACE={wikibaseQuickstatementsNamespaceItem}\n\t\t\t- \"WB_ITEM_PREFIX={wikibaseQuickstatementsPrefixItem}:\"",
+        "wdqsComponents":
         {
-            "name": "components",
-            "icon": "settings",
-            "beforeChange": "vue.refresh",
-            "options":
-            {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-            },
-            "fields":
-            [
-                {
-                    "name": "components_question",
-                    "type": "label"
-                },
-                {
-                    "name": "elasticsearchStep",
-                    "label": "components_elasticsearch",
-                    "help": "components_elasticsearch_help",
-                    "type": "choice",
-                    "onChanged": "vue.refresh",
-                    "default": true,
-                    "values":
-                    [
-                          {"value": true, "label":"yes"},
-                          {"value": false, "label":"no"}
-                    ],
-                    "required" : true
-                },
-                {
-                    "name": "quickstatementsStep",
-                    "label": "components_wikibaseQuickstatements",
-                    "help": "components_wikibaseQuickstatements_help",
-                    "type": "choice",
-                    "onChanged": "vue.refresh",
-                    "default": false,
-                    "renderCondition": false,
-                    "modelRenderCondition": true,
-                    "values":
-                    [
-                          { "value": true, "label": "yes" },
-                          { "value": false, "label": "no" }
-                    ],
-                    "required" : true
-                },
-                {
-                    "name": "wdqsStep",
-                    "label": "components_wikibaseQueryService",
-                    "help": "components_wikibaseQueryService_help",
-                    "type": "choice",
-                    "onChanged": "vue.refresh",
-                    "default": true,
-                    "values": [
-                          { "value": true, "label": "yes" },
-                          { "value": false, "label": "no" }
-                    ],
-                    "required" : true
-                }
-            ]
+            "wdqs": "\twdqs:\n\t\timage: wikibase/wdqs:0.3.0\n\t\trestart: always\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tvolumes:\n\t\t\t- query-service-data:/wdqs/data\n\t\tcommand: /runBlazegraph.sh\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- wdqs.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST=wikibase.svc\n\t\t\t- WDQS_HOST=wdqs.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}\n\t\texpose:\n\t\t\t- {wikibaseBlazegraphPort}",
+            "wdqs-proxy": "\twdqs-proxy:\n\t\timage: wikibase/wdqs-proxy\n\t\tbuild:\n\t\t\tcontext: ./wdqs-proxy/latest\n\t\t\tdockerfile: Dockerfile\n\t\tenvironment:\n\t\t\t- PROXY_PASS_HOST=wdqs.svc:{wikibaseBlazegraphPort}\n\t\tports:\n\t\t\t- \"{wikibaseProxyPort}:80\"\n\t\tdepends_on:\n\t\t\t- wdqs\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- wdqs-proxy.svc",
+            "wdqs-frontend": "\twdqs-frontend:\n\t\timage: wikibase/wdqs-frontend:latest\n\t\tbuild:\n\t\t\tcontext: ./wdqs-frontend/latest\n\t\t\tdockerfile: Dockerfile\n\t\tports:\n\t\t\t- \"{wikibaseFrontendPort}:80\"\n\t\tdepends_on:\n\t\t\t- wdqs-proxy\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- wdqs-frontend.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST=wikibase.svc\n\t\t\t- WDQS_HOST=wdqs-proxy.svc",
+            "wdqs-updater": "\twdqs-updater:\n\t\timage: wikibase/wdqs:0.3.0\n\t\tbuild:\n\t\t\tcontext: ./wdqs/0.3.0\n\t\t\tdockerfile: Dockerfile\n\t\tcommand: /runUpdate.sh\n\t\tdepends_on:\n\t\t\t- wdqs\n\t\t\t- wikibase\n\t\tnetworks:\n\t\t\tdefault:\n\t\t\t\taliases:\n\t\t\t\t\t- wdqs-updater.svc\n\t\tenvironment:\n\t\t\t- WIKIBASE_HOST=wikibase.svc\n\t\t\t- WDQS_HOST=wdqs.svc\n\t\t\t- WDQS_PORT={wikibaseBlazegraphPort}"
         },
-        {
-            "name": "componentsConfiguration",
-            "icon": "settings",
-            "beforeChange": "vue.validateStep2",
-            "options":
-            {
-                "validationErrorClass": "has-error",
-                "validationSuccessClass": "has-success",
-                "validateAfterChanged": true
-            },
-            "fields":
-            [
-                {
-                    "name": "portsConfiguration",
-                    "group":
-                    [
-                        {
-                            "type": "label",
-                            "name": "portsConfigurationDescription"
-                        },
-                        {
-                            "name": "wikibasePort",
-                            "type": "number",
-                            "default": 8181,
-                            "required": true,
-                            "validator": "validator.port"
-                        },
-                        {
-                            "name": "wikibaseBlazegraphPort",
-                            "type": "number",
-                            "default": 9999,
-                            "required": true,
-                            "validator": "validator.port",
-                            "renderCondition": "vue.hasSingelComponenet"
-                        },
-                        {
-                            "name": "wikibaseProxyPort",
-                            "type": "number",
-                            "default": 8989,
-                            "required": true,
-                            "validator": "validator.port",
-                            "renderCondition": "vue.hasSingelComponenet"
-                        },
-                        {
-                            "name": "wikibaseFrontendPort",
-                            "type": "number",
-                            "default": 8282,
-                            "required": true,
-                            "validator": "validator.port",
-                            "renderCondition": "vue.hasSingelComponenet"
-                        },
-                        {
-                            "name": "wikibaseQuickstatementsPort",
-                            "type": "number",
-                            "default": 9191,
-                            "required": true,
-                            "validator": "validator.port",
-                            "renderCondition": "vue.hasSingelComponenet"
-                        }
-                    ]
-                },
-                {
-                    "name": "quickStatementsConfiguration",
-                    "renderCondition": "vue.hasSingelComponenet",
-                    "group":
-                    [
-                        {
-                            "name": "quickStatementsConfigurationNamespaceProperty",
-                            "type": "text",
-                            "default": "122",
-                            "help": "quickStatementsConfigurationNamespacePropertyHelp",
-                            "required": true,
-                            "validator": "validator.string"
-                        },
-                        {
-                            "name": "quickStatementsConfigurationPrefixProperty",
-                            "type": "text",
-                            "default": "Property",
-                            "help": "quickStatementsConfigurationPrefixPropertyHelp",
-                            "required": true,
-                            "validator": "validator.string"
-                        },
-                        {
-                            "name": "quickStatementsConfigurationNamespaceItem",
-                            "type": "text",
-                            "default": "120",
-                            "help": "quickStatementsConfigurationNamespaceItemHelp",
-                            "required": true,
-                            "validator": "validator.string"
-                        },
-                        {
-                            "name": "quickStatementsConfigurationPrefixItem",
-                            "type": "text",
-                            "default": "Item",
-                            "help": "quickStatementsConfigurationPrefixItemHelp",
-                            "required": true,
-                            "validator": "validator.string"
-                        }
-                    ]
-                },
-                {
-                    "name": "databaseConfiguration",
-                    "group":
-                    [
-                        {
-                            "name": "databaseName",
-                            "type": "text",
-                            "default": "my_wiki",
-                            "validator": "validator.sqlIdentifier",
-                            "required": true
-                        },
-                        {
-                            "name": "databaseUser",
-                            "type": "text",
-                            "default": "wikiuser",
-                            "validator": "validator.sqlIdentifier",
-                            "required": true
-                        },
-                        {
-                            "name": "databaseUserPassword",
-                            "type": "text",
-                            "default": "sqlpass",
-                            "required": true,
-                            "buttons":
-                            [
-                                {
-                                    "label": "generatePassword",
-                                    "action": "vue.generateAPassword"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name":"mediawikiConfiguration",
-                    "group":
-                    [
-                        {
-                            "name": "mediawikiAdminName",
-                            "type": "text",
-                            "default": "admin",
-                            "validator": "validator.sqlIdentifier",
-                            "required": true
-                        },
-                        {
-                            "name": "mediawikiAdminPassword",
-                            "type": "text",
-                            "default": "adminpass",
-                            "required": true,
-                            "buttons":
-                            [
-                                {
-                                    "label": "generatePassword",
-                                    "action": "vue.generateAPassword"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+        "epilog":"\nvolumes:\n\tmediawiki-mysql-data:\n\tmediawiki-images-data:"
+    }
 }
