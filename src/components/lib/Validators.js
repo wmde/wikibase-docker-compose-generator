@@ -6,10 +6,14 @@ export default class Validators
 	static InvalidPortWellKnown = 'Do not use wellknown ports.';
 	static InvalidPortInUse = 'The given port is allready in use.';
 	static InvalidString = 'The given value is not an valid string.';
-    static InvalidStringCharacter = 'The given value contain(s) an invalid character(s) ';
+	static InvalidStringCharacter = 'The given value contain(s) an invalid character(s) - ';
+	static InvalidSQLFirstCharacter = 'The first character is invalid - it should be a character or # or _.';
+	static InvalidSQLRestCharacter = 'The given value contain(s) an invalid character(s) - ';
 	static __LastInteger;
 	static __UsedPorts = [];
 	static StringPattern = new RegExp( /[^a-zA-Z0-9_]/g );
+	static SQLPatternFirst = new RegExp( /^[^a-zA-Z_#@]/ );
+	static SQLPatternRest = new RegExp( /[^0-9a-zA-Z$_#@]/g );
 
 	static isInteger( Integer )
 	{
@@ -99,7 +103,7 @@ export default class Validators
 		if (
 			'string' !== typeof Value
 		||
-            0 === Value.length
+			0 === Value.length
 		)
 		{
 			return [ Validators.InvalidString ];
@@ -109,6 +113,30 @@ export default class Validators
 		{
 			return [ `${ Validators.InvalidStringCharacter }: ${ Value.match( Validators.StringPattern ) }` ];
 		}
+		return [];
+	}
+
+	static sqlIdentifier( Value )
+	{
+		if (
+			'string' !== typeof Value
+		||
+			0 === Value.length
+		)
+		{
+			return [ Validators.InvalidString ];
+		}
+
+		if ( true === Validators.SQLPatternFirst.test( Value ) )
+		{
+			return [ `${ Validators.InvalidSQLFirstCharacter }` ];
+		}
+
+		if ( true === Validators.SQLPatternRest.test( Value ) )
+		{
+			return [ `${ Validators.InvalidSQLRestCharacter }: ${ Value.match( Validators.SQLPatternRest ) }` ];
+		}
+
 		return [];
 	}
 }

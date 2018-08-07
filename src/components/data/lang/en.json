@@ -30,6 +30,7 @@
     "componentsConfiguration": "Components configuration",
     "portsConfiguration": "Compontents ports",
     "portsConfigurationDescription": "Ports are endpoints for the communication between several application. A port is identified by a non negativ number, which is unique. Also there are so called \"well known ports\", which are addessed by numbers in the range from 0 to 1023, so you cannot use numbers in this range.",
+    "wikibasePort": "Which port Wikibase should use?",
     "portsWDQS": "Ports of Wikibase query service",
     "wikibaseBlazegraphPort": "Which port Blazegraph of Wikibase query service should use?",
     "wikibaseProxyPort": "Which port the proxy of Wikibase query service should use?",

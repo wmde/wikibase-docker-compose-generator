@@ -92,7 +92,6 @@
         {
             "name": "componentsConfiguration",
             "icon": "settings",
-            "renderCondition": "vue.hasComponents",
             "beforeChange": "vue.validateStep2",
             "options":
             {
@@ -109,6 +108,13 @@
                         {
                             "type": "label",
                             "name": "portsConfigurationDescription"
+                        },
+                        {
+                            "name": "wikibasePort",
+                            "type": "number",
+                            "default": 8181,
+                            "required": true,
+                            "validator": "validator.port"
                         },
                         {
                             "name": "wikibaseBlazegraphPort",
@@ -182,22 +188,7 @@
                             "validator": "validator.string"
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "name": "wikibaseConfiguration",
-            "icon": "settings",
-            "renderCondition": "vue.hasComponents",
-            "beforeChange": "vue.validateStep2",
-            "options":
-            {
-              "validationErrorClass": "has-error",
-              "validationSuccessClass": "has-success",
-              "validateAfterChanged": true
-            },
-            "fields":
-            [
+                },
                 {
                     "name": "databaseConfiguration",
                     "group":
@@ -206,12 +197,14 @@
                             "name": "databaseName",
                             "type": "text",
                             "default": "my_wiki",
+                            "validator": "validator.sqlIdentifier",
                             "required": true
                         },
                         {
                             "name": "databaseUser",
                             "type": "text",
                             "default": "wikiuser",
+                            "validator": "validator.sqlIdentifier",
                             "required": true
                         },
                         {
@@ -237,6 +230,7 @@
                             "name": "mediawikiAdminName",
                             "type": "text",
                             "default": "admin",
+                            "validator": "validator.sqlIdentifier",
                             "required": true
                         },
                         {
