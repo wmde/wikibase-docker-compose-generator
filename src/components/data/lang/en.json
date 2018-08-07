@@ -59,5 +59,6 @@
     "databaseUser": "What is the name of your database user?",
     "databaseUserPassword": "Provide your database user a password.",
 
+    "finish": "Download composer file",
     "finish_description": "<p>You can now run your Wikibase Docker environment. To learn how to do this, refer to the <a href=\"https://github.com/wmde/wikibase-docker/blob/master/README-compose.md\">manual</a></p>"
 }
