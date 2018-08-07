@@ -182,6 +182,65 @@ export default {
 			this.$forceUpdate();
 			Validators.clearPorts();
 			return this.$refs.componentsConfiguration.validate();
+		},
+		randomString( Length, Min, Max, Exclude = [] )
+		{
+			const GeneratedString = [];
+			let Char, Index;
+			if ( 0 > Length )
+			{
+				return '';
+			}
+
+			Exclude = Exclude.sort();
+			for ( Index = 0; Index < Exclude.length; Index++ )
+			{
+				if ( 'string' === typeof Exclude[ Index ] )
+				{
+					Exclude[ Index ] = Exclude[ Index ].charCodeAt( 0 );
+				}
+			}
+
+			do
+			{
+				Char = Math.round( Math.random() * 100 + Math.random() * 100 );
+				if ( 0 < Min && Char < Min )
+				{
+					continue;
+				}
+
+				if ( 0 < Max && Char > Max )
+				{
+					continue;
+				}
+
+				if ( -1 !== Utils.binarySearch( Exclude, Char ) )
+				{
+					continue;
+				}
+
+				Char = String.fromCharCode( Char );
+				Length--;
+				GeneratedString[ Length ] = Char;
+			}
+			while ( 0 < Length );
+
+			return GeneratedString.join( '' );
+		},
+		generateAPassword()
+		{
+			const RandomString = this.randomString(
+				42,
+				33,
+				126,
+				[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
+			);
+
+			this.$data.blubberModel[
+				this.blubberFormProperties.id
+			][ arguments[ 1 ].model ] = RandomString;
+
+			this.$forceUpdate();
 		}
 	}
 };

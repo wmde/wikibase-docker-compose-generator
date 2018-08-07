@@ -184,6 +184,77 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "wikibaseConfiguration",
+            "icon": "settings",
+            "renderCondition": "vue.hasComponents",
+            "beforeChange": "vue.validateStep2",
+            "options":
+            {
+              "validationErrorClass": "has-error",
+              "validationSuccessClass": "has-success",
+              "validateAfterChanged": true
+            },
+            "fields":
+            [
+                {
+                    "name": "databaseConfiguration",
+                    "group":
+                    [
+                        {
+                            "name": "databaseName",
+                            "type": "text",
+                            "default": "my_wiki",
+                            "required": true
+                        },
+                        {
+                            "name": "databaseUser",
+                            "type": "text",
+                            "default": "wikiuser",
+                            "required": true
+                        },
+                        {
+                            "name": "databaseUserPassword",
+                            "type": "text",
+                            "default": "sqlpass",
+                            "required": true,
+                            "buttons":
+                            [
+                                {
+                                    "label": "generatePassword",
+                                    "action": "vue.generateAPassword"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name":"mediawikiConfiguration",
+                    "group":
+                    [
+                        {
+                            "name": "mediawikiAdminName",
+                            "type": "text",
+                            "default": "admin",
+                            "required": true
+                        },
+                        {
+                            "name": "mediawikiAdminPassword",
+                            "type": "text",
+                            "default": "adminpass",
+                            "required": true,
+                            "buttons":
+                            [
+                                {
+                                    "label": "generatePassword",
+                                    "action": "vue.generateAPassword"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -11,6 +11,9 @@
 
     "yes":"yes",
     "no":"no",
+    "showPassword": "Show me the password",
+    "generatePassword": "Generate me a password",
+    "hidePassword": "Hide the password",
 
     "components": "Component selection",
     "components_question": "Which components you want to install?",
@@ -41,6 +44,17 @@
     "quickStatementsConfigurationNamespacePropertyHelp": "",
     "quickStatementsConfigurationPrefixPropertyHelp":"",
     "quickStatementsConfigurationNamespaceItemHelp":"",
-    "quickStatementsConfigurationPrefixItemHelp":""
+    "quickStatementsConfigurationPrefixItemHelp":"",
 
+    "wikibaseConfiguration": "Configure Wikibase",
+    "mediawikiConfiguration": "MediaWiki",
+    "mediawikiSiteName": "How would you like to name your MediaWiki?",
+    "mediawikiAdminName": "How would you like to name your MediaWiki admin account?",
+    "mediawikiAdminPassword": "Provide your admin account a password.",
+
+    "databaseConfiguration": "Database (MySQL)",
+    "databasePort": "Which port the database should use?",
+    "databaseName": "How you like to name the database?",
+    "databaseUser": "What is the name of your database user?",
+    "databaseUserPassword": "Provide your database user a password."
 }
