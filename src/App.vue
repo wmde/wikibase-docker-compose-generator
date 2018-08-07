@@ -290,7 +290,18 @@ export default {
 			let Transformed = '';
 			let Download = null;
 
-			Transformer.dependencyElasticsearch = '\n\t\t\t- elasticsearch';
+			if ( true === this.$data.blubberModel[
+				this.blubberFormProperties.id
+			].elasticsearchStep
+			)
+			{
+				Transformer.dependencyElasticsearch = '\n\t\t\t- elasticsearch';
+			}
+			else
+			{
+				Transformer.dependencyElasticsearch = '';
+			}
+
 			Transformer.secretkey = this.randomString(
 				42,
 				33,
