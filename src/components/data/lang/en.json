@@ -4,10 +4,10 @@
     "subtitle": "A yaml builder for wikibase-docker",
     "nextButton": "Next",
     "backButton": "Back",
-    "finishButton": "Download",
+    "finishButton": "Download docker configuration file",
 
     "prolog": "Welcome",
-    "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a href=\"https://docs.docker.com/compose/\">here</a>.</p>",
+    "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a target=\"_blank\" href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a target=\"_blank\" href=\"https://docs.docker.com/compose/\">here</a>.</p>",
 
     "yes":"yes",
     "no":"no",
@@ -19,13 +19,13 @@
     "components_question": "Which components you want to install?",
 
     "components_elasticsearch": "Use Elasticsearch?",
-    "components_elasticsearch_help": "<span>Elasticsearch is a vector-space search, which is used for faster search in your wikibase. <a href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
+    "components_elasticsearch_help": "<span>Elasticsearch is a vector-space search, which is used for faster search in your wikibase. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
 
     "components_wikibaseQuickstatements": "Use Quickstatements?",
-    "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here for more</a></span>",
+    "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a target=\"_blank\" href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here for more</a></span>",
 
     "components_wikibaseQueryService": "Use Wikibase query service?",
-    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>",
+    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>",
 
     "componentsConfiguration": "Components configuration",
     "portsConfiguration": "Compontents ports",
@@ -57,5 +57,8 @@
     "databasePort": "Which port the database should use?",
     "databaseName": "How you like to name the database?",
     "databaseUser": "What is the name of your database user?",
-    "databaseUserPassword": "Provide your database user a password."
+    "databaseUserPassword": "Provide your database user a password.",
+
+    "finish": "Download composer file",
+    "finish_description": "<p>You can now run your Wikibase Docker environment. To learn how to do this, refer to the <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker/blob/master/README-compose.md\">manual</a></p>"
 }
