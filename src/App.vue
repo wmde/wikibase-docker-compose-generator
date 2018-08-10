@@ -15,9 +15,11 @@ export default {
 	data: function () {
 		const Return = {};
 		Return.buildForm = false;
-		Return.blubberGeneratorSteps = [];
-		Return.blubberGeneratorFormProperties = {};
-		Return.blubberGeneratorFormStyle = {};
+		Return.blubberGeneratedSteps = [];
+		Return.blubberGeneratedFormProperties = {};
+		Return.blubberGeneratedFormStyle = {};
+		Return.blubberGeneratedYML = '';
+		Return.blubberCurrentStep = 0;
 		return Return;
 	},
 	mounted: function () {
@@ -35,9 +37,9 @@ export default {
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
 		evaluateConfiguration: function ( Configuration ) {
-			this.$data.blubberGeneratorSteps = Configuration.steps;
-			this.$data.blubberGeneratorFormProperties = Configuration.form;
-			this.$data.blubberGeneratorFormProperties.id = Configuration.name;
+			this.$data.blubberGeneratedSteps = Configuration.steps;
+			this.$data.blubberGeneratedFormProperties = Configuration.form;
+			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
@@ -49,27 +51,173 @@ export default {
 				return createElement( 'div', { attrs: { id: 'application' } }, createElement( BlubberFormFactory, {}, '' ) );
 			} else {
 				let I18n = null;
+
 				if ( typeof this.$data.i18n !== 'undefined' ) {
 					I18n = this.getI18nStrings;
 				}
+
 				const Element = this.buildBlubberForm(
 					createElement,
 					{
-						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratorFormProperties ),
-						steps: ObjectHelper.copyObj( this.$data.blubberGeneratorSteps )
+						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
+						formEvents: { Complete: 'done' },
+						steps: ObjectHelper.copyObj( this.$data.blubberGeneratedSteps )
 					},
 					I18n
 				);
+
+				// eslint-disable-next-line
 				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
 			}
-		},
-		showGi: function () {
-
 		}
 	}
 };
 </script>
-
 <style>
-     @import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+@import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+.vue-form-generator div div
+{
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+h1,h2,h3,h4,h5,h6,p,ul, button
+{
+    font-family:
+            'Helvetica Neue',
+            'Helvetica',
+            'Nimbus Sans L',
+            'Arial',
+            'Liberation Sans',
+            sans-serif !important;
+    text-align: left;
+}
+
+h4.wizard-title
+{
+    font-weight: 600 !important;
+    font-size: 1.2em;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+p
+{
+    margin: 0px 0px 0px 0px;
+    margin-bottom:1em;
+    font-size: 1em;
+    font-family:
+            'Helvetica Neue',
+            'Helvetica',
+            'Nimbus Sans L',
+            'Arial',
+            'Liberation Sans',
+            sans-serif !important;
+}
+
+input:focus
+{
+    outline:none;
+}
+
+input
+{
+    border-radius: 2px;
+    border-style:solid;
+    border-width: 1px;
+    border-color: #2e5b01;
+    padding-left: 5px;
+}
+
+.help span
+{
+    visibility: hidden;
+    width: 50%;
+    background-color: #555;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    margin-top: -0.1em;
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.help span a
+{
+    color: #4683ff;
+}
+
+.help *
+{
+    display: inline-block;
+}
+.help:after
+{
+    content: "?";
+    color:white;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: #3366cc;
+    margin-left: 0.5em;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left:8px;
+    padding-right:8px;
+    font-size: 0.9em;
+    display: inline-block!important;
+}
+
+.help:hover span
+{
+    visibility: visible;
+    opacity: 1;
+}
+
+.help:hover:after
+{
+    display: none;
+
+}
+
+#components .form-group
+{
+    margin-top: 1.5em;
+}
+
+#components .form-group:nth-child(1)
+{
+    margin-top: 0em;
+}
+
+#components label
+{
+    display: inline-block;
+}
+
+#components .field-wrap
+{
+    margin: 0px 0px 0px 0px;
+    margin-left: 1em;
+}
+
+#components input
+{
+    height: 1.2em;
+}
+
+#components .radio-list *
+{
+    display: inline-block;
+}
+
+#components .radio-list input
+{
+    float: left;
+}
 </style>
