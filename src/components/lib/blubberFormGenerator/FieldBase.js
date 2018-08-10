@@ -75,6 +75,15 @@ export default class FieldBase
 		}
 	}
 
+	__isLetter( Letter )
+	{
+		return (
+			( 65 > Letter || 90 < Letter )
+            &&
+            ( 97 > Letter || 122 < Letter )
+		);
+	}
+
 	_validateIdentifier( Identifier )
 	{
 		let CurrentCharacter, Index;
@@ -89,19 +98,7 @@ export default class FieldBase
 
 		CurrentCharacter = Identifier.charCodeAt( 0 );
 		// First char should be a character
-		if (
-			(
-				65 > CurrentCharacter
-			||
-				90 < CurrentCharacter
-			)
-		&&
-			(
-				97 > CurrentCharacter
-			||
-				122 < CurrentCharacter
-			)
-		)
+		if ( true === this.__isLetter( CurrentCharacter ) )
 		{
 			return false;
 		}
