@@ -21,10 +21,11 @@ export default class FieldBase {
 	static __IS_OBJECT__ = 0x4;
 	static __IS_STRING__ = 0x5;
 	static __ALLOWED_TYPES__ = [ 'any', 'boolean', 'function', 'number', 'object', 'string' ];
+	static __WHITESPACES__ = [ 7, 8, 9, 10, 11, 12, 13, 32 ];
 	/* Statics */
 	static _IdRegistry = new IdRegister();
 	static ModelRenderCondition = true;
-    static RenderCondition = true;
+	static RenderCondition = true;
 	/* Properties*/
 	_Field;
 	_BindedObject;
@@ -44,9 +45,62 @@ export default class FieldBase {
 		this.__ModelKey = '';
 		this.__ModelPointer = null;
 		this.__HasDefaultValue = false;
+		if ( Field === null ) {
+			this._Field = { name: '"not set"' };
+		}
 	}
 
-	__lookForPropertyAtVueObject( IsTypeOrFunction ) {
+	static _getName( Field ) {
+		let Name;
+		if ( Field.hasOwnProperty( 'bind' ) === true ) {
+			Name = Field.bind;
+		} else {
+			Name = Field.name;
+		}
+
+		if ( typeof Name === 'undefined' ) {
+			return '"not set"';
+		} else {
+			return Name;
+		}
+	}
+
+	__isLetter( Letter ) {
+		return (
+			( Letter < 65 || Letter > 90 )
+		&&
+			( Letter < 97 || Letter > 122 )
+		);
+	}
+
+	_validateIdentifier( Identifier ) {
+		let CurrentCharacter, Index;
+		if (
+			typeof Identifier !== 'string'
+		||
+			Utils.isEmpty( Identifier ) === true
+		) {
+			return false;
+		}
+
+		CurrentCharacter = Identifier.charCodeAt( 0 );
+		// First char should be a character
+		if ( this.__isLetter() === true ) {
+			return false;
+		} else {
+			// no whitespaces
+			for ( Index = 1; Index < Identifier.length; Index++ ) {
+				CurrentCharacter = Identifier.charCodeAt( Index );
+				if ( Utils.binarySearch( FieldBase.__WHITESPACES__, CurrentCharacter ) !== -1 ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	__lookForPropertyAtBindedObject( IsTypeOrFunction ) {
 		let Index;
 		const Chunks = IsTypeOrFunction.split( '.' );
 		let Self = this._BindedObject;
@@ -74,10 +128,6 @@ export default class FieldBase {
 		let Self = null;
 		let ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__, ( typeof Value ) );
 
-		if ( this._Field === null ) {
-			this._Field = { name: '"not set"' };
-		}
-
 		if ( ValueType === -1 && FieldBase.__IS_ANY__ !== Type ) {
 			throw new InvalidFieldValueException(
 				StringHelper.format(
@@ -98,7 +148,7 @@ export default class FieldBase {
 		} else {
 			if ( FieldBase.__IS_STRING__ === ValueType ) {
 				if ( Value.includes( '.' ) === true ) {
-					Self = this.__lookForPropertyAtVueObject( Value );
+					Self = this.__lookForPropertyAtBindedObject( Value );
 					ValueType = Utils.binarySearch( FieldBase.__ALLOWED_TYPES__,
 						( typeof Self )
 					);
@@ -287,7 +337,7 @@ export default class FieldBase {
 			if ( Utils.isEmpty( LabelValue ) === true || Label === LabelValue ) {
 				return '';
 			}
-			return Label;
+			return LabelValue;
 		}
 	}
 
@@ -326,7 +376,18 @@ export default class FieldBase {
 					this._Field[ FieldLabel ]
 				);
 			}
+		} else if (
+			typeof AssignmentLabel === 'string'
+		&&
+			AssignmentLabel.length > 0
+		&&
+			this._Field.hasOwnProperty( AssignmentLabel ) === true
+		) {
+			this._GeneratedField[ AssignmentLabel ] = this[ AssignFunction ](
+				this._Field[ AssignmentLabel ]
+			);
 		}
+
 	}
 
 	_assignString( FieldLabel, AssignmentLabel = '' ) {
@@ -358,6 +419,16 @@ export default class FieldBase {
 					true
 				);
 			}
+		} else if (
+			typeof AssignmentLabel === 'string'
+		&&
+			AssignmentLabel.length > 0
+		&&
+			this._Field.hasOwnProperty( AssignmentLabel ) === true
+		) {
+			this._GeneratedField[ AssignmentLabel ] = this._executeFunctionOrGetAnything(
+				this._Field[ AssignmentLabel ]
+			);
 		}
 	}
 
@@ -422,7 +493,9 @@ export default class FieldBase {
 					this.__ModelPointer[ this.__ModelKey[ this.__ModelKey.length - 1 ] ]
 				);
 			} else {
-				this._addValueToModel( this.__ModelPointer[ this.__ModelKey ] );
+				this._addValueToModel(
+					this.__ModelPointer[ this.__ModelKey ]
+				);
 			}
 		} else {
 			this._addValueToModel( [] );

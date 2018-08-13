@@ -58,6 +58,7 @@ export default {
 
 				const Element = this.buildBlubberForm(
 					createElement,
+					this,
 					{
 						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
 						formEvents: { Complete: 'done' },

@@ -4,7 +4,12 @@ import BlubberFormSchemaConstructor from './lib/blubberFormGenerator/FormSchemaF
 import Utils from '../Utils';
 import ObjectHelper from './lib/ObjectHelper';
 import FieldBase from './lib/blubberFormGenerator/FieldBase';
-import { UPDATE_FORCE_COMPLETE_UPDATE, UPDATE_DEFAULT } from './lib/blubberFormGenerator/RenderConstants';
+import {
+	UPDATE_FORCE_COMPLETE_UPDATE,
+	UPDATE_KEEP_MODEL,
+	UPDATE_DEFAULT,
+	UPDATE_KEEP_MODEL_DATA
+} from './lib/blubberFormGenerator/RenderConstants';
 import InvalidFormException from './lib/blubberFormGenerator/Exceptions/InvalidFieldException';
 /* eslint-disable operator-linebreak */
 export default {
@@ -17,18 +22,25 @@ export default {
 		__generateAStep( createElement, Step ) {
 			let VGenerator, Description;
 
-			if ( Step.inner.schema.fields.length === 0 ) {
+			if (
+				Step.inner.schema.hasOwnProperty( 'fields' ) === true
+			&&
+				Step.inner.schema.fields.length === 0 ) {
 				delete Step.inner.schema.fields;
 			}
 
-			if ( Step.inner.schema.groups.length === 0 ) {
+			if (
+				Step.inner.schema.hasOwnProperty( 'groups' ) === true
+			&&
+				Step.inner.schema.groups.length === 0
+			) {
 				delete Step.inner.schema.groups;
 			}
 
 			if (
 				Step.inner.schema.hasOwnProperty( 'fields' ) === true
-            ||
-                Step.inner.schema.hasOwnProperty( 'groups' ) === true
+			||
+				Step.inner.schema.hasOwnProperty( 'groups' ) === true
 			) {
 				VGenerator = createElement(
 					'vue-form-generator',
@@ -64,8 +76,8 @@ export default {
 			const Tabs = [];
 
 			if ( Schema.JustFields === true ) {
-				if ( Schema.Steps[ 0 ][ 1 ] === true ) {
-					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ][ 0 ] );
+				if ( Schema.Steps[ 0 ].inner.renderCondition === true ) {
+					Fields = this.__generateAStep( createElement, Schema.Steps[ 0 ] );
 
 					return createElement(
 						'form-wizard',
@@ -79,7 +91,7 @@ export default {
 							createElement(
 								'div',
 								{
-									attrs: Schema.Steps[ 0 ][ 0 ].attr
+									attrs: Schema.Steps[ 0 ].attr
 								},
 								[ Fields[ 0 ], Fields[ 1 ] ]
 							)
@@ -90,18 +102,18 @@ export default {
 				}
 			} else {
 				for ( Index in Schema.Steps ) {
-					if ( Schema.Steps[ Index ][ 1 ] === true ) {
-						Fields = this.__generateAStep( createElement, Schema.Steps[ Index ][ 0 ] );
+					if ( Schema.Steps[ Index ].inner.renderCondition === true ) {
+						Fields = this.__generateAStep( createElement, Schema.Steps[ Index ] );
 						Tab = createElement(
 							'tab-content',
 							{
-								props: Schema.Steps[ Index ][ 0 ].tab
+								props: Schema.Steps[ Index ].tab
 							},
 							[
 								createElement(
 									'div',
 									{
-										attrs: Schema.Steps[ Index ][ 0 ].attr
+										attrs: Schema.Steps[ Index ].attr
 									},
 									[ Fields[ 0 ], Fields[ 1 ] ]
 								)
@@ -124,32 +136,65 @@ export default {
 				);
 			}
 		},
-		__buildForm: function ( createElement, Form, LabelGenerator, UseExistingModel ) {
+		__copyModelData: function ( Source, Target ) {
+			let Index;
+			for ( Index in Source ) {
+				if ( Target.hasOwnProperty( Index ) === false ) {
+					continue;
+				}
+
+				if (
+					typeof Source[ Index ] === 'object'
+				&&
+					typeof Target[ Index ] === 'object'
+				) {
+					this.__copyModelData( Target[ Index ], Source[ Index ] );
+				} else {
+					Target[ Index ] = Source[ Index ];
+				}
+			}
+		},
+		__buildForm: function ( createElement, BindedObject, Form, LabelGenerator, ReRenderFlag ) {
 			const Ids = FieldBase._IdRegistry.getStore();
-			const FormSchema = new BlubberFormSchemaConstructor( Form, this, LabelGenerator );
+			const FormSchema = new BlubberFormSchemaConstructor(
+				Form,
+				BindedObject,
+				LabelGenerator
+			);
 			FormSchema.build();
 
-			if ( UseExistingModel === true ) {
-				FormSchema.refresh(
-					Object.assign(
-						FormSchema.Form.Model,
-						ObjectHelper.copyObj(
-							this.$data.blubberModel[ Form.formAttributes.id ]
+			if (
+				UPDATE_FORCE_COMPLETE_UPDATE !== ReRenderFlag
+			&&
+				this.$data.blubberModel.hasOwnProperty( Form.formAttributes.id ) === true
+			) {
+				if ( UPDATE_KEEP_MODEL === ReRenderFlag ) {
+					FormSchema.refresh(
+						Object.assign(
+							FormSchema.Form.Model,
+							ObjectHelper.copyObj(
+								this.$data.blubberModel[ Form.formAttributes.id ]
+							)
 						)
-					)
-				);
+					);
+				} else if ( UPDATE_KEEP_MODEL_DATA === ReRenderFlag ) {
+					this.__copyModelData(
+						this.$data.blubberModel[ Form.formAttributes.id ],
+						FormSchema.Form.Model );
+				}
 			}
 
 			this.$data.blubberModel[ Form.formAttributes.id ] = FormSchema.Form.Model;
 			this.$data.blubberSchema[ Form.formAttributes.id ] = FormSchema.Form.Schema;
 			this.$data.blubberRaw[ Form.formAttributes.id ] = FormSchema;
-			this.$data.blubberIdTracker[ Form.formAttributes.id ] = FieldBase._IdRegistry.intersection(
-				Ids
-			);
+			this.$data.blubberIdTracker[
+				Form.formAttributes.id
+			] = FieldBase._IdRegistry.intersection( Ids );
 			return this.__generateFromSchema( createElement, FormSchema.Form );
 		},
 		buildBlubberForm: function (
 			createElement,
+			BindedObject,
 			Form,
 			LabelGenerator = null,
 			ReRenderFlag = UPDATE_DEFAULT
@@ -183,28 +228,37 @@ export default {
 			&&
 				Utils.isEmpty( this.$data.blubberRaw[ Form.formAttributes.id ] ) === false
 			&&
-				UPDATE_FORCE_COMPLETE_UPDATE !== ReRenderFlag
+                UPDATE_DEFAULT === ReRenderFlag
 			) {
-				if ( UPDATE_DEFAULT === ReRenderFlag ) {
-					this.$data.blubberRaw[ Form.formAttributes.id ].refresh(
-						ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
-					);
-					this.$data.blubberModel[
-						Form.formAttributes.id
-					] = this.$data.blubberRaw[
-						Form.formAttributes.id
-					].Form.Model;
-					return this.__generateFromSchema(
-						createElement,
-						this.$data.blubberRaw[ Form.formAttributes.id ].Form
-					);
-				} else {
-					return this.__buildForm( createElement, Form, LabelGenerator, true );
-				}
+				this.$data.blubberRaw[ Form.formAttributes.id ].refresh(
+					ObjectHelper.copyObj( this.$data.blubberModel[ Form.formAttributes.id ] )
+				);
+
+				this.$data.blubberModel[
+					Form.formAttributes.id
+				] = this.$data.blubberRaw[
+					Form.formAttributes.id
+				].Form.Model;
+				return this.__generateFromSchema(
+					createElement,
+					this.$data.blubberRaw[ Form.formAttributes.id ].Form
+				);
 			} else {
-				return this.__buildForm( createElement, Form, LabelGenerator, false );
+				return this.__buildForm(
+					createElement,
+					BindedObject,
+					Form,
+					LabelGenerator,
+					ReRenderFlag
+				);
 			}
 
+		},
+		setDefaultRenderBehaviour: function ( Value ) {
+			FieldBase.RenderCondition = Value;
+		},
+		setDefaultModelRenderBehaviour: function ( Value ) {
+			FieldBase.ModelRenderCondition = Value;
 		}
 	},
 	data: function () {

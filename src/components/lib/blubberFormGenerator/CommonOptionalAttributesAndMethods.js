@@ -3,7 +3,7 @@ import StringHelper from '../StringHelper';
 import CommonRequiredAttributes from './CommonRequiredAttributes';
 import InvalidFieldPropertyException from './Exceptions/InvalidFieldPropertyException';
 import Utils from '../../../Utils';
-
+/* eslint-disable operator-linebreak */
 export default class CommonOptionalAttributesAndMethods extends CommonRequiredAttributes {
 	/* ERRORS*/
 	static _NO_BUTTON_ = 'A insidebutton of field {} has no label.';
@@ -16,7 +16,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 
 	_setAutocomplete() {
 		if (
-			this._Field.hasOwnProperty( 'autocomplete' ) === true &&
+			this._Field.hasOwnProperty( 'autocomplete' ) === true
+		&&
 			this._Field.autocomplete === false
 		) {
 			this._GeneratedField.autocomplete = 'off';
@@ -46,7 +47,8 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 			(
 				this._Field.hasOwnProperty( 'default' ) === true &&
 				Utils.isEmpty( this._Field.default ) === false
-			) ||
+			)
+		||
 			typeof this._Field.default !== 'boolean'
 		) {
 			this._addValueToModel( this._executeFunctionOrGetAnything( this._Field.default ) );
@@ -66,19 +68,7 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 	__addEvents() {
 		this._assignFunction( 'onChanged' );
 		this._assignFunction( 'onValidated' );
-		this.__addValidator();
-	}
-
-	__addValidator() {
-		if ( typeof this._BindedObject.getValidator !== 'function' ) {
-			return '';
-		}
-
-		if ( this._Field.name.includes( '.' ) === true ) {
-			this._GeneratedField.validator = this._BindedObject.getValidator( this._Field.name.split( '.' ) );
-		} else {
-			this._GeneratedField.validator = this._BindedObject.getValidator( [ this._Field.name ] );
-		}
+		this._assignFunction( 'validator' );
 	}
 
 	__addClass() {
@@ -157,8 +147,11 @@ export default class CommonOptionalAttributesAndMethods extends CommonRequiredAt
 		} else if ( Array.isArray( InsideButtons ) === true ) {
 			for ( Index in InsideButtons ) {
 				if (
-					InsideButtons[ Index ].hasOwnProperty( 'renderCondition' ) === true &&
-					this._executeFunctionOrGetBoolean( InsideButtons[ Index ].renderCondition ) === false
+					InsideButtons[ Index ].hasOwnProperty( 'renderCondition' ) === true
+				&&
+					this._executeFunctionOrGetBoolean(
+						InsideButtons[ Index ].renderCondition
+					) === false
 				) {
 					continue;
 				}
