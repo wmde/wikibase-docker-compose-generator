@@ -1,7 +1,7 @@
 {
     "key": "en",
     "title": "Blubber",
-    "subtitle": "A yml builder for wikibase-docker",
+    "subtitle": "A yaml builder for wikibase-docker",
     "nextButton": "Next",
     "backButton": "Back",
     "finishButton": "Download",
@@ -11,6 +11,9 @@
 
     "yes":"yes",
     "no":"no",
+    "showPassword": "Show me the password",
+    "generatePassword": "Generate me a password",
+    "hidePassword": "Hide the password",
 
     "components": "Component selection",
     "components_question": "Which components you want to install?",
@@ -22,5 +25,37 @@
     "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here for more</a></span>",
 
     "components_wikibaseQueryService": "Use Wikibase query service?",
-    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>"
+    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>",
+
+    "componentsConfiguration": "Components configuration",
+    "portsConfiguration": "Compontents ports",
+    "portsConfigurationDescription": "Ports are endpoints for the communication between several application. A port is identified by a non negativ number, which is unique. Also there are so called \"well known ports\", which are addessed by numbers in the range from 0 to 1023, so you cannot use numbers in this range.",
+    "wikibasePort": "Which port Wikibase should use?",
+    "portsWDQS": "Ports of Wikibase query service",
+    "wikibaseBlazegraphPort": "Which port Blazegraph of Wikibase query service should use?",
+    "wikibaseProxyPort": "Which port the proxy of Wikibase query service should use?",
+    "wikibaseFrontendPort": "Which port the user interface of Wikibase query service should use?",
+    "wikibaseQuickstatementsPort": "Which port Quickstatements should use?",
+
+    "quickStatementsConfiguration": "Configure Quickstatements",
+    "quickStatementsConfigurationNamespaceProperty": "Which namespace you want to use for properties in Wikibase?",
+    "quickStatementsConfigurationNamespaceItem": "Which namespace you want to use for items in Wikibase?",
+    "quickStatementsConfigurationPrefixProperty": "Which prefix you want to use for properties in Wikibase?",
+    "quickStatementsConfigurationPrefixItem": "Which prefix you want to use for items in Wikibase?",
+    "quickStatementsConfigurationNamespacePropertyHelp": "",
+    "quickStatementsConfigurationPrefixPropertyHelp":"",
+    "quickStatementsConfigurationNamespaceItemHelp":"",
+    "quickStatementsConfigurationPrefixItemHelp":"",
+
+    "wikibaseConfiguration": "Configure Wikibase",
+    "mediawikiConfiguration": "MediaWiki",
+    "mediawikiSiteName": "How would you like to name your MediaWiki?",
+    "mediawikiAdminName": "How would you like to name your MediaWiki admin account?",
+    "mediawikiAdminPassword": "Provide your admin account a password.",
+
+    "databaseConfiguration": "Database (MySQL)",
+    "databasePort": "Which port the database should use?",
+    "databaseName": "How you like to name the database?",
+    "databaseUser": "What is the name of your database user?",
+    "databaseUserPassword": "Provide your database user a password."
 }
