@@ -269,7 +269,7 @@ export default {
 				Transformer
 			);
 
-			Download = new File( [ Transformed ], 'docker-composer.yml', { type: 'text/plain;charset=utf-8' } );
+			Download = new File( [ Transformed ], 'docker-compose.yml', { type: 'text/plain;charset=utf-8' } );
 			saveAs( Download );
 		}
 	}
