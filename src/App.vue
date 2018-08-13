@@ -1,9 +1,16 @@
 <script>
+/* eslint-disable operator-linebreak */
 import BlubberFormFactory from './components/BlubberFormFactory';
 import Utils from './Utils';
 import Language from './components/Language';
 import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
+import Validators from './components/lib/Validators';
+import { UPDATE_KEEP_MODEL_DATA } from './components/lib/blubberFormGenerator/RenderConstants';
+
+class StaticReference {
+	static References = {};
+}
 
 export default {
 	name: 'Blubber',
@@ -15,9 +22,9 @@ export default {
 	data: function () {
 		const Return = {};
 		Return.buildForm = false;
-		Return.blubberGeneratedSteps = [];
-		Return.blubberGeneratedFormProperties = {};
-		Return.blubberGeneratedFormStyle = {};
+		Return.blubberSteps = [];
+		Return.blubberFormProperties = {};
+		Return.blubberFormStyle = {};
 		Return.blubberGeneratedYML = '';
 		Return.blubberCurrentStep = 0;
 		return Return;
@@ -37,9 +44,9 @@ export default {
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
 		evaluateConfiguration: function ( Configuration ) {
-			this.$data.blubberGeneratedSteps = Configuration.steps;
-			this.$data.blubberGeneratedFormProperties = Configuration.form;
-			this.$data.blubberGeneratedFormProperties.id = Configuration.name;
+			this.$data.blubberSteps = Configuration.steps;
+			this.$data.blubberFormProperties = Configuration.form;
+			this.$data.blubberFormProperties.id = Configuration.name;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
@@ -48,28 +55,154 @@ export default {
 		},
 		buildApplication: function ( createElement ) {
 			if ( this.$data.buildForm === false ) {
-				return createElement( 'div', { attrs: { id: 'application' } }, createElement( BlubberFormFactory, {}, '' ) );
+				return createElement(
+					'div',
+					{ attrs: { id: 'application' } },
+					createElement( BlubberFormFactory, {}, '' )
+				);
 			} else {
 				let I18n = null;
+				let Element;
 
 				if ( typeof this.$data.i18n !== 'undefined' ) {
 					I18n = this.getI18nStrings;
 				}
 
-				const Element = this.buildBlubberForm(
-					createElement,
-					this,
-					{
-						formAttributes: ObjectHelper.copyObj( this.$data.blubberGeneratedFormProperties ),
-						formEvents: { Complete: 'done' },
-						steps: ObjectHelper.copyObj( this.$data.blubberGeneratedSteps )
-					},
-					I18n
-				);
+				StaticReference.References.vue = this;
+				StaticReference.References.validator = Validators;
+				this.setDefaultModelRenderBehaviour( false );
 
 				// eslint-disable-next-line
-				return createElement( 'div', { attrs: { id: 'application' } }, [ Element ] );
+				Element = this.buildBlubberForm(
+					createElement,
+					StaticReference.References,
+					{
+						formAttributes: ObjectHelper.copyObj( this.$data.blubberFormProperties ),
+						formEvents: { Complete: 'done' },
+						steps: ObjectHelper.copyObj( this.$data.blubberSteps )
+					},
+					I18n,
+					UPDATE_KEEP_MODEL_DATA
+				);
+				return createElement(
+					'div',
+					{ attrs: { id: 'application' } },
+					[ Element ]
+				);
 			}
+		},
+		refresh: function () {
+			this.$forceUpdate();
+			return true;
+		},
+		changeStep: function ( prevIndex, nextIndex ) {
+			if ( nextIndex === 2 ) {
+				Validators.clearPorts();
+			}
+		},
+		hasComponents: function () {
+			if (
+				this.$data.blubberModel.hasOwnProperty(
+					this.blubberFormProperties.id
+				) === false
+			) {
+				return true;
+			} else {
+				if (
+					this.$data.blubberModel[
+						this.blubberFormProperties.id
+					].wdqsStep === false
+				&&
+					this.$data.blubberModel[
+						this.blubberFormProperties.id
+					].quickstatementsStep === false
+				) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		},
+		hasSingelComponenet: function ( WhichField ) {
+			let FieldName;
+			const WQDS = [
+				'wikibaseBlazegraphPort',
+				'wikibaseProxyPort',
+				'wikibaseFrontendPort'
+			];
+
+			if ( WQDS.indexOf( WhichField ) !== -1 ) {
+				FieldName = 'wdqsStep';
+			} else {
+				FieldName = 'quickstatementsStep';
+			}
+
+			if (
+				this.$data.blubberModel.hasOwnProperty(
+					this.blubberFormProperties.id
+				) === false
+			) {
+				return true;
+			} else {
+				return this.$data.blubberModel[
+					this.blubberFormProperties.id
+				][ FieldName ];
+			}
+		},
+		validateStep2: function () {
+			this.$forceUpdate();
+			Validators.clearPorts();
+			return this.$refs.componentsConfiguration.validate();
+		},
+		randomString( Length, Min, Max, Exclude = [] ) {
+			const GeneratedString = [];
+			let Char, Index;
+			if ( Length < 0 ) {
+				return '';
+			}
+
+			Exclude = Exclude.sort();
+			for ( Index = 0; Index < Exclude.length; Index++ ) {
+				if ( typeof Exclude[ Index ] === 'string' ) {
+					Exclude[ Index ] = Exclude[ Index ].charCodeAt( 0 );
+				}
+			}
+
+			do {
+				Char = Math.round( Math.random() * 100 + Math.random() * 100 );
+				if ( Min > 0 && Char < Min ) {
+					continue;
+				}
+
+				if ( Max > 0 && Char > Max ) {
+					continue;
+				}
+
+				if ( Utils.binarySearch( Exclude, Char ) !== -1 ) {
+					continue;
+				}
+
+				Char = String.fromCharCode( Char );
+				Length--;
+				GeneratedString[ Length ] = Char;
+			}
+			while ( Length > 0 );
+
+			return GeneratedString.join( '' );
+		},
+		generateAPassword() {
+			const RandomString = this.randomString(
+				42,
+				33,
+				126,
+				[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
+			);
+
+			this.$data.blubberModel[
+				this.blubberFormProperties.id
+			][ arguments[ 1 ].model ] = RandomString;
+
+			this.$forceUpdate();
 		}
 	}
 };
@@ -82,7 +215,7 @@ export default {
     margin-bottom: 1em;
 }
 
-h1,h2,h3,h4,h5,h6,p,ul, button
+h1,h2,h3,h4,h5,h6,p,ul, button, label, button
 {
     font-family:
             'Helvetica Neue',
@@ -130,7 +263,7 @@ input
     padding-left: 5px;
 }
 
-.help span
+.help span /*.helpText*/
 {
     visibility: hidden;
     width: 50%;
