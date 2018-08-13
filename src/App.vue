@@ -7,6 +7,8 @@ import ObjectHelper from './components/lib/ObjectHelper';
 import AvailableLanguages from './components/data/lang/availableLanguages';
 import Validators from './components/lib/Validators';
 import { UPDATE_KEEP_MODEL_DATA } from './components/lib/blubberFormGenerator/RenderConstants';
+import { saveAs } from 'file-saver';
+import StringHelper from './components/lib/StringHelper';
 
 class StaticReference {
 	static References = {};
@@ -25,6 +27,7 @@ export default {
 		Return.blubberSteps = [];
 		Return.blubberFormProperties = {};
 		Return.blubberFormStyle = {};
+		Return.blubberYAMLTemplate = {};
 		Return.blubberGeneratedYML = '';
 		Return.blubberCurrentStep = 0;
 		return Return;
@@ -44,9 +47,10 @@ export default {
 			Utils.get( './components/data/config.json', this.evaluateConfiguration );
 		},
 		evaluateConfiguration: function ( Configuration ) {
-			this.$data.blubberSteps = Configuration.steps;
-			this.$data.blubberFormProperties = Configuration.form;
-			this.$data.blubberFormProperties.id = Configuration.name;
+			this.$data.blubberSteps = Configuration.formModel.steps;
+			this.$data.blubberFormProperties = Configuration.formModel.form;
+			this.$data.blubberFormProperties.id = Configuration.formModel.name;
+			this.$data.blubberYAMLTemplate = Configuration.yaml;
 			this.$data.buildForm = true;
 			this.$forceUpdate();
 		},
@@ -203,6 +207,70 @@ export default {
 			][ arguments[ 1 ].model ] = RandomString;
 
 			this.$forceUpdate();
+
+		},
+		prepareForYAML() {
+			const ToTransform = [];
+			let Index;
+
+			ToTransform.push( this.blubberYAMLTemplate.prolog );
+			ToTransform.push( this.blubberYAMLTemplate.wikibase );
+
+			// \n\t\t\t- MW_ELASTIC_HOST=elasticsearch.svc\n\t\t\t- MW_ELASTIC_PORT=9200
+
+			if ( this.$data.blubberModel[
+				this.blubberFormProperties.id
+			].elasticsearchStep === true
+			) {
+				ToTransform[ 1 ] += this.blubberYAMLTemplate.elasticsearch[ 0 ];
+				ToTransform.push( this.blubberYAMLTemplate.elasticsearch[ 1 ] );
+			}
+
+			if ( this.$data.blubberModel[
+				this.blubberFormProperties.id
+			].wdqsStep === true
+			) {
+				for ( Index in this.blubberYAMLTemplate.wdqsComponents ) {
+					ToTransform.push( this.blubberYAMLTemplate.wdqsComponents[ Index ] );
+				}
+			}
+
+			ToTransform.push( this.blubberYAMLTemplate.epilog );
+
+			return ToTransform;
+		},
+		downloadYAML() {
+
+			const Transformer = ObjectHelper.copyObj(
+				this.blubberModel[ this.blubberFormProperties.id ]
+			);
+			const ToTransform = this.prepareForYAML();
+			let Transformed = '';
+			let Download = null;
+
+			if ( this.$data.blubberModel[
+				this.blubberFormProperties.id
+			].elasticsearchStep === true
+			) {
+				Transformer.dependencyElasticsearch = '\n\t\t\t- elasticsearch';
+			} else {
+				Transformer.dependencyElasticsearch = '';
+			}
+
+			Transformer.secretkey = this.randomString(
+				42,
+				33,
+				126,
+				[ ':', '\'', '"', '=', '{', '[', '(', ')', ']', '}', '$', ';', '`', '\\', '/', '%' ]
+			);
+
+			Transformed = StringHelper.format(
+				ToTransform.join( '\n' ),
+				Transformer
+			);
+
+			Download = new File( [ Transformed ], 'docker-composer.yml', { type: 'text/plain;charset=utf-8' } );
+			saveAs( Download );
 		}
 	}
 };
@@ -215,7 +283,7 @@ export default {
     margin-bottom: 1em;
 }
 
-h1,h2,h3,h4,h5,h6,p,ul, button, label, button
+h1,h2,h3,h4,h5,h6,p,ul, label, button
 {
     font-family:
             'Helvetica Neue',
@@ -307,7 +375,7 @@ input
     display: inline-block!important;
 }
 
-.help:hover span
+.help:hover span /* .helpText */
 {
     visibility: visible;
     opacity: 1;
