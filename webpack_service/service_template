@@ -2,7 +2,7 @@ import subprocess as Worker
 import os as OS
 
 try:
-    OS.chdir('{PathToProject}')
+    OS.chdir('{pathToProject}')
 except Exception as e:
     raise e
 
