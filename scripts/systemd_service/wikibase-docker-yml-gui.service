@@ -1,0 +1,13 @@
+[Unit]
+Description=Service for Wikibase docker yml gui
+Documentation=https://github.com/wmde/wikibase-docker-yml-gui
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+ExecStart=/usr/bin/npm run dev --prefix [PATH_TO_PROJECT]
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
