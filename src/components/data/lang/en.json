@@ -7,7 +7,7 @@
     "finishButton": "Download docker configuration file",
 
     "prolog": "Welcome",
-    "prolog_description": "<p>Blubber is a tool, which is supposed to setup your <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> in easy way.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a target=\"_blank\" href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a target=\"_blank\" href=\"https://docs.docker.com/compose/\">here</a>.</p>",
+    "prolog_description": "<p>Blubber is a tool that will help you setup a <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> quickly and easily.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a target=\"_blank\" href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a target=\"_blank\" href=\"https://docs.docker.com/compose/\">here</a>.</p>",
 
     "yes":"yes",
     "no":"no",
