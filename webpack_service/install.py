@@ -1,10 +1,15 @@
 import argparse as ConsoleArguments
-import ctypes as CTypes
 import os as OS
 import sys as System
-import pwd as UsersControl
 import re as RegularExpressions
 import subprocess as Worker
+import crontab as Crontab
+import getpass as Users
+
+#IsAdmin = False
+IllegalCharacters = RegularExpressions.compile('[^a-z_]')
+CronCommand = '/usr/bin/python3 {ProjectDir}.updater.py'
+ActiveServices = []
 
 def errorAndQuit(Msg):
     print(Msg, file=System.stderr)
@@ -27,21 +32,57 @@ def exec(Command):
          stdout=Worker.PIPE,
          stderr=Worker.PIPE
      )
-
      return Process.communicate()
 
-Users = []
-IsAdmin = False
-IllegalCharacters = RegularExpressions.compile('[^a-z_-]')
-IllegalCharactersUser = RegularExpressions.compile('[^a-z]')
-CreateUser = False
-BaseDir = '.'
-ActiveServices = []
+def changeCron(Command, Duration, Name, Crontab, Job=None):
+    if not Job:
+        Job = Crontab.new(command=Command)
 
+    Job.set_comment('Autopull of {}'.format(Name))
+    Job.setall(Duration)
+    if False is Job.is_valid():
+        errorAndQuit('Cannot apply new job to crontab.')
+    Crontab.write()
+
+class ValidateDir(ConsoleArguments.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        if nargs is not None:
+            raise ValueError("nargs not allowed")
+        super(ValidateDir, self).__init__( option_strings, dest, **kwargs)
+
+    def __call__(self, Parser, Namespace, Values, Options=None):
+        if not Values or not isinstance(Values, str):
+            errorAndQuit('Illegal input.')
+
+        if not OS.path.isdir(Values):
+            errorAndQuit('The given path {} does not exists.'.format(Values))
+
+        setattr(Namespace, self.dest, OS.path.abspath(Values))
+
+class ValidateServiceName(ConsoleArguments.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        if nargs is not None:
+            raise ValueError("nargs not allowed")
+        super(ValidateServiceName, self).__init__(option_strings, dest, **kwargs)
+
+    def __call__(self, Parser, Namespace, Values, Options=None):
+        Values = Values.strip()
+        if not Values or not isinstance(Values, str):
+            errorAndQuit('Illegal input.')
+        else:
+            if IllegalCharacters.match(Values):
+                errorAndQuit('Illegal character in servicename found - only a-z,_ are allowed.')
+
+            if Values in ActiveServices:
+                errorAndQuit('The given servicename is allready in use.')
+
+            setattr(Namespace, self.dest, Values)
 
 class ValidateUpdateDuration(ConsoleArguments.Action):
-    def __init__(self, Options, Destination, Args=None, **KWArgs):
-        super(ValidateUpdateDuration, self).__init__(Options, Destination, **KWArgs)
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        if nargs is not None:
+            raise ValueError("nargs not allowed")
+        super(ValidateUpdateDuration, self).__init__(option_strings, dest,  **kwargs)
 
     def __isValid(self, Value):
         Index=0
@@ -74,29 +115,29 @@ class ValidateUpdateDuration(ConsoleArguments.Action):
             if Index is len(Value):
                 return Return
 
-            if 48 > ord(Value[Index]) or 57 < ord(Valuese[Index]):
+            if 48 > ord(Value[Index]) or 57 < ord(Value[Index]):
                 return -1
 
     def __call__(self, Parser, Namespace, Values, Options=None):
-        Duration = ''
+        Values = Values.ltrim('@')
         DurationStrings = [
+                    'reboot',
                     'yearly',
                     'monthly',
                     'midnight',
                     'weekly'
                     'dayly',
-                    'hourly',
-                    'reboot'
+                    'hourly'
         ]
 
         DurationShortStrings = [
+            'r',
             'y',
             'mon',
             'mid',
             'w',
             'd',
-            'h',
-            'r'
+            'h'
         ]
 
         if Values in DurationStrings:
@@ -120,175 +161,147 @@ class ValidateUpdateDuration(ConsoleArguments.Action):
                 if 2 is Type:
                     Colums[Index] = '*' + Colums[Index]
 
-            Values = ' '.join(Colums)
+            Duration = ''.join( Colums )
 
         setattr(Namespace, self.dest, Duration)
 
 Parser = ConsoleArguments.ArgumentParser()
 Parser.add_argument('-p', '--project-directory',
                     required=True,
-                    help='the base directory from where the script is reading.')
-Parser.add_argument('-u','--username',
-                    help='the user, which is running the Service' + \
-                    'The default user is called \'webpack\'.',
-                    default='webpack',
-                    type=str,
-                    required=True
-                    )
+                    help='the base directory of the webpack application.',
+                    action=ValidateDir
+)
 Parser.add_argument('-c', '--command',
-                    help='if the given command differs' + \
-                    'from the one for the webpack application. The default ' + \
-                    'is \'run dev\'',
-                    default='run dev',
+                    help='the npm command to run the webpack application. The default \'dev\'.',
+                    default='dev',
                     type=str
-                    )
-
-Parser.add_argument('-a', '--add-user',
-                    help='the program will add a new user, if the given user' +\
-                    ' does not exists.',
-                    default=False,
-                    action='store_true'
-                    )
+)
 Parser.add_argument('-s', '--service',
                     help='how the systemd service should named.',
                     type=str,
+                    action=ValidateServiceName,
                     required=True
-                    )
-Parser.add_argument('-i', '--install-direcotry',
-                    help='where the install scripts located.',
+)
+Parser.add_argument('-i', '--install-directory',
+                    help='where the install templates are located.',
+                    action=ValidateDir,
                     type=str
-                    )
+)
 Parser.add_argument('-n', '--no-updater',
                     help='the update script will not installed',
-                    action='store_false',
-                    default=True
-                    )
+                    action='store_true',
+                    default=False
+)
 Parser.add_argument('-d', '--update-duration',
                     help='how often the update script is supposed to run.\n'+\
-                    '' +\
-                    '',
+                    'More information see at cron manual by using \'man cron\' in a terminal.\n' +\
+                    'Also you can use shortcuts by using the first letter (or first 3 letters, when it is ambiguous).',
+                    default='@weekly',
                     action=ValidateUpdateDuration
-                    )
-
-
-Arguments = Parser.parse_args()
-if Arguments.base_directory:
-    BaseDir = Arguments.base_directory
-
-BaseDir = BaseDir.rstrip(OS.sep)
+)
 
 try:
     IsAdmin = 0 == OS.getuid()
 except AttributeError:
+#    Parser.print_help()
     errorAndQuit('You run not under linux.')
 
-if False is IsAdmin:
-    errorAndQuit('You need admin rights to run this script.')
-
+#if False is IsAdmin:
+#    Parser.print_help()
+#    errorAndQuit('You need admin rights to run this script.')
 
 Stdout, Stderr = exec(['systemctl', 'list-unit-files'])
 
 if Stderr:
     errorAndQuit('Fatal error - I cannot read the active services.')
 
-Stdout = Stdout.split('\n')
+Stdout = Stdout.decode('utf-8').split('\n')
 for Line in Stdout:
     Entry = Line.split(' ')[0]
     if Entry.endswith('.service'):
         ActiveServices.append(Entry)
 
-ServiceFile = readFile(BaseDir + OS.sep + 'service_template')
-SystemdFile = readFile(BaseDir + OS.sep + 'systemd_template')
-ServiceDir = OS.path.abspath(OS.getcwd() + OS.sep + '..')
+Arguments = Parser.parse_args()
+
+if Arguments.install_directory:
+    ScriptDir = Arguments.install_directory
+else:
+    ScriptDir = OS.path.abspath('./')
+
+ScriptDir = ScriptDir.rstrip(OS.sep)
+ProjectDir = Arguments.project_directory.rstrip(OS.sep)
+
+if not OS.path.isfile(ScriptDir + OS.sep + 'systemd_template'):
+    errorAndQuit('Unable to find service template for systemd.')
+
+SystemdFile = readFile(ScriptDir + OS.sep + 'systemd_template')
 
 if not SystemdFile:
     errorAndQuit('Unable to find service template for systemd.')
-if not ServiceFile:
-    errorAndQuit('Unable to find service template for webpack.')
 
-for User in UsersControl.getpwall():
-    Users.append(User.pw_name)
+if not Arguments.no_updater:
 
+    if not OS.path.isfile(ScriptDir + OS.sep + 'updater_template'):
+        errorAndQuit('Unable to find service template for systemd.')
+    UpdaterFile = readFile(ScriptDir + OS.sep + 'updater_template')
+    writeFile(
+        ProjectDir + OS.sep + '.updater.py',
+        UpdaterFile.format(
+            ProjectDir=ProjectDir,
+            ServiceName=Arguments.service,
+            LogFile=ProjectDir + OS.sep + '.gitautopull.log' )
+    )
 
-"""
-while True:
-    print('Please enter the username for webpack service (webpack is default):')
-    Input = input().strip().lower()
-    if not Input:
-        Username = 'webpack'
-        break
+    Updater = Crontab.CronTab(user=Users.getuser())
+    for Job in Updater:
+        if -1 is not str(Job).find('/usr/bin/python3 ' + ProjectDir + OS.sep + '.updater.py'):
+            changeCron(
+                Command=CronCommand.format(ProjectDir=ProjectDir + OS.sep),
+                Duration=Arguments.update_duration,
+                Name=ProjectDir,
+                Crontab=Updater,
+                Job=Job
+            )
+            break
     else:
-        if IllegalCharactersUser.match(Input):
-            print('Illegal chracter found - only a-z are allowed.')
-            continue
-
-        Username = Input
-        break
-
-if not Username in Users:
-    print('The given user does not exists - should a account created? (y/n[is default]):')
-    Input = input().lower().strip()
-    if not Input or 'y' != Input:
-        errorAndQuit('Installer aborted.')
-    else:
-        CreateUser = True
-
-while True:
-    print('How should the service called:')
-    Input = input().lower().strip()
-    if not Input:
-        errorAndQuit('Illegal input.')
-    else:
-        if IllegalCharacters.match(Input):
-            print('Illegal chracter found - only a-z,_,- are allowed.')
-            continue
-
-        ServiceName = Input
-        break
-
-print('Is {serviceDir} the root dir of your webpack application? (y/n[is default]):'\
-      .format(serviceDir=ServiceDir))
-
-Input = input().strip()
-if not Input or 'y' != Input.lower():
-    while True:
-        print('Where is webpack application located?:')
-        Input = input().strip()
-        if not Input:
-            errorAndQuit('Illegal input.')
+        # add Updater to gitignore
+        if not OS.path.isfile(ProjectDir + OS.sep + '.gitignore'):
+            writeFile(ProjectDir + OS.sep + '.gitignore', '.updater.py\n.gitautopull.log')
         else:
-            if\
-                    False is OS.path.isdir(Input)\
-                or\
-                    False is OS.path.isdir(Input + OS.sep + 'node_modules'):
-                print('The given given was not found or is no nodejs folder.')
-                continue
-            else:
-                ServiceDir = OS.path.abspath(Input)
-                break
+            with open(ProjectDir + OS.sep + '.gitignore', 'a') as Ignore:
+                Ignore.write('\n.updater.py\n.gitautopull.log')
+        changeCron(
+            Command=CronCommand.format(ProjectDir=ProjectDir + OS.sep),
+            Duration=Arguments.update_duration,
+            Name=ProjectDir,
+            Crontab=Updater
+        )
 
-ServiceFile = ServiceFile.format(pathToProject=ServiceDir)
-SystemdFile = SystemdFile.format(pathToProject=ServiceDir, username=Username)
+SystemdFile = SystemdFile.format(PathToProject=ProjectDir, Command=Arguments.command)
 
-writeFile(BaseDir + OS.sep + 'service.py', ServiceFile)
-writeFile(BaseDir + OS.sep + 'systemdfile', SystemdFile)
+writeFile(ScriptDir + OS.sep + 'systemdfile', SystemdFile)
 
-Worker.run([
-    'mv',
-    BaseDir + OS.sep + 'systemdfile',
-    '/lib/systemd/system/' + ServiceName + '.service'
-])
+if False is IsAdmin:
+    Stdout, Stderr = exec([
+        'sudo',
+        'mv',
+        ScriptDir + OS.sep + 'systemdfile',
+        '/lib/systemd/system/' + Arguments.service + '.service'
+    ])
+    Stdout, Stderr = exec(['sudo', 'systemctl', 'daemon-reload'])
+else:
+    Stdout, Stderr = exec([
+        'mv',
+        ScriptDir + OS.sep + 'systemdfile',
+        '/lib/systemd/system/' + Arguments.service + '.service'
+    ])
+    Stdout, Stderr = exec(['systemctl', 'daemon-reload'])
 
-Worker.run(['useradd', '-r', '-s', '/bin/false', Username])
-Worker.run(['systemctl', 'daemon-reload'])
-"""
+if Stderr:
+    errorAndQuit(Stderr.decode('utf-8').strip())
 
-# add update cron in crontab
-Crontab = OS.popen('crontab -l > current_crontab.txt');
-Crons = Crontab.read();
-Crontab.close();
-NewCrontab = file('current_crontab.txt', 'a');
-#NewCrontab.write("\n### Comment here if you like");
-#NewCrontab.write("\n* * * * * Put your command here");
-NewCrontab.close();
-# add gitignore
+Stdout, Stderr = exec(['systemctl', Arguments.service, 'start'])
+if Stderr:
+    print(Stderr.decode('utf-8').strip(), file=System.stderr)
+else:
+    print(Stdout.decode('utf-8'))

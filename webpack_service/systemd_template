@@ -5,8 +5,8 @@ After=network.target
 
 [Service]
 Type=simple
-User={username}
-ExecStart=/usr/bin/python3 {pathToProject}/webpack_service/service.py
+DynamicUser=yes
+ExecStart=/usr/bin/npm run {Command} --prefix {PathToProject}
 Restart=on-failure
 
 [Install]
