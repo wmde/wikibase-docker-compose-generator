@@ -119,13 +119,13 @@ class ValidateUpdateDuration(ConsoleArguments.Action):
                 return -1
 
     def __call__(self, Parser, Namespace, Values, Options=None):
-        Values = Values.ltrim('@')
+        Values = Values.lstrip('@')
         DurationStrings = [
                     'reboot',
                     'yearly',
                     'monthly',
                     'midnight',
-                    'weekly'
+                    'weekly',
                     'dayly',
                     'hourly'
         ]
@@ -172,7 +172,7 @@ Parser.add_argument('-p', '--project-directory',
                     action=ValidateDir
 )
 Parser.add_argument('-c', '--command',
-                    help='the npm command to run the webpack application. The default \'dev\'.',
+                    help='the npm command to run the webpack application. The default value is \'dev\'.',
                     default='dev',
                     type=str
 )
@@ -195,7 +195,8 @@ Parser.add_argument('-n', '--no-updater',
 Parser.add_argument('-d', '--update-duration',
                     help='how often the update script is supposed to run.\n'+\
                     'More information see at cron manual by using \'man cron\' in a terminal.\n' +\
-                    'Also you can use shortcuts by using the first letter (or first 3 letters, when it is ambiguous).',
+                    'Also you can use shortcuts by using the first letter (or first 3 letters, when it is ambiguous).\n' +\
+                    'The default is weekly',
                     default='@weekly',
                     action=ValidateUpdateDuration
 )
