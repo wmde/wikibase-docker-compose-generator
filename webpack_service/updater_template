@@ -15,7 +15,7 @@ TrackedFiles = [
 
 PostCommands = [
     ['npm', 'i'],
-    ['systemctrl', '{ServiceName}', 'restart']
+    ['systemctrl', 'restart', '{ServiceName}']
 ]
 
 Branch = 'master'

@@ -176,7 +176,7 @@ Parser.add_argument('-c', '--command',
                     default='dev',
                     type=str
 )
-Parser.add_argument('-s', '--service',
+Parser.add_argument('-s', '--service-name',
                     help='how the systemd service should named.',
                     type=str,
                     action=ValidateServiceName,
@@ -249,7 +249,7 @@ if not Arguments.no_updater:
         ProjectDir + OS.sep + '.updater.py',
         UpdaterFile.format(
             ProjectDir=ProjectDir,
-            ServiceName=Arguments.service,
+            ServiceName=Arguments.service_name,
             LogFile=ProjectDir + OS.sep + '.gitautopull.log' )
     )
 
@@ -287,9 +287,15 @@ if False is IsAdmin:
         'sudo',
         'mv',
         ScriptDir + OS.sep + 'systemdfile',
-        '/lib/systemd/system/' + Arguments.service + '.service'
+        '/lib/systemd/system/' + Arguments.service_name + '.service'
     ])
     Stdout, Stderr = exec(['sudo', 'systemctl', 'daemon-reload'])
+    if Stderr:
+        errorAndQuit(Stderr.decode('utf-8').strip())
+
+    Stdout, Stderr = exec(['sudo', 'systemctl', 'reset-failed'])
+    if Stderr:
+        errorAndQuit(Stderr.decode('utf-8').strip())
 else:
     Stdout, Stderr = exec([
         'mv',
@@ -298,10 +304,14 @@ else:
     ])
     Stdout, Stderr = exec(['systemctl', 'daemon-reload'])
 
-if Stderr:
-    errorAndQuit(Stderr.decode('utf-8').strip())
+    if Stderr:
+        errorAndQuit(Stderr.decode('utf-8').strip())
 
-Stdout, Stderr = exec(['systemctl', Arguments.service, 'start'])
+    Stdout, Stderr = exec(['systemctl', 'reset-failed'])
+    if Stderr:
+        errorAndQuit(Stderr.decode('utf-8').strip())
+
+Stdout, Stderr = exec(['systemctl', 'start',  Arguments.service_name])
 if Stderr:
     print(Stderr.decode('utf-8').strip(), file=System.stderr)
 else:
