@@ -1,11 +1,11 @@
-#Webpack-Service
-##Description
+# Webpack-Service
+## Description
 The installer is a small script to put a webpack application to systemctl and perform autoupdates
-##Requirements
+## Requirements
 Before you can run the install.py you need to install (if it's not allready done) python3. Also the script need a package called 'python-crontab', which you can install by:
 sudo pip3 install python-crontab
 Be aware that the autoupdate are performed via crontab, therefore the program take the crontab of the use, which called that script. Also the script need at some parts admin rights.
-##Use
+## Use
 The script takes 3 to 5 arguments, for a detailed description just run:
 python3 $PATH\_TO\_SCRIPT/install.py -h
 Basiclly you just need to call:
