@@ -216,8 +216,6 @@ export default {
 			ToTransform.push( this.blubberYAMLTemplate.prolog );
 			ToTransform.push( this.blubberYAMLTemplate.wikibase );
 
-			// \n\t\t\t- MW_ELASTIC_HOST=elasticsearch.svc\n\t\t\t- MW_ELASTIC_PORT=9200
-
 			if ( this.$data.blubberModel[
 				this.blubberFormProperties.id
 			].elasticsearchStep === true
@@ -252,7 +250,7 @@ export default {
 				this.blubberFormProperties.id
 			].elasticsearchStep === true
 			) {
-				Transformer.dependencyElasticsearch = '\n\t\t\t- elasticsearch';
+				Transformer.dependencyElasticsearch = '\n            - elasticsearch';
 			} else {
 				Transformer.dependencyElasticsearch = '';
 			}
