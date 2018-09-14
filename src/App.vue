@@ -215,6 +215,7 @@ export default {
 
 			ToTransform.push( this.blubberYAMLTemplate.prolog );
 			ToTransform.push( this.blubberYAMLTemplate.wikibase );
+			ToTransform.push( this.blubberYAMLTemplate.mysql );
 
 			if ( this.$data.blubberModel[
 				this.blubberFormProperties.id
