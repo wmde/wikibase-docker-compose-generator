@@ -271,3 +271,4 @@
         "epilog":"\nvolumes:\n    mediawiki-mysql-data:\n    mediawiki-images-data:\n    query-service-data:"
     }
 }
+
