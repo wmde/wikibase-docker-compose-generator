@@ -16,7 +16,7 @@
     "hidePassword": "Hide the password",
 
     "components": "Additional components",
-    "components_question": "<p>Mediawiki with Wikibase and MariaDb(an SQL server) will automatically be included.</p><p>Which additional components do you want to include?</p>",
+    "components_question": "Mediawiki with Wikibase and MariaDB(an SQL server) will automatically be included. Which additional components do you want to include?",
 
     "components_elasticsearch": "Include Elasticsearch?",
     "components_elasticsearch_help": "<span>Elasticsearch is a more advanced search, which can be used for faster and more accurate search in your Wikibase. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
