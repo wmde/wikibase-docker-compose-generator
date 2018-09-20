@@ -2,8 +2,8 @@ import Utils from '../../Utils';
 /* eslint-disable operator-linebreak */
 export default class Validators {
 	static InvalidPortNoInteger = 'The given value is not an integer.';
-	static InvalidPortWellKnown = 'Do not use wellknown ports.';
-	static InvalidPortInUse = 'The given port is allready in use.';
+	static InvalidPortWellKnown = 'Do not use ports between 0 and 1023.';
+	static InvalidPortInUse = 'The given port is already in use.';
 	static InvalidString = 'The given value is not an valid string.';
 	static InvalidStringCharacter = 'The given value contain(s) an invalid character(s) - ';
 	static InvalidSQLFirstCharacter = 'The first character is invalid - it should be a character or # or _.';

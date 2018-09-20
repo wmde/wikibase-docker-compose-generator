@@ -1,41 +1,41 @@
 {
     "key": "en",
     "title": "Blubber",
-    "subtitle": "A yaml builder for wikibase-docker",
+    "subtitle": "A docker-compose.yml builder for wikibase-docker",
     "nextButton": "Next",
     "backButton": "Back",
     "finishButton": "Download docker configuration file",
 
     "prolog": "Welcome",
-    "prolog_description": "<p>Blubber is a tool that will help you setup a <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> quickly and easily.</p><p>Docker is kind of virtualisation, which encapsulate components or services inside containers. You can get more informations <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a target=\"_blank\" href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>Also you will need Docker-Composer, which is included in the Docker community edition, so most likely you won't need to install it separately. You can find Docker-Composer <a target=\"_blank\" href=\"https://docs.docker.com/compose/\">here</a>.</p>",
+    "prolog_description": "<p>Blubber is a tool that will help you setup a <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker\">wikibase based on Docker</a> quickly and easily.</p><p>Docker is a program that performs a type of virtualisation called containerization. You can get more information <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/Docker_(software)\">here</a>.</p><p>If you want to setup docker now you can use <a target=\"_blank\" href=\"https://docs.docker.com/engine/installation/\">this link</a>.</p><p>You will also need docker-compose, which is included in Docker CE (community edition). If you find it is missing you can follow the installation guide <a target=\"_blank\" href=\"https://docs.docker.com/compose/\">here</a>.</p>",
 
     "yes":"yes",
     "no":"no",
-    "showPassword": "Show me the password",
-    "generatePassword": "Generate me a password",
+    "showPassword": "Show the password",
+    "generatePassword": "Generate a password",
     "hidePassword": "Hide the password",
 
-    "components": "Component selection",
-    "components_question": "Which components you want to install?",
+    "components": "Additional components",
+    "components_question": "Mediawiki with Wikibase and MariaDB(an SQL server) will automatically be included. Which additional components do you want to include?",
 
-    "components_elasticsearch": "Use Elasticsearch?",
-    "components_elasticsearch_help": "<span>Elasticsearch is a vector-space search, which is used for faster search in your wikibase. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
+    "components_elasticsearch": "Include Elasticsearch?",
+    "components_elasticsearch_help": "<span>Elasticsearch is a more advanced search, which can be used for faster and more accurate search in your Wikibase. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Extension:CirrusSearch/Profiles\">See here for more</a></span>",
 
-    "components_wikibaseQuickstatements": "Use Quickstatements?",
-    "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool to automatically create/update Wikidata items/statements. <a target=\"_blank\" href=\"https://be.wikimedia.org/wiki/QuickStatements\">See here for more</a></span>",
+    "components_wikibaseQuickstatements": "Include Quickstatements?",
+    "components_wikibaseQuickstatements_help": "<span>QuickStatements is a tool that can automatically create and update Wikibase items or statements. <a target=\"_blank\" href=\"https://www.wikidata.org/wiki/Special:MyLanguage/Help:QuickStatements\">See here for more</a></span>",
 
-    "components_wikibaseQueryService": "Use Wikibase query service?",
-    "components_wikibaseQueryService_help": "<span>Wikidata Query Service is a software package, which provides <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>",
+    "components_wikibaseQueryService": "Include the Wikibase query service?",
+    "components_wikibaseQueryService_help": "<span>The Wikibase Query Service allows <a target=\"_blank\" href=\"https://en.wikipedia.org/wiki/SPARQL\">SPARQL</a> based queries to be run on your data. <a target=\"_blank\" href=\"https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual\">See here for more</a></span>",
 
-    "componentsConfiguration": "Components configuration",
-    "portsConfiguration": "Compontents ports",
-    "portsConfigurationDescription": "Ports are endpoints for the communication between several application. A port is identified by a non negativ number, which is unique. Also there are so called \"well known ports\", which are addessed by numbers in the range from 0 to 1023, so you cannot use numbers in this range.",
-    "wikibasePort": "Which port Wikibase should use?",
+    "componentsConfiguration": "Component configuration",
+    "portsConfiguration": "Component ports",
+    "portsConfigurationDescription": "Ports allow for communication between several applications on a single host. A port is identified by a non negative number, which is unique. Also there are so called \"well known ports\", which are addessed by numbers in the range from 0 to 1023, so you can't use ports in this range.",
+    "wikibasePort": "Which port should Wikibase use?",
     "portsWDQS": "Ports of Wikibase query service",
-    "wikibaseBlazegraphPort": "Which port Blazegraph of Wikibase query service should use?",
-    "wikibaseProxyPort": "Which port the proxy of Wikibase query service should use?",
-    "wikibaseFrontendPort": "Which port the user interface of Wikibase query service should use?",
-    "wikibaseQuickstatementsPort": "Which port Quickstatements should use?",
+    "wikibaseBlazegraphPort": "Which port should Blazegraph of the Wikibase query service use?",
+    "wikibaseProxyPort": "Which port should the proxy of the Wikibase query service use?",
+    "wikibaseFrontendPort": "Which port should the user interface of Wikibase query service use?",
+    "wikibaseQuickstatementsPort": "Which port should Quickstatements use?",
 
     "quickStatementsConfiguration": "Configure Quickstatements",
     "quickStatementsConfigurationNamespaceProperty": "Which namespace you want to use for properties in Wikibase?",
@@ -49,16 +49,16 @@
 
     "wikibaseConfiguration": "Configure Wikibase",
     "mediawikiConfiguration": "MediaWiki",
-    "mediawikiSiteName": "How would you like to name your MediaWiki?",
-    "mediawikiAdminName": "How would you like to name your MediaWiki admin account?",
-    "mediawikiAdminPassword": "Provide your admin account a password.",
+    "mediawikiSiteName": "What would you like your site to be called?",
+    "mediawikiAdminName": "What would you like the username of your admin account to be?",
+    "mediawikiAdminPassword": "What would you like the password of your admin account to be?",
 
-    "databaseConfiguration": "Database (MySQL)",
-    "databasePort": "Which port the database should use?",
-    "databaseName": "How you like to name the database?",
-    "databaseUser": "What is the name of your database user?",
-    "databaseUserPassword": "Provide your database user a password.",
+    "databaseConfiguration": "MariaDB (MySQL)",
+    "databasePort": "Which port should the database use?",
+    "databaseName": "What should your database be called?",
+    "databaseUser": "What should the name of your database user be?",
+    "databaseUserPassword": "What should the database user password be?",
 
-    "finish": "Download composer file",
-    "finish_description": "<p>You can now run your Wikibase Docker environment. To learn how to do this, refer to the <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker/blob/master/README-compose.md\">manual</a></p>"
+    "finish": "Download docker-compose.yml file",
+    "finish_description": "<p>You can download your docker-compose.yml file using the button to the right.</p><p>You can now run your Wikibase docker-compose environment.</p><p>To learn how to do this, refer to the <a target=\"_blank\" href=\"https://github.com/wmde/wikibase-docker/blob/master/README-compose.md\">manual</a></p>"
 }
