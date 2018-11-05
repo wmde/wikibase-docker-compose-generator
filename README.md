@@ -1,4 +1,4 @@
-# Blubber
+# Wikibase docker-compose Generator
 
 > A yml builder for wikibase-docker
 
