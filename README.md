@@ -2,6 +2,12 @@
 
 > A yml builder for wikibase-docker
 
+## Note to developers
+
+This project used to be named `Blubber`.
+You can still see this in many variable names.
+Feel free to rename these variables etc. as you work on them.
+
 ## Build Setup
 
 ``` bash
