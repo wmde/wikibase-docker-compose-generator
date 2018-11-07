@@ -23,11 +23,11 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 
-# run unit tests
-npm run unit
+# run linter
+npm run lint
 
-# run e2e tests
-npm run e2e
+# run linter and if possible fix automatically
+npm run fix
 
 # run all tests
 npm test
