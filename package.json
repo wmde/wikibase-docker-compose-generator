@@ -1,7 +1,7 @@
 {
-  "name": "blubber",
+  "name": "wikibase_docker-compose_generator",
   "version": "0.0.2a",
-  "description": "A yaml builder for wikibase docker-image",
+  "description": "Generates a docker-compose.yml for a wikibase docker-image",
   "author": "Matthias Geisler <matthias.geisler@wikimedia.de>",
   "private": true,
   "scripts": {
